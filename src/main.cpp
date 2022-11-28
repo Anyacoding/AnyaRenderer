@@ -16,5 +16,6 @@ int main() {
     std::cout << vec3.norm2() << std::endl;
     std::cout << vec3.normalize().norm2() << std::endl;
     std::cout << vec2.angle({0, 1}) << std::endl;
+
     return 0;
 }

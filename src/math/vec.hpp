@@ -164,7 +164,7 @@ using Vec4 = Vec<4>;
 // 便捷创建向量
 template<typename... Args>
 constexpr auto make_Vec(Args&&... args) {
-    return Vec<sizeof...(args)>{static_cast<numberType>(args)...};
+    return Vec<sizeof...(args)>{static_cast<numberType>(std::forward<Args>(args))...};
 }
 
 }
