@@ -8,6 +8,7 @@
 #include <cmath>
 #include <algorithm>
 #include <iostream>
+#include <concepts>
 
 namespace anya {
 
@@ -43,12 +44,10 @@ public:
     }
 
     // 向量的维数
-    [[nodiscard]]
-    constexpr int
+    [[nodiscard]] constexpr int
     dimension() const noexcept { return N; }
 
-    [[nodiscard]]
-    constexpr int
+    [[nodiscard]] constexpr int
     size() const noexcept { return N; }
 
 #pragma endregion
@@ -64,9 +63,21 @@ public:
         return ret;
     }
 
+    // 叉乘，其中i j k为基向量
+    //                                |i v1 w1|
+    // [v1 v2 v3]T X [w1 w2 w3]T = det|j v2 w2|
+    //                                |k v3 w3|
+    constexpr Vec
+    cross(const Vec& rhs) const noexcept requires(N == 3) {
+        const Vec& lhs = *this;
+        return { lhs[1] * rhs[2] - rhs[1] * lhs[2],
+                -lhs[0] * rhs[2] + rhs[0] * lhs[2],
+                 lhs[0] * rhs[1] - rhs[0] * lhs[1]
+        };
+    }
+
     // 向量的L2范数，也就是向量的标量的大小
-    [[nodiscard]]
-    constexpr numberType
+    [[nodiscard]] constexpr numberType
     norm2() const { return std::sqrt(dot(*this)); }
 
     // 将向量归一化为单位向量
@@ -78,6 +89,7 @@ public:
     angle(const Vec& rhs) const {
         return std::acos( this->dot(rhs) / (this->norm2() * rhs.norm2()) );
     }
+
 
 #pragma endregion
 
@@ -149,6 +161,29 @@ public:
     }
 #pragma endregion
 
+public:
+#pragma region 坐标
+    [[nodiscard]] constexpr numberType
+    x() const noexcept requires(N >= 1) { return data[0]; }
+
+    [[nodiscard]] constexpr numberType
+    y() const noexcept requires(N >= 2) { return data[1]; }
+
+    [[nodiscard]] constexpr numberType
+    z() const noexcept requires(N >= 3) { return data[2]; }
+
+    [[nodiscard]] constexpr numberType
+    w() const noexcept requires(N >= 4) { return data[3]; }
+
+    // w != 0 时，该齐次坐标代表一个点，将该点标准化表示
+    constexpr Vec
+    trim() const noexcept requires(N >= 4) {
+        auto w = this->w();
+        if (fabs(w) > 1e-8) return *this / w;
+        return *this;
+    }
+
+#pragma endregion
 private:
     // 底层数据存储
     numberType data[N] = {};
@@ -163,7 +198,7 @@ using Vec4 = Vec<4>;
 
 // 便捷创建向量
 template<typename... Args>
-constexpr auto make_Vec(Args&&... args) {
+constexpr auto make_Vec(Args&&... args) requires((std::convertible_to<Args, numberType> && ...)) {
     return Vec<sizeof...(args)>{static_cast<numberType>(std::forward<Args>(args))...};
 }
 
