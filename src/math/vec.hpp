@@ -2,8 +2,8 @@
 // Created by Anya on 2022/11/23.
 //
 
-#ifndef ANYAENGINE_VEC_HPP
-#define ANYAENGINE_VEC_HPP
+#ifndef ANYA_ENGINE_VEC_HPP
+#define ANYA_ENGINE_VEC_HPP
 
 #include <cmath>
 #include <algorithm>
@@ -15,12 +15,12 @@ namespace anya {
 using numberType = double;
 
 template<int N> requires(N >= 1)
-class Vec {
+class Vector {
 public:
 #pragma region 构造相关
-    constexpr Vec() = default;
+    constexpr Vector() = default;
     // 超过向量长度的数据将被丢弃
-    constexpr Vec(std::initializer_list<numberType> st) {
+    constexpr Vector(const std::initializer_list<numberType>& st) {
         auto it = st.begin();
         for (int i = 0; it < st.end() && i < N; ++i, ++it)
             data[i] = *it;
@@ -29,17 +29,30 @@ public:
 
 public:
 #pragma region 操作容器
-    // 下标访问，并进行越界检查
+    // 下标访问，并进行越界检查，支持[]访问和()访问，两者等价
     constexpr numberType&
     operator[](const int index) {
         if (index >= N)
-            throw std::out_of_range("Cross boundary access of vector!");
+            throw std::out_of_range("Vector::operator[]");
         return data[index];
     }
     constexpr numberType
     operator[](const int index) const {
         if (index >= N)
-            throw std::out_of_range("Cross boundary access of vector!");
+            throw std::out_of_range("Vector::operator[]");
+        return data[index];
+    }
+
+    constexpr numberType&
+    operator()(const int index) {
+        if (index >= N)
+            throw std::out_of_range("Vector::operator[]");
+        return data[index];
+    }
+    constexpr numberType
+    operator()(const int index) const {
+        if (index >= N)
+            throw std::out_of_range("Vector::operator[]");
         return data[index];
     }
 
@@ -56,7 +69,7 @@ public:
 #pragma region 向量运算
     // 点乘，隐含了维数一致的约束，即维数都为N
     constexpr numberType
-    dot(const Vec& rhs) const noexcept {
+    dot(const Vector& rhs) const noexcept {
         numberType ret = {};
         for (int i = 0; i < N; ++i)
             ret += (*this)[i] * rhs[i];
@@ -67,9 +80,9 @@ public:
     //                                |i v1 w1|
     // [v1 v2 v3]T X [w1 w2 w3]T = det|j v2 w2|
     //                                |k v3 w3|
-    constexpr Vec
-    cross(const Vec& rhs) const noexcept requires(N == 3) {
-        const Vec& lhs = *this;
+    constexpr Vector
+    cross(const Vector& rhs) const noexcept requires(N == 3) {
+        const Vector& lhs = *this;
         return { lhs[1] * rhs[2] - rhs[1] * lhs[2],
                 -lhs[0] * rhs[2] + rhs[0] * lhs[2],
                  lhs[0] * rhs[1] - rhs[0] * lhs[1]
@@ -81,12 +94,12 @@ public:
     norm2() const { return std::sqrt(dot(*this)); }
 
     // 将向量归一化为单位向量
-    constexpr Vec
+    constexpr Vector
     normalize() const { return *this / norm2(); }
 
     // 向量夹角 [0, pi]
     constexpr numberType
-    angle(const Vec& rhs) const {
+    angle(const Vector& rhs) const {
         return std::acos( this->dot(rhs) / (this->norm2() * rhs.norm2()) );
     }
 
@@ -96,61 +109,61 @@ public:
 public:
 #pragma region 向量运算涉及的运算符重载
     // 向量加法
-    constexpr Vec&
-    operator+=(const Vec& rhs) noexcept {
-        Vec& lhs = *this;
+    constexpr Vector&
+    operator+=(const Vector& rhs) noexcept {
+        Vector& lhs = *this;
         for (int i = 0; i < N; ++i)
             lhs[i] += rhs[i];
         return lhs;
     }
 
-    constexpr friend Vec
-    operator+(const Vec& lhs, const Vec& rhs) noexcept { return Vec{lhs} += rhs; }
+    constexpr friend Vector
+    operator+(const Vector& lhs, const Vector& rhs) noexcept { return Vector{lhs} += rhs; }
 
     // 向量减法
-    constexpr Vec&
-    operator-=(const Vec& rhs) noexcept {
-        Vec& lhs = *this;
+    constexpr Vector&
+    operator-=(const Vector& rhs) noexcept {
+        Vector& lhs = *this;
         for (int i = 0; i < N; ++i)
             lhs[i] -= rhs[i];
         return lhs;
     }
 
-    constexpr friend Vec
-    operator-(const Vec& lhs, const Vec& rhs) noexcept { return Vec{lhs} -= rhs; };
+    constexpr friend Vector
+    operator-(const Vector& lhs, const Vector& rhs) noexcept { return Vector{lhs} -= rhs; };
 
     // 向量取负
-    constexpr Vec
+    constexpr Vector
     operator-() const noexcept { return *this * (-1); };
 
     // 向量伸缩
-    constexpr Vec&
+    constexpr Vector&
     operator*=(numberType k) noexcept {
         for (auto& i : this->data) i *= k;
         return *this;
     }
 
-    constexpr friend Vec
-    operator*(const Vec& lhs, numberType k) noexcept { return Vec{lhs} *= k; }
+    constexpr friend Vector
+    operator*(const Vector& lhs, numberType k) noexcept { return Vector{lhs} *= k; }
 
-    constexpr friend Vec
-    operator*(numberType k, const Vec& rhs) noexcept { return Vec{rhs} *= k; }
+    constexpr friend Vector
+    operator*(numberType k, const Vector& rhs) noexcept { return Vector{rhs} *= k; }
 
-    constexpr Vec&
+    constexpr Vector&
     operator/=(numberType k) {
         for (auto& i : this->data) i /= k;
         return *this;
     }
 
-    constexpr friend Vec
-    operator/(const Vec& lhs, numberType k) { return Vec{lhs} /= k; }
+    constexpr friend Vector
+    operator/(const Vector& lhs, numberType k) { return Vector{lhs} /= k; }
 #pragma endregion
 
 public:
 #pragma region IO
     // 按列向量的形式输出，eg: [1, 2]T
     friend std::ostream&
-    operator<<(std::ostream& out, const Vec& vec) {
+    operator<<(std::ostream& out, const Vector& vec) {
         out << "[";
         for (int i = 0; i < vec.size(); ++i) {
             out << vec[i];
@@ -176,7 +189,7 @@ public:
     w() const noexcept requires(N >= 4) { return data[3]; }
 
     // w != 0 时，该齐次坐标代表一个点，将该点标准化表示
-    constexpr Vec
+    constexpr Vector
     trim() const noexcept requires(N >= 4) {
         auto w = this->w();
         if (fabs(w) > 1e-8) return *this / w;
@@ -184,24 +197,25 @@ public:
     }
 
 #pragma endregion
+
 private:
     // 底层数据存储
-    numberType data[N] = {};
+    numberType data[N]{};
 };
 
 // 平面坐标/二维向量
-using Vec2 = Vec<2>;
+using Vector2 = Vector<2>;
 // 空间坐标坐标/三维向量
-using Vec3 = Vec<3>;
+using Vector3 = Vector<3>;
 // 四元数/四维向量
-using Vec4 = Vec<4>;
+using Vector4 = Vector<4>;
 
 // 便捷创建向量
 template<typename... Args>
 constexpr auto make_Vec(Args&&... args) requires((std::convertible_to<Args, numberType> && ...)) {
-    return Vec<sizeof...(args)>{static_cast<numberType>(std::forward<Args>(args))...};
+    return Vector<sizeof...(args)>{static_cast<numberType>(std::forward<Args>(args))...};
 }
 
 }
 
-#endif //ANYAENGINE_VEC_HPP
+#endif //ANYA_ENGINE_VEC_HPP
