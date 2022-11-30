@@ -33,12 +33,40 @@ void vecTest() {
 }
 
 void matrixTest() {
-    anya::Matrix<3, 3> mat{};
-    mat << 1, 2, 3,
-           4, 5, 6,
-           7, 8, 9,
-           11, 12, 13;
+    anya::Matrix<3, 4> mat{};
+    std::cout << "²âÊÔ¶ººÅ³õÊ¼»¯ºÍ·ÃÎÊ:" << std::endl;
+    mat << 1, 2, 3, 5,
+           4, 5, 6, 9,
+           11, 12, 13, 18;
     std::cout << mat;
+    std::cout << mat(2, 3) << std::endl;
+    std::cout << mat.rowVec(2) << std::endl;
+    std::cout << mat.colVec(2) << std::endl << std::endl;
+
+    std::cout << "²âÊÔ¾ØÕó³Ë·¨:" << std::endl;
+    anya::Matrix<2, 2> lhs{};
+    lhs << 1, 1,
+           2, 0;
+    anya::Matrix<2, 3> rhs{};
+    rhs << 0, 2, 3,
+           1, 1, 2;
+    std::cout << lhs * rhs << std::endl;
+
+    anya::Matrix<1, 3> lhs2{};
+    lhs2 << 8, 8, 6;
+    anya::Matrix<3, 2> rhs2{};
+    rhs2 << 5, 2,
+           1, 3,
+           6, 5;
+    std::cout << lhs2 * rhs2 << std::endl;
+
+    anya::Matrix<4, 3> A{};
+    A << 2, 3, 1,
+         3, 8, -2,
+         4, -1, 9,
+         1, -2, 4;
+    anya::Vector3 x{-1, 2, 0};
+    std::cout << A * x;
 }
 
 int main() {
