@@ -28,7 +28,7 @@ public:
 #pragma endregion
 
 public:
-#pragma region 操作容器
+#pragma region 访问
     // 下标访问，并进行越界检查，支持[]访问和()访问，两者等价
     constexpr numberType&
     operator[](const int index) {
@@ -157,6 +157,7 @@ public:
 
     constexpr friend Vector
     operator/(const Vector& lhs, numberType k) { return Vector{lhs} /= k; }
+
 #pragma endregion
 
 public:
