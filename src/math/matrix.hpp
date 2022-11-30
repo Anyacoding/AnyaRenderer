@@ -15,12 +15,13 @@ class Matrix {
 private:
     struct Loader {
         constexpr Loader(Matrix& m, int i): mat(m), cnt(i) {}
+
         // 重载逗号运算发实现链式调用 eg: mat << 1, 2, 3;
         constexpr Loader
         operator,(numberType val) {
             // 多余的数据会被直接忽略掉
             if (cnt / N >= M) return Loader(mat, cnt + 1);
-            mat.data[cnt / N][cnt % N] = val;
+            mat(cnt / N, cnt % N) = val;
             return Loader(mat, cnt + 1);
         }
         Matrix& mat;
@@ -41,26 +42,78 @@ public:
 #pragma endregion
 
 public:
-#pragma region 操作容器
+#pragma region 访问
     constexpr numberType&
     operator()(int i, int j) {
         if (out_range(i, j))
             throw std::out_of_range("Matrix::operator()");
-        return data[i][j];
+        return data[j][i];
     }
 
     constexpr numberType
     operator()(int i, int j) const {
         if (out_range(i, j))
             throw std::out_of_range("Matrix::operator()");
-        return data[i][j];
+        return data[j][i];
     }
 
+    // 行数
     [[nodiscard]] constexpr int
     row() const noexcept { return M; }
 
+    // 列数
     [[nodiscard]] constexpr int
     column() const noexcept { return N; }
+
+    // 返回第 row 行的行向量
+    constexpr Vector<N>
+    rowVec(int row) const {
+        if (out_range(row, 0))
+            throw std::out_of_range("Matrix::rowVec");
+        Vector<N> ret{};
+        for (int j = 0; j < N; ++j) ret[j] = (*this)(row, j);
+        return ret;
+    }
+
+    // 返回第 col 列的列向量
+    constexpr Vector<M>
+    colVec(int col) const {
+        if (out_range(0, col))
+            throw std::out_of_range("Matrix::rowVec");
+        return data[col];
+    }
+#pragma endregion
+
+public:
+#pragma region 矩阵运算
+
+#pragma endregion
+
+public:
+#pragma region 矩阵运算涉及的运算符重载
+    // 矩阵乘法
+    template<int C>
+    constexpr friend Matrix<M, C>
+    operator*(const Matrix<M, N>& lhs, const Matrix<N, C>& rhs) {
+        Matrix<M, C> ret{};
+        for (int i = 0; i < M; ++i) {
+            for (int j = 0; j < C; ++j) {
+                for (int k = 0; k < N; ++k) {
+                    ret(i, j) += lhs(i, k) * rhs(k, j);
+                }
+            }
+        }
+        return ret;
+    }
+
+    // 列向量左乘矩阵
+    constexpr friend Vector<M>
+    operator*(const Matrix<M, N>& lhs, const Vector<N>& rhs) {
+        Vector<M> ret{};
+        for (int i = 0; i < M; ++i) ret[i] = lhs.rowVec(i).dot(rhs);
+        return ret;
+    }
+
 #pragma endregion
 
 public:
@@ -86,8 +139,8 @@ public:
 #pragma endregion
 
 private:
-    // 底层数据存储
-    numberType data[M][N];
+    // 底层数据存储, 列向量形式存储
+    Vector<M> data[N];
 };
 
 }

@@ -1,8 +1,7 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.20)
 project(AnyaEngine)
 # C++标准
 set(CMAKE_CXX_STANDARD 20)
-
 
 # 创建目标
 add_executable(main src/math/matrix.hpp)
