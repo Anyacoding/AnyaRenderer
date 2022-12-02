@@ -120,7 +120,50 @@ void matrixTest() {
                3, 9, -2, 8,
                4, -1, 9, 4,
                1, -2, 4, 7;
+        anya::Matrix<5, 5> rhs{};
+        rhs << 1, 1, 1, 2, 1,
+               3, 3, 3, 1, 1,
+               0, 1, 2, 2, 3,
+               1, 1, 1, 0, 0,
+               1, 1, 0, 5, 7;
+
         std::cout << lhs.det() << std::endl;
+        std::cout << rhs.det() << std::endl << std::endl;
+    }
+
+    {
+        std::cout << "²âÊÔ¾ØÕóÇóÄæ:" << std::endl;
+        anya::Matrix<4, 4> lhs{};
+        lhs << 2, 3, 1, 6,
+               3, 9, -2, 8,
+               4, -1, 9, 4,
+               1, -2, 4, 7;
+        anya::Matrix<5, 5> rhs{};
+        rhs << 1, 1, 1, 2, 1,
+               3, 3, 3, 1, 1,
+               0, 1, 2, 2, 3,
+               1, 1, 1, 0, 0,
+               1, 1, 0, 5, 7;
+
+        std::cout << rhs.inverse() << std::endl;
+        std::cout << rhs.inverse() * rhs << std::endl;
+    }
+
+    {
+        std::cout << "²âÊÔ3*3¾ØÕó×ª»»ÎªÆë´Î×ø±ê:" << std::endl;
+        anya::Matrix<3, 3> lhs{};
+        lhs << 2, 3, 1,
+               3, 8, -2,
+               4, -1, 9;
+        anya::Matrix<5, 5> rhs{};
+        rhs << 1, 1, 1, 2, 1,
+               3, 3, 3, 1, 1,
+               0, 1, 2, 2, 3,
+               1, 1, 1, 0, 0,
+               1, 1, 0, 5, 7;
+        anya::Matrix44 mat44 = lhs.to44();
+        std::cout << mat44 << std::endl;
+        std::cout << rhs.to<3, 3>() << std::endl;
     }
 }
 
