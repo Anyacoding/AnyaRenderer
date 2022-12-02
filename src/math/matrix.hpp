@@ -67,7 +67,7 @@ public:
     column() const noexcept { return N; }
 
     // 返回第 row 行的行向量
-    constexpr Vector<N>
+    [[nodiscard]] constexpr Vector<N>
     rowVec(int row) const {
         if (out_range(row, 0))
             throw std::out_of_range("Matrix::rowVec");
@@ -77,7 +77,7 @@ public:
     }
 
     // 返回第 col 列的列向量
-    constexpr Vector<M>
+    [[nodiscard]] constexpr Vector<M>
     colVec(int col) const {
         if (out_range(0, col))
             throw std::out_of_range("Matrix::rowVec");
@@ -88,7 +88,7 @@ public:
 public:
 #pragma region 矩阵运算
     // 转置
-    constexpr Matrix<N, M> transpose() const {
+    [[nodiscard]] constexpr Matrix<N, M> transpose() const {
         Matrix<N, M> ret{};
         for (int i = 0; i < M; ++i) {
             for (int j = 0; j < N; ++j) {
@@ -99,10 +99,7 @@ public:
     }
 
     // 行列式
-    [[nodiscard]] constexpr numberType det() const {
-        if (M != N) {
-            throw std::length_error("This is not a square matrix, so you can't find the determinant!");
-        }
+    [[nodiscard]] constexpr numberType det() const requires(M == N) {
         if constexpr (M == 1) {
             return (*this)(0, 0);
         }
@@ -113,6 +110,43 @@ public:
             }
             return ans;
         }
+    }
+
+    // 求逆
+    [[nodiscard]] constexpr Matrix<M, N> inverse() const requires(M == N) {
+        numberType det = this->det();
+        if (det == 0.0) {
+            std::cerr << "The determinant is zero, this matrix has no inverse!" << std::endl;
+            return {};
+        }
+        Matrix<M, N> ret{};
+        for (int i = 0; i < M; ++i) {
+            for (int j = 0; j < N; ++j) {
+                ret(i, j) = minor_det(i, j);
+            }
+        }
+        ret /= det;
+        return ret.transpose();
+    }
+
+    // 转换为其他维数的矩阵
+    template<int Q, int W>
+    constexpr Matrix<Q, W> to(numberType fill = 0.0) const {
+        Matrix<Q, W> ret{};
+        for (int i = 0; i < Q; ++i) {
+            for (int j = 0; j < W; ++j) {
+                ret(i, j) = out_range(i, j) ? fill : (*this)(i, j);
+            }
+        }
+        return ret;
+    }
+
+    // 从3*3矩阵转变为齐次坐标下的4*4矩阵
+    [[nodiscard]] constexpr Matrix<4, 4>
+    to44() const requires(M == 3 && N == 3) {
+        Matrix<4, 4> ret = to<4, 4>();
+        ret(3, 3) = 1;
+        return ret;
     }
 #pragma endregion
 
@@ -219,7 +253,7 @@ public:
 
     // matrix去掉x行和y列后得到的余子式
     // fixed: 返回值必须用auto, 否则 Matrix<1 - 1, 1 - 1> 时无法满足约束
-    constexpr auto minor(int x, int y) const {
+    [[nodiscard]] constexpr auto minor(int x, int y) const requires(M == N) {
         Matrix<M - 1, N - 1> ret{};
         for (int i = 0, row = 0; i < M; ++i) {
             if (i == x) continue ;
@@ -235,7 +269,7 @@ public:
 
     // 代数余子式的值
     [[nodiscard]] constexpr numberType
-    minor_det(int x, int y) const {
+    minor_det(int x, int y) const requires(M == N) {
         return minor(x, y).det() * ((x + y) % 2 ? -1 : 1);
     }
 #pragma endregion
@@ -244,6 +278,12 @@ private:
     // 底层数据存储, 列向量形式存储
     Vector<M> data[N];
 };
+
+// 各常用矩阵别名
+using Matrix33 = Matrix<3, 3>;
+using Matrix34 = Matrix<3, 4>;
+using Matrix43 = Matrix<4, 3>;
+using Matrix44 = Matrix<4, 4>;
 
 }
 
