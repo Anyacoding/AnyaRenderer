@@ -21,4 +21,4 @@ file(GLOB_RECURSE source CONFIGURE_DEPENDS src/*.cpp src/*.c)
 target_sources(main PRIVATE ${source})
 
 # 链接第三方库
-target_link_libraries(main glfw)
+target_link_libraries(main glfw3)
