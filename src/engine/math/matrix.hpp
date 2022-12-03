@@ -252,7 +252,7 @@ public:
     }
 
     // matrix去掉x行和y列后得到的余子式
-    // fixed: 返回值必须用auto, 否则 Matrix<1 - 1, 1 - 1> 时无法满足约束
+    // fixed: 返回值必须用auto, 否则 Matrix<1 - 1, 2 - 1> 时无法满足约束
     [[nodiscard]] constexpr auto minor(int x, int y) const requires(M == N) {
         Matrix<M - 1, N - 1> ret{};
         for (int i = 0, row = 0; i < M; ++i) {
