@@ -6,10 +6,10 @@ project(AnyaEngine)
 set(CMAKE_CXX_STANDARD 20)
 
 # 头文件目录
-include_directories(src/engine third-party/include)
+include_directories(src/engine depend/include)
 
 # 第三方库目录
-link_directories(third-party/lib)
+link_directories(depend/lib)
 
 # 创建目标
 add_executable(main)
