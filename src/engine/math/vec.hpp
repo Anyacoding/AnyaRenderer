@@ -9,10 +9,12 @@
 #include <algorithm>
 #include <iostream>
 #include <concepts>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 namespace anya {
 
-using numberType = double;
+using numberType = GLdouble;
 
 template<int N> requires(N >= 1)
 class Vector {
@@ -62,6 +64,12 @@ public:
 
     [[nodiscard]] constexpr int
     size() const noexcept { return N; }
+
+    // 返回底层数组
+    constexpr numberType* toRawArray() noexcept {
+        return this->data;
+    }
+
 
 #pragma endregion
 
@@ -178,16 +186,16 @@ public:
 public:
 #pragma region 坐标
     [[nodiscard]] constexpr numberType
-    x() const noexcept requires(N >= 1) { return data[0]; }
+    x() const noexcept requires(N >= 1) { return this->data[0]; }
 
     [[nodiscard]] constexpr numberType
-    y() const noexcept requires(N >= 2) { return data[1]; }
+    y() const noexcept requires(N >= 2) { return this->data[1]; }
 
     [[nodiscard]] constexpr numberType
-    z() const noexcept requires(N >= 3) { return data[2]; }
+    z() const noexcept requires(N >= 3) { return this->data[2]; }
 
     [[nodiscard]] constexpr numberType
-    w() const noexcept requires(N >= 4) { return data[3]; }
+    w() const noexcept requires(N >= 4) { return this->data[3]; }
 
     // w != 0 时，该齐次坐标代表一个点，将该点标准化表示
     constexpr Vector

@@ -83,6 +83,16 @@ public:
             throw std::out_of_range("Matrix::rowVec");
         return data[col];
     }
+
+    // 将数据存入传入的数组中，为了适配opengl的api
+    constexpr void
+    saveToArray(numberType array[M * N]) const {
+        for (int i = 0; i < M; ++i) {
+            void* dst = array + i * N;
+            size_t length = N * sizeof(numberType);
+            memcpy(dst, this->rowVec(i).toRawArray(), length);
+        }
+    }
 #pragma endregion
 
 public:
