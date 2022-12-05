@@ -2,8 +2,8 @@
 // Created by DELL on 2022/12/5.
 //
 
-#ifndef ANYAENGINE_GUI_HPP
-#define ANYAENGINE_GUI_HPP
+#ifndef ANYA_ENGINE_GUI_HPP
+#define ANYA_ENGINE_GUI_HPP
 
 #include <string>
 #include <iostream>
@@ -177,4 +177,4 @@ private:
 
 }
 
-#endif //ANYAENGINE_GUI_HPP
+#endif //ANYA_ENGINE_GUI_HPP

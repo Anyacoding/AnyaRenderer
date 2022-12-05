@@ -2,8 +2,8 @@
 // Created by Anya on 2022/12/3.
 //
 
-#ifndef ANYAENGINE_TEST_H
-#define ANYAENGINE_TEST_H
+#ifndef ANYA_ENGINE_TEST_H
+#define ANYA_ENGINE_TEST_H
 
 #include "math/vec.hpp"
 #include "math/matrix.hpp"
@@ -16,4 +16,4 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 int testGlfw();
 
-#endif //ANYAENGINE_TEST_H
+#endif //ANYA_ENGINE_TEST_H

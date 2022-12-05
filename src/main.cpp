@@ -7,7 +7,8 @@
 int main() {
     std::cout << "Hello, MnZn!" << std::endl;
     anya::GUI gui("Anya", 800, 600);
-    gui.run();
+    // gui.run();
+    matrixTest();
     return 0;
 }
 

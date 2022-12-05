@@ -115,7 +115,6 @@ public:
         return std::acos( this->dot(rhs) / (this->norm2() * rhs.norm2()) );
     }
 
-
 #pragma endregion
 
 public:

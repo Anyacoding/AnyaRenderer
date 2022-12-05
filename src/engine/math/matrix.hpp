@@ -64,13 +64,13 @@ public:
 
     // 行数
     [[nodiscard]] constexpr int
-    row() const noexcept { return M; }
+    rows() const noexcept { return M; }
 
     // 列数
     [[nodiscard]] constexpr int
-    column() const noexcept { return N; }
+    columns() const noexcept { return N; }
 
-    // 返回第 row 行的行向量
+    // 返回第 rows 行的行向量
     [[nodiscard]] constexpr Vector<N>
     rowVec(int row) const {
         if (out_range(row, 0))
@@ -96,6 +96,22 @@ public:
             size_t length = N * sizeof(numberType);
             memcpy(dst, this->rowVec(i).toRawArray(), length);
         }
+    }
+
+    // 设置第 col 列的列向量
+    constexpr void
+    setColVec(int col, const Vector<M>& vec) {
+        if (out_range(0, col))
+            throw std::out_of_range("Matrix::rowVec");
+        data[col] = vec;
+    }
+
+    // 设置第 row 行的行向量
+    constexpr void
+    setRowVec(int row, const Vector<N>& vec) {
+        if (out_range(row, 0))
+            throw std::out_of_range("Matrix::rowVec");
+        for (int j = 0; j < N; ++j) (*this)(row, j) = vec[j];
     }
 #pragma endregion
 
@@ -248,11 +264,11 @@ public:
 #pragma region IO
     friend std::ostream&
     operator<<(std::ostream& out, const Matrix& mat) {
-        for (int i = 0; i < mat.row(); ++i) {
-            for (int j = 0; j < mat.column(); ++j) {
+        for (int i = 0; i < mat.rows(); ++i) {
+            for (int j = 0; j < mat.columns(); ++j) {
                 out << mat(i, j) << " ";
             }
-            if (i != mat.row()) out << std::endl;
+            if (i != mat.rows()) out << std::endl;
         }
         return out;
     }

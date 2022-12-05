@@ -7,20 +7,20 @@ void vecTest() {
     anya::Vector2 vec2 = anya::make_Vec(1, 2);
     anya::Vector3 vec3{ 3, 4, 0 };
 
-    std::cout << "æµ‹è¯•å‘é‡çš„åŠ å‡ä¹˜é™¤:" << std::endl;
+    std::cout << "²âÊÔÏòÁ¿µÄ¼Ó¼õ³Ë³ý:" << std::endl;
     std::cout << vec2 << std::endl;
     std::cout << (vec3 *= 3) << std::endl;
     std::cout << 3 * vec3 << std::endl;
     std::cout << (vec3 /= 3) << std::endl;
     std::cout << -vec3 << std::endl << std::endl;
 
-    std::cout << "æµ‹è¯•å‘é‡çš„ç‚¹ä¹˜åŠå…¶ç‰¹æ®Šè¿ç®—:" << std::endl;
+    std::cout << "²âÊÔÏòÁ¿µÄµã³Ë¼°ÆäÌØÊâÔËËã:" << std::endl;
     std::cout << vec3.dot(vec3) << std::endl;
     std::cout << vec3.norm2() << std::endl;
     std::cout << vec3.normalize().norm2() << std::endl;
     std::cout << vec2.angle({0, 1}) << std::endl << std::endl;
 
-    std::cout << "æµ‹è¯•å‰ç§¯:" << std::endl;
+    std::cout << "²âÊÔ²æ»ý:" << std::endl;
     anya::Vector3 a{1, 0, 0};
     anya::Vector3 b{0, 1, 0};
     std::cout << a.cross(b) << std::endl;
@@ -28,7 +28,7 @@ void vecTest() {
     b = {-1, 1, 1};
     std::cout << a.cross(b) << std::endl << std::endl;
 
-    std::cout << "æµ‹è¯•å››å…ƒæ•°å½’ä¸€åŒ–:" << std::endl;
+    std::cout << "²âÊÔËÄÔªÊý¹éÒ»»¯:" << std::endl;
     anya::Vector4 vec4{1.0, 2.0, 3.0, 2.0};
     std::cout << vec4.trim() << std::endl;
 }
@@ -36,7 +36,7 @@ void vecTest() {
 void matrixTest() {
     {
         anya::Matrix<3, 4> mat{};
-        std::cout << "æµ‹è¯•é€—å·åˆå§‹åŒ–å’Œè®¿é—®:" << std::endl;
+        std::cout << "²âÊÔ¶ººÅ³õÊ¼»¯ºÍ·ÃÎÊ:" << std::endl;
         mat << 1, 2, 3, 5,
             4, 5, 6, 9,
             11, 12, 13, 18;
@@ -48,7 +48,7 @@ void matrixTest() {
     }
 
     {
-        std::cout << "æµ‹è¯•çŸ©é˜µä¹˜æ³•:" << std::endl;
+        std::cout << "²âÊÔ¾ØÕó³Ë·¨:" << std::endl;
         anya::Matrix<2, 2> lhs{};
         lhs << 1, 1,
             2, 0;
@@ -76,7 +76,7 @@ void matrixTest() {
     }
 
     {
-        std::cout << "æµ‹è¯•çŸ©é˜µåŠ å‡æ³•å’Œç³»æ•°ä¹˜:" << std::endl;
+        std::cout << "²âÊÔ¾ØÕó¼Ó¼õ·¨ºÍÏµÊý³Ë:" << std::endl;
         anya::Matrix<4, 3> lhs{};
         lhs << 2, 3, 1,
             3, 8, -2,
@@ -99,7 +99,7 @@ void matrixTest() {
     }
 
     {
-        std::cout << "æµ‹è¯•çŸ©é˜µè½¬ç½®:" << std::endl;
+        std::cout << "²âÊÔ¾ØÕó×ªÖÃ:" << std::endl;
         anya::Matrix<4, 3> lhs{};
         lhs << 2, 3, 1,
             3, 8, -2,
@@ -115,7 +115,7 @@ void matrixTest() {
     }
 
     {
-        std::cout << "æµ‹è¯•çŸ©é˜µè¡Œåˆ—å¼:" << std::endl;
+        std::cout << "²âÊÔ¾ØÕóÐÐÁÐÊ½:" << std::endl;
         anya::Matrix<4, 4> lhs{};
         lhs << 2, 3, 1, 6,
             3, 9, -2, 8,
@@ -133,7 +133,7 @@ void matrixTest() {
     }
 
     {
-        std::cout << "æµ‹è¯•çŸ©é˜µæ±‚é€†:" << std::endl;
+        std::cout << "²âÊÔ¾ØÕóÇóÄæ:" << std::endl;
         anya::Matrix<4, 4> lhs{};
         lhs << 2, 3, 1, 6,
             3, 9, -2, 8,
@@ -151,7 +151,7 @@ void matrixTest() {
     }
 
     {
-        std::cout << "æµ‹è¯•3*3çŸ©é˜µè½¬æ¢ä¸ºé½æ¬¡åæ ‡:" << std::endl;
+        std::cout << "²âÊÔ3*3¾ØÕó×ª»»ÎªÆë´Î×ø±ê:" << std::endl;
         anya::Matrix<3, 3> lhs{};
         lhs << 2, 3, 1,
             3, 8, -2,
@@ -165,7 +165,20 @@ void matrixTest() {
         anya::Matrix44 mat44 = lhs.to44();
         std::cout << mat44 << std::endl;
         std::cout << rhs.to<3, 3>() << std::endl;
-        std::cout << rhs.colVec(3) << std::endl;
+        std::cout << rhs.colVec(3) << std::endl << std::endl;
+    }
+
+    {
+        std::cout << "²âÊÔÌæ»»¾ØÕóÌØ¶¨ÐÐ¡¢ÁÐ:" << std::endl;
+        anya::Matrix<5, 5> rhs{};
+        rhs << 1, 1, 1, 2, 1,
+               3, 3, 3, 1, 1,
+               0, 1, 2, 2, 3,
+               1, 1, 1, 0, 0,
+               1, 1, 0, 5, 7;
+        anya::Vector<5> vec{9, 8, 7, 6, 5};
+        rhs.setRowVec(0, vec);
+        std::cout << rhs;
     }
 }
 
@@ -217,10 +230,10 @@ int testGlfw() {
     glEnable(GL_DEPTH_TEST); // enable depth-testing
     glDepthFunc(GL_LESS);    // depth-testing interprets a smaller value as "closer"
 
-    // åŒç¼“å†²äº¤æ¢é—´éš”è®¾ç½®ä¸º1ï¼Œä»¥å…äº¤æ¢é¢‘ç¹é€ æˆå±å¹•æ’•è£‚
+    // Ë«»º³å½»»»¼ä¸ôÉèÖÃÎª1£¬ÒÔÃâ½»»»Æµ·±Ôì³ÉÆÁÄ»ËºÁÑ
     glfwSwapInterval(1);
 
-    // ä¸‰è§’å½¢ä¸‰ä¸ªé¡¶ç‚¹
+    // Èý½ÇÐÎÈý¸ö¶¥µã
     anya::Matrix33 triangle{};
     triangle << 0.0, 0.5, 0.0,
         0.5, -0.5, 0.0,
@@ -230,27 +243,27 @@ int testGlfw() {
     for (auto i : points) std::cout << i << " ";
 
 
-    // vertex buffer object (VBO) â€”â€” é¡¶ç‚¹ç¼“å†²åŒºå¯¹è±¡çš„ç´¢å¼•
+    // vertex buffer object (VBO) ¡ª¡ª ¶¥µã»º³åÇø¶ÔÏóµÄË÷Òý
     GLuint vbo = 0;
-    // åˆ›å»ºä¸€ä¸ªç©ºçš„vbo
+    // ´´½¨Ò»¸ö¿ÕµÄvbo
     glGenBuffers(1, &vbo);
 
-    // vertex array object (VAO) â€”â€” é¡¶ç‚¹é¡¶ç‚¹æ•°ç»„å¯¹è±¡çš„ç´¢å¼•
+    // vertex array object (VAO) ¡ª¡ª ¶¥µã¶¥µãÊý×é¶ÔÏóµÄË÷Òý
     GLuint vao = 0;
-    // åˆ›å»ºä¸€ä¸ªç©ºçš„vao
+    // ´´½¨Ò»¸ö¿ÕµÄvao
     glGenVertexArrays(1, &vao);
-    // ç»‘å®švaoå¯¹è±¡è‡³ä¸Šä¸‹æ–‡
+    // °ó¶¨vao¶ÔÏóÖÁÉÏÏÂÎÄ
     glBindVertexArray(vao);
 
-    // ç»‘å®švboå¯¹è±¡è‡³ä¸Šä¸‹æ–‡çš„ç¼“å†²åŒº
+    // °ó¶¨vbo¶ÔÏóÖÁÉÏÏÂÎÄµÄ»º³åÇø
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    // å°†ç‚¹å¤åˆ¶åˆ°å½“å‰ç»‘å®šçš„vboç¼“å†²åŒº
+    // ½«µã¸´ÖÆµ½µ±Ç°°ó¶¨µÄvbo»º³åÇø
     glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(anya::numberType), points, GL_STATIC_DRAW);
-    // 0ä»£è¡¨å±žæ€§å·ä¸º0çš„å®šä¹‰å¸ƒå±€ï¼Œ3ä»£è¡¨æ¯ä¸ªå˜é‡æ˜¯ç”±ç¼“å†²åŒºä¸­çš„æ¯3ä¸ªæµ®ç‚¹(GL_FLOAT)ç»„æˆçš„vec3
+    // 0´ú±íÊôÐÔºÅÎª0µÄ¶¨Òå²¼¾Ö£¬3´ú±íÃ¿¸ö±äÁ¿ÊÇÓÉ»º³åÇøÖÐµÄÃ¿3¸ö¸¡µã(GL_FLOAT)×é³ÉµÄvec3
     glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 0, nullptr);
-    // å¯ç”¨å±žæ€§0
+    // ÆôÓÃÊôÐÔ0
     glEnableVertexAttribArray(0);
-    // å¥½ä¹ æƒ¯ï¼Œè§£é™¤ç»‘å®š
+    // ºÃÏ°¹ß£¬½â³ý°ó¶¨
     glBindVertexArray(0);
 
     const char* vertex_shader =
@@ -297,7 +310,7 @@ int testGlfw() {
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwPollEvents();
-        glfwSwapBuffers(window);  // åŒç¼“å†²åŒºäº¤æ¢
+        glfwSwapBuffers(window);  // Ë«»º³åÇø½»»»
 
         glBindVertexArray(0);
     }
