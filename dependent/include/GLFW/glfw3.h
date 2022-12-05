@@ -2150,7 +2150,7 @@ GLFWAPI void glfwGetMonitorPhysicalSize(GLFWmonitor* monitor, int* widthMM, int*
  *  regardless of their DPI and scaling settings.  This relies on the system DPI
  *  and scaling settings being somewhat correct.
  *
- *  The content scale may depend on both the monitor resolution and pixel
+ *  The content scale may dependent on both the monitor resolution and pixel
  *  density and on user settings.  It may be very different from the raw DPI
  *  calculated from the physical size and current resolution.
  *
@@ -2316,7 +2316,7 @@ GLFWAPI const GLFWvidmode* glfwGetVideoModes(GLFWmonitor* monitor, int* count);
  *
  *  This function returns the current video mode of the specified monitor.  If
  *  you have created a full screen window for that monitor, the return value
- *  will depend on whether that window is iconified.
+ *  will dependent on whether that window is iconified.
  *
  *  @param[in] monitor The monitor to query.
  *  @return The current mode of the monitor, or `NULL` if an
@@ -3134,7 +3134,7 @@ GLFWAPI void glfwGetWindowFrameSize(GLFWwindow* window, int* left, int* top, int
  *  and scaling settings being somewhat correct.
  *
  *  On systems where each monitors can have its own content scale, the window
- *  content scale will depend on which monitor the system considers the window
+ *  content scale will dependent on which monitor the system considers the window
  *  to be on.
  *
  *  @param[in] window The window to query.
@@ -4222,8 +4222,8 @@ GLFWAPI int glfwRawMouseMotionSupported(void);
  *  - `GLFW_KEY_KP_ADD`
  *  - `GLFW_KEY_KP_EQUAL`
  *
- *  Names for printable keys depend on keyboard layout, while names for
- *  non-printable keys are the same across layouts but depend on the application
+ *  Names for printable keys dependent on keyboard layout, while names for
+ *  non-printable keys are the same across layouts but dependent on the application
  *  language and should be localized along with other user interface text.
  *
  *  @param[in] key The key to query, or `GLFW_KEY_UNKNOWN`.
