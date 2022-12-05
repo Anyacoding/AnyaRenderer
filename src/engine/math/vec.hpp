@@ -18,6 +18,10 @@ using numberType = GLdouble;
 
 template<int N> requires(N >= 1)
 class Vector {
+private:
+    // 底层数据存储
+    numberType data[N]{};
+
 public:
 #pragma region 构造相关
     constexpr Vector() = default;
@@ -206,10 +210,6 @@ public:
     }
 
 #pragma endregion
-
-private:
-    // 底层数据存储
-    numberType data[N]{};
 };
 
 // 平面坐标/二维向量

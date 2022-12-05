@@ -12,6 +12,10 @@ namespace anya {
 
 template<int M, int N> requires(M >= 1 && N >= 1)
 class Matrix {
+private:
+    // 底层数据存储, 列向量形式存储
+    Vector<M> data[N];
+
 #pragma region 辅助类
 private:
     struct Loader {
@@ -262,8 +266,8 @@ public:
     }
 
     // matrix去掉x行和y列后得到的余子式
-    // fixed: 返回值必须用auto, 否则 Matrix<1 - 1, 2 - 1> 时无法满足约束
-    [[nodiscard]] constexpr auto minor(int x, int y) const requires(M == N) {
+    [[nodiscard]] constexpr auto
+    minor(int x, int y) const requires(M == N) {
         Matrix<M - 1, N - 1> ret{};
         for (int i = 0, row = 0; i < M; ++i) {
             if (i == x) continue ;
@@ -283,10 +287,6 @@ public:
         return minor(x, y).det() * ((x + y) % 2 ? -1 : 1);
     }
 #pragma endregion
-
-private:
-    // 底层数据存储, 列向量形式存储
-    Vector<M> data[N];
 };
 
 // 各常用矩阵别名
