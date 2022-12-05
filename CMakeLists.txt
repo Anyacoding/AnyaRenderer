@@ -6,16 +6,16 @@ project(AnyaEngine)
 set(CMAKE_CXX_STANDARD 20)
 
 # 头文件目录
-include_directories(src/engine depend/include)
+include_directories(src/engine dependent/include)
 
 # 第三方库目录
-link_directories(depend/lib)
+link_directories(dependent/lib)
 
 # 创建目标
 add_executable(main)
 
 # 递归搜索文件并自动更新
-file(GLOB_RECURSE source CONFIGURE_DEPENDS src/*.cpp src/*.c)
+file(GLOB_RECURSE source CONFIGURE_DEPENDS src/*.cpp src/*.c dependent/src/*.c)
 
 # 添加源文件
 target_sources(main PRIVATE ${source})
