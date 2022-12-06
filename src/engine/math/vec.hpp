@@ -9,7 +9,6 @@
 #include <algorithm>
 #include <iostream>
 #include <concepts>
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 namespace anya {
@@ -38,26 +37,26 @@ public:
     // 下标访问，并进行越界检查，支持[]访问和()访问，两者等价
     constexpr numberType&
     operator[](const int index) {
-        if (index >= N)
+        if (out_range(index))
             throw std::out_of_range("Vector::operator[]");
         return data[index];
     }
     constexpr numberType
     operator[](const int index) const {
-        if (index >= N)
+        if (out_range(index))
             throw std::out_of_range("Vector::operator[]");
         return data[index];
     }
 
     constexpr numberType&
     operator()(const int index) {
-        if (index >= N)
+        if (out_range(index))
             throw std::out_of_range("Vector::operator[]");
         return data[index];
     }
     constexpr numberType
     operator()(const int index) const {
-        if (index >= N)
+        if (out_range(index))
             throw std::out_of_range("Vector::operator[]");
         return data[index];
     }
@@ -74,13 +73,12 @@ public:
         return this->data;
     }
 
-
 #pragma endregion
 
 public:
 #pragma region 向量运算
     // 点乘，隐含了维数一致的约束，即维数都为N
-    constexpr numberType
+    [[nodiscard]] constexpr numberType
     dot(const Vector& rhs) const noexcept {
         numberType ret = {};
         for (int i = 0; i < N; ++i)
@@ -92,7 +90,7 @@ public:
     //                                |i v1 w1|
     // [v1 v2 v3]T X [w1 w2 w3]T = det|j v2 w2|
     //                                |k v3 w3|
-    constexpr Vector
+    [[nodiscard]] constexpr Vector
     cross(const Vector& rhs) const noexcept requires(N == 3) {
         const Vector& lhs = *this;
         return { lhs[1] * rhs[2] - rhs[1] * lhs[2],
@@ -106,15 +104,32 @@ public:
     norm2() const { return std::sqrt(dot(*this)); }
 
     // 将向量归一化为单位向量
-    constexpr Vector
+    [[nodiscard]] constexpr Vector
     normalize() const { return *this / norm2(); }
 
     // 向量夹角 [0, pi]
-    constexpr numberType
+    [[nodiscard]] constexpr numberType
     angle(const Vector& rhs) const {
         return std::acos( this->dot(rhs) / (this->norm2() * rhs.norm2()) );
     }
 
+    // 转换为其他维数的向量
+    template<int M>
+    constexpr Vector<M> to(numberType fill = 0.0) const {
+        Vector<M> ret{};
+        for (int i = 0; i < M; ++i) {
+            ret[i] = out_range(i) ? fill : (*this)[i];
+        }
+        return ret;
+    }
+
+    // 三维向量转换为齐次坐标向量
+    [[nodiscard]] constexpr Vector<4>
+    to4() const requires(N == 3) {
+        Vector<4> ret = to<4>();
+        ret(3) = 1.0;
+        return ret;
+    }
 #pragma endregion
 
 public:
@@ -201,7 +216,7 @@ public:
     w() const noexcept requires(N >= 4) { return this->data[3]; }
 
     // w != 0 时，该齐次坐标代表一个点，将该点标准化表示
-    constexpr Vector
+    [[nodiscard]] constexpr Vector
     trim() const noexcept requires(N >= 4) {
         auto w = this->w();
         if (fabs(w) > 1e-8) return *this / w;
@@ -209,7 +224,18 @@ public:
     }
 
 #pragma endregion
+
+public:
+#pragma region 辅助函数
+    constexpr static bool
+    out_range(int i) {
+        return i < 0 || i >= N;
+    }
+
+#pragma endregion
+
 };
+
 
 // 平面坐标/二维向量
 using Vector2 = Vector<2>;
@@ -220,7 +246,8 @@ using Vector4 = Vector<4>;
 
 // 便捷创建向量
 template<typename... Args>
-constexpr auto make_Vec(Args&&... args) requires((std::convertible_to<Args, numberType> && ...)) {
+constexpr auto
+make_Vec(Args&&... args) requires((std::convertible_to<Args, numberType> && ...)) {
     return Vector<sizeof...(args)>{static_cast<numberType>(std::forward<Args>(args))...};
 }
 

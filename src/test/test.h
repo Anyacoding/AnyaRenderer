@@ -7,7 +7,6 @@
 
 #include "math/vec.hpp"
 #include "math/matrix.hpp"
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 void vecTest();

@@ -7,12 +7,13 @@
 
 #include <memory>
 #include "component/camera.hpp"
+#include "component/scene.hpp"
 
 namespace anya {
 
 class Renderer {
 public:
-    std::shared_ptr<Camera> camera;  // 摄像机
+    Scene  scene;   // 场景
 public:
     virtual void render() = 0;
 };

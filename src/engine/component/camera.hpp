@@ -8,7 +8,6 @@
 #include "math/matrix.hpp"
 #include "math/utils.hpp"
 #include <cmath>
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 namespace anya{
@@ -23,37 +22,39 @@ namespace anya{
 
 class Camera {
 private:
-    friend class Rasterizer;  // 设置友类，方便光栅化器访问
-
     // 通过这三个属性定义一个具体的相机
     // 注意后两个属性都是在相对坐标系下得到的
     Vector3 eye_pos;                  // 摄像机位置
     Vector3 gaze_pos;                 // 观察方向
     Vector3 view_up;                  // 视点的正上方向
 
-    GLdouble view_width, view_height; // 视窗大小
-    GLdouble fovY;                    // 视野角度
-    GLdouble zNear, zFar;             // 视锥近远平面距离
+    GLdouble view_width, view_height;    // 视窗大小
+    GLdouble fovY;                       // 视野角度
+    GLdouble zNear = 0.1, zFar = 50.0;   // 视锥近远平面距离
+    GLdouble aspect_ratio;               // 宽高比
 public:
     Camera(const Vector3& eye_pos,    // 摄像机位置
            const Vector3& obj_pos,    // 物体的位置
-           GLdouble zNear,            // 视锥近平面
-           GLdouble zFar,             // 视锥远平面
-           GLdouble angle,            // 视野角度，需要转为弧度
-           GLdouble aspect_ratio      // 宽高比
-           ): eye_pos(eye_pos), fovY(MathUtils::angle2rad(angle)), zNear(zNear), zFar(zFar) {
-        // 视窗大小
-        view_height = 2 * std::fabs(zNear) * std::tan(fovY / 2);
-        view_width = view_height * aspect_ratio;
+           GLdouble view_width,       // 视窗宽度
+           GLdouble view_height,      // 视窗高度
+           GLdouble angle             // 视角——角度制，需要转换
+           ): eye_pos(eye_pos), view_width(view_width), view_height(view_height), fovY(MathUtils::angle2rad(angle)) {
+        // 宽高比
+        aspect_ratio = view_width / view_height;
         // 观察方向
         gaze_pos = (eye_pos - obj_pos).normalize();
         // TODO: 视点的正上方向(还不会求我去)
-
     }
+
+    [[nodiscard]] std::pair<GLdouble, GLdouble>
+    getWH() const {
+        return { view_width, view_height };
+    };
+
 public:
     // TODO: 优化视图变换
-    // 将相机坐标系转换为世界坐标系，即视图变换
-    Matrix44 getViewMat() const {
+    // 将相机坐标系转换为世界坐标系，即视图变换，此过程中观察的对象会跟着一起运动
+    [[nodiscard]] Matrix44 getViewMat() const {
         // 先将相机移动到世界坐标系原点
         Matrix44 translate{};
         translate << 1, 0, 0, -eye_pos[0],
@@ -71,21 +72,23 @@ public:
         temp.setColVec(1, y);
         temp.setColVec(2, z);
         view = temp.transpose().to44();
+
+        // TODO: 权宜之计，假设相机一开始都是摆正的
+        view = Matrix44::Identity();
         return view * translate;
     }
 
     // TODO: 优化投影变换
-    Matrix44 getProjectionMat() const {
+    [[nodiscard]] Matrix44 getProjectionMat() const {
         // 透视投影一共有两步，第一步首先是将透视投影转化为正交投影的形式
         GLdouble n = zNear, f = zFar;
-        GLdouble aspect_ratio = view_width / view_height;
         Matrix44 Mpersp_ortho{};
         Mpersp_ortho << n, 0, 0, 0,
                         0, n, 0, 0,
                         0, 0, n+f, -n*f,
                         0, 0, 1, 0;
         // 再对其做正交投影
-        GLdouble t = -n * std::tan(fovY / 2);
+        GLdouble t = std::fabs(n) * std::tan(fovY / 2);
         GLdouble b = -t;
         GLdouble r = aspect_ratio * t;
         GLdouble l = -r;
@@ -100,6 +103,17 @@ public:
                   0, 0, 0, 1;
         Mortho = Mscale * Mtrans;
         return Mortho * Mpersp_ortho;
+    }
+
+    // 视口变换
+    [[nodiscard]] Matrix44 getViewPortMat() const {
+        // TODO 在这里测试一下 w h
+        Matrix44 viewPortMat{};
+        viewPortMat << view_width / 2, 0, 0, view_width / 2,
+                       0, view_height / 2, 0, view_height / 2,
+                       0, 0, 1, 0,
+                       0, 0, 0, 1;
+        return viewPortMat;
     }
 };
 

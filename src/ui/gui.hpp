@@ -7,14 +7,26 @@
 
 #include <string>
 #include <iostream>
+#include <memory>
+#include <utility>
 #include "math/vec.hpp"
 #include "math/matrix.hpp"
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "math/utils.hpp"
+#include "interface/renderer.hpp"
 
 namespace anya{
 
 class GUI {
+    // 自动控制绘图模式作用域
+    struct ModeGuard {
+        // 控制类型:   GL_TRIANGLES, GL_LINES, GL_POINTS, GL_POLYGON
+        // 分别表示:   三角形,        线段,      像素,       多边形
+        explicit ModeGuard(GLenum mode) { glBegin(mode); }
+
+        ~ModeGuard() { glEnd(); }
+    };
+
 private:
     // 标题
     std::string_view title;
@@ -22,9 +34,12 @@ private:
     GLint width, height;
     // 窗口handle
     GLFWwindow* window = nullptr;
+    // 渲染器，使用指针方便将来使用多态
+    std::shared_ptr<Renderer> renderer;
+
 public:
-    GUI(std::string_view title, GLint width, GLint height)
-        :title(title), width(width), height(height) {}
+    GUI(std::string_view title, GLint width, GLint height, std::shared_ptr<Renderer> renderer)
+        :title(title), width(width), height(height), renderer(std::move(renderer)) {}
 
     ~GUI() {
         glfwTerminate();   // 真正终止并释放glfw资源
@@ -43,85 +58,34 @@ public:
         // 设置窗口回调函数, eg: 按esc退出
         setCallBack();
 
-        // glad: load all OpenGL function pointers
-        if (!setGlad()) return;
+        setViewport();
 
         // 双缓冲交换间隔设置为1，以免交换频繁造成屏幕撕裂
         glfwSwapInterval(1);
-
-
-        // OOpenGl自己的渲染管线，将来用自己的代替掉
-        // 三角形三个顶点
-        anya::Matrix33 triangle{};
-        triangle << 0.0, 0.5, 0.0,
-            0.5, -0.5, 0.0,
-            -0.5, -0.5, 0.0;
-        double points[9]{};
-        triangle.saveToArray(points);
-
-        // vertex buffer object (VBO) —— 顶点缓冲区对象的索引
-        GLuint vbo = 0;
-        // 创建一个空的vbo
-        glGenBuffers(1, &vbo);
-
-        // vertex array object (VAO) —— 顶点顶点数组对象的索引
-        GLuint vao = 0;
-        // 创建一个空的vao
-        glGenVertexArrays(1, &vao);
-        // 绑定vao对象至上下文
-        glBindVertexArray(vao);
-
-        // 绑定vbo对象至上下文的缓冲区
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        // 将点复制到当前绑定的vbo缓冲区
-        glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(anya::numberType), points, GL_STATIC_DRAW);
-        // 0代表属性号为0的定义布局，3代表每个变量是由缓冲区中的每3个浮点(GL_FLOAT)组成的vec3
-        glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 0, nullptr);
-        // 启用属性0
-        glEnableVertexAttribArray(0);
-        // 好习惯，解除绑定
-        glBindVertexArray(0);
-
-        const char* vertex_shader =
-            "#version 400\n"
-            "in vec3 vp;"
-            "void main() {"
-            "  gl_Position = vec4(vp, 1.0);"
-            "}";
-
-        const char* fragment_shader =
-            "#version 400\n"
-            "out vec4 frag_colour;"
-            "void main() {"
-            "  frag_colour = vec4(0.5, 0.0, 0.5, 1.0);"
-            "}";
-
-        GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vs, 1, &vertex_shader, nullptr);
-        glCompileShader(vs);
-        GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fs, 1, &fragment_shader, nullptr);
-        glCompileShader(fs);
-
-        GLuint shader_programme = glCreateProgram();
-        glAttachShader(shader_programme, fs);
-        glAttachShader(shader_programme, vs);
-        glLinkProgram(shader_programme);
 
         // render loop
         while (!glfwWindowShouldClose(window)) {
             clearWith();              // 清除颜色缓存
             glfwPollEvents();         // 非阻塞处理IO事件
-
-            // render
-            glUseProgram(shader_programme);
-            glBindVertexArray(vao);
-            glDrawArrays(GL_TRIANGLES, 0, 3);
-
+            update();
             glfwSwapBuffers(window);  // 双缓冲区交换
-            glBindVertexArray(0);
         }
     }
+private:
+#pragma region 画面更新逻辑
+    void update() {
+        ModeGuard guard(GL_LINES);
+        // TODO: 将渲染逻辑丢到另一个线程
+        renderer->render();
+        for (const auto& model : renderer->scene.models) {
+            for (const auto& vertex : model.vertexes) {
+                glColor3d(0.5, 0.3, 1.0);
+                glVertex2d(vertex[0], vertex[1]);
+            }
+        }
+    }
+
+#pragma endregion
 
 private:
 #pragma region 封装OpenGl的常用函数
@@ -130,8 +94,6 @@ private:
             std::cerr << "ERROR: could not start GLFW3\n";
             return;
         }
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     }
 
     GLFWwindow* createHandle() {
@@ -149,12 +111,7 @@ private:
         glfwSetKeyCallback(window, key_callback);
     }
 
-    bool setGlad() {
-        // glad: load all OpenGL function pointers
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-            std::cerr << "Failed to initialize GLAD" << std::endl;
-            return false;
-        }
+    bool setViewport() {
         int w, h;
         glfwGetFramebufferSize(window, &w, &h);
         glViewport(0, 0, w, h);
@@ -170,7 +127,6 @@ private:
         if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
             glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
-
 #pragma endregion
 
 };

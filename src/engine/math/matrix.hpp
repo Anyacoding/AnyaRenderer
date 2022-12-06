@@ -44,6 +44,13 @@ public:
         data[0][0] = val;
         return Loader(*this, 1);
     }
+
+    // 返回单位矩阵的工厂函数
+    constexpr static Matrix Identity() requires(M == N) {
+        Matrix ret{};
+        for (int i = 0; i < M; ++i) ret(i, i) = 1;
+        return ret;
+    }
 #pragma endregion
 
 public:
@@ -129,7 +136,8 @@ public:
     }
 
     // 行列式
-    [[nodiscard]] constexpr numberType det() const requires(M == N) {
+    [[nodiscard]] constexpr numberType
+    det() const requires(M == N) {
         if constexpr (M == 1) {
             return (*this)(0, 0);
         }
@@ -143,7 +151,8 @@ public:
     }
 
     // 求逆
-    [[nodiscard]] constexpr Matrix<M, N> inverse() const requires(M == N) {
+    [[nodiscard]] constexpr Matrix<M, N>
+    inverse() const requires(M == N) {
         numberType det = this->det();
         if (det == 0.0) {
             std::cerr << "The determinant is zero, this matrix has no inverse!" << std::endl;
