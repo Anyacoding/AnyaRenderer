@@ -21,6 +21,19 @@ struct MathUtils {
     }
 };
 
+// 变换矩阵的工厂函数
+struct Transform {
+    static Matrix44 RotateAroundZ(numberType angle) {
+        Matrix44 mat = Matrix44::Identity();
+        numberType rad = MathUtils::angle2rad(angle);
+        mat << std::cos(rad), -std::sin(rad), 0, 0,
+               std::sin(rad), std::cos(rad), 0, 0,
+               0, 0, 1, 0,
+               0, 0, 0, 1;
+        return mat;
+    }
+};
+
 }
 
 #endif //ANYA_ENGINE_UTILS_HPP

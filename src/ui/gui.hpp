@@ -15,30 +15,24 @@
 #include "math/utils.hpp"
 #include "interface/renderer.hpp"
 
+#include<windows.h>
+
 namespace anya{
 
 class GUI {
-    // 自动控制绘图模式作用域
-    struct ModeGuard {
-        // 控制类型:   GL_TRIANGLES, GL_LINES, GL_POINTS, GL_POLYGON
-        // 分别表示:   三角形,        线段,      像素,       多边形
-        explicit ModeGuard(GLenum mode) { glBegin(mode); }
-
-        ~ModeGuard() { glEnd(); }
-    };
-
 private:
     // 标题
     std::string_view title;
     // 宽高
-    GLint width, height;
+    GLdouble width, height;
     // 窗口handle
     GLFWwindow* window = nullptr;
     // 渲染器，使用指针方便将来使用多态
     std::shared_ptr<Renderer> renderer;
-
+    // 绕z轴旋转角
+    static numberType angleAroundZ;
 public:
-    GUI(std::string_view title, GLint width, GLint height, std::shared_ptr<Renderer> renderer)
+    GUI(std::string_view title, GLdouble width, GLdouble height, std::shared_ptr<Renderer> renderer)
         :title(title), width(width), height(height), renderer(std::move(renderer)) {}
 
     ~GUI() {
@@ -67,15 +61,27 @@ public:
         while (!glfwWindowShouldClose(window)) {
             clearWith();              // 清除颜色缓存
             glfwPollEvents();         // 非阻塞处理IO事件
-            update();
+            update();                 // 更新画面
             glfwSwapBuffers(window);  // 双缓冲区交换
+
         }
     }
 private:
 #pragma region 画面更新逻辑
+
+    // 自动控制绘图模式作用域
+    struct ModeGuard {
+        // 控制类型:   GL_TRIANGLES, GL_LINES, GL_POINTS, GL_POLYGON
+        // 分别表示:   三角形,        线段,      像素,       多边形
+        explicit ModeGuard(GLenum mode) { glBegin(mode); }
+
+        ~ModeGuard() { glEnd(); }
+    };
+
     void update() {
         ModeGuard guard(GL_LINES);
         // TODO: 将渲染逻辑丢到另一个线程
+        renderer->scene.models[0].RotateAroundZ(angleAroundZ);
         renderer->render();
         for (const auto& model : renderer->scene.models) {
             for (const auto& vertex : model.vertexes) {
@@ -119,17 +125,28 @@ private:
     }
 
     static void clearWith() {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(0.0, 0.0, 0.0, 0.0);
+        glClear(GL_COLOR_BUFFER_BIT);
     }
 
     static void
     key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
+        else if (key == GLFW_KEY_A && action == GLFW_PRESS) {
+            angleAroundZ += 10;
+        }
+        else if (key == GLFW_KEY_D && action == GLFW_PRESS) {
+            angleAroundZ -= 10;
+        }
     }
 #pragma endregion
 
 };
+
+// 静态数据成员初始化
+numberType GUI::angleAroundZ = 0.0;
 
 }
 

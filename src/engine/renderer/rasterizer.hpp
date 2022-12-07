@@ -23,17 +23,22 @@ public:
     render() override {
         std::tie(view_width, view_height) = scene.camera->getWH();
 
-        auto modelMat = Matrix44::Identity();   // 先不对模型做任何变换，故为单位矩阵
         auto viewMat = scene.camera->getViewMat();
         auto projectionMat = scene.camera->getProjectionMat();
-        MVP =  projectionMat * viewMat * modelMat;
 
         // 渲染每个model
         for (auto& model : scene.models) {
-            Triangle  triangle{};
+            auto modelMat = model.modelMat;   // 获取每个model的modelMat
+            MVP =  projectionMat * viewMat * modelMat;
             std::vector<anya::Vector4> worldPositions;
             for (const auto& local : model.localPositions) {
                 worldPositions.push_back(MVP * local.to4());
+            }
+            // TODO 每个顶点坐标要存两份是为了适配opengl的api,后期优化
+            model.vertexes.resize(0);
+            for (auto& worldPos : worldPositions) {
+                worldPos /= worldPos.w();
+                model.vertexes.push_back(worldPos.to<3>());
             }
             for (auto& worldPos : worldPositions) {
                 worldPos /= worldPos.w();

@@ -30,7 +30,7 @@ private:
 
     GLdouble view_width, view_height;    // 视窗大小
     GLdouble fovY;                       // 视野角度
-    GLdouble zNear = 0.1, zFar = 50.0;   // 视锥近远平面距离
+    GLdouble zNear = -0.1, zFar = -50.0; // 视锥近远平面距离
     GLdouble aspect_ratio;               // 宽高比
 public:
     Camera(const Vector3& eye_pos,    // 摄像机位置
