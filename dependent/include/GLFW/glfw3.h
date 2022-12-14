@@ -3026,7 +3026,7 @@ GLFWAPI void glfwSetWindowAspectRatio(GLFWwindow* window, int numer, int denom);
  *  the window's context.  As the context is unaffected, the bit depths of the
  *  framebuffer remain unchanged.
  *
- *  If you wish to update the refresh rate of the desired video mode in addition
+ *  If you wish to updateRotate the refresh rate of the desired video mode in addition
  *  to its resolution, see @ref glfwSetWindowMonitor.
  *
  *  The window manager may put limits on what sizes are allowed.  GLFW cannot
@@ -3447,7 +3447,7 @@ GLFWAPI GLFWmonitor* glfwGetWindowMonitor(GLFWwindow* window);
  *  place the window content area.  The refresh rate is ignored when no monitor
  *  is specified.
  *
- *  If you only wish to update the resolution of a full screen window or the
+ *  If you only wish to updateRotate the resolution of a full screen window or the
  *  size of a windowed mode window, see @ref glfwSetWindowSize.
  *
  *  When a window transitions from full screen to windowed mode, this function
@@ -3471,7 +3471,7 @@ GLFWAPI GLFWmonitor* glfwGetWindowMonitor(GLFWwindow* window);
  *  GLFW_PLATFORM_ERROR.
  *
  *  @remark The OpenGL or OpenGL ES context will not be destroyed or otherwise
- *  affected by any resizing or mode switching, although you may need to update
+ *  affected by any resizing or mode switching, although you may need to updateRotate
  *  your viewport if the framebuffer size has changed.
  *
  *  @remark @wayland The desired window position is ignored, as there is no way

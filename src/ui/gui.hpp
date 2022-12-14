@@ -14,7 +14,7 @@
 #include <GLFW/glfw3.h>
 #include "math/utils.hpp"
 #include "interface/renderer.hpp"
-
+#include "renderer/rasterizer.hpp"
 #include<windows.h>
 
 namespace anya{
@@ -31,6 +31,7 @@ private:
     std::shared_ptr<Renderer> renderer;
     // 绕z轴旋转角
     static numberType angleAroundZ;
+    static bool       updateRotate;
 public:
     GUI(std::string_view title, GLdouble width, GLdouble height, std::shared_ptr<Renderer> renderer)
         :title(title), width(width), height(height), renderer(std::move(renderer)) {}
@@ -39,9 +40,10 @@ public:
         glfwTerminate();   // 真正终止并释放glfw资源
     }
 
-    void run() {
+    void
+    run() {
         // 初始化glfw
-        init();
+        if (!init()) return;
 
         // glfw创建窗口
         if ((window = createHandle()) == nullptr) return;
@@ -57,13 +59,14 @@ public:
         // 双缓冲交换间隔设置为1，以免交换频繁造成屏幕撕裂
         glfwSwapInterval(1);
 
+        renderer->render();
+
         // render loop
         while (!glfwWindowShouldClose(window)) {
             clearWith();              // 清除颜色缓存
             glfwPollEvents();         // 非阻塞处理IO事件
             update();                 // 更新画面
             glfwSwapBuffers(window);  // 双缓冲区交换
-
         }
     }
 private:
@@ -78,32 +81,50 @@ private:
         ~ModeGuard() { glEnd(); }
     };
 
-    void update() {
-        ModeGuard guard(GL_LINES);
+    void
+    update() {
+        ModeGuard guard(GL_POINTS);
         // TODO: 将渲染逻辑丢到另一个线程
-        renderer->scene.models[0].RotateAroundZ(angleAroundZ);
-        renderer->render();
-        for (const auto& model : renderer->scene.models) {
-            for (const auto& vertex : model.vertexes) {
-                glColor3d(0.5, 0.3, 1.0);
-                glVertex2d(vertex[0], vertex[1]);
+        if (updateRotate) {
+            renderer->scene.models[0].RotateAroundZ(angleAroundZ);
+            renderer->render();
+            updateRotate = false;
+        }
+        for (int i = 0; i < static_cast<int>(width); ++i) {
+            auto x = static_cast<numberType>(i) / width * 2 - 1;
+            for (int j = 0; j < static_cast<int>(height); ++j) {
+                auto y = static_cast<numberType>(j) / height * 2 - 1;
+                auto color = renderer->getPixel(i, j);
+                glColor3d(color[0], color[1], color[2]);
+                glVertex2d(x, y);
             }
         }
+//        for (const auto& model : renderer->scene.models) {
+//            for (const auto& vertex : model.vertexes) {
+//                glColor3d(0.5, 0.3, 1.0);
+//                auto x = vertex[0] / width * 2 - 1;
+//                auto y = vertex[1] / height * 2 - 1;
+//                glVertex2d(x, y);
+//            }
+//        }
     }
 
 #pragma endregion
 
 private:
 #pragma region 封装OpenGl的常用函数
-    static void init() {
+    static bool
+    init() {
         if (glfwInit() == false) {
             std::cerr << "ERROR: could not start GLFW3\n";
-            return;
+            return false;
         }
+        return true;
     }
 
-    GLFWwindow* createHandle() {
-        window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
+    GLFWwindow*
+    createHandle() {
+        window = glfwCreateWindow(static_cast<int>(width), static_cast<int>(height), title.data(), nullptr, nullptr);
         if (window == nullptr) {
             std::cerr << "Failed to create GLFW window" << std::endl;
             return nullptr;
@@ -113,18 +134,21 @@ private:
         return window;
     }
 
-    void setCallBack() {
+    void
+    setCallBack() {
         glfwSetKeyCallback(window, key_callback);
     }
 
-    bool setViewport() {
+    bool
+    setViewport() {
         int w, h;
         glfwGetFramebufferSize(window, &w, &h);
         glViewport(0, 0, w, h);
         return true;
     }
 
-    static void clearWith() {
+    static void
+    clearWith() {
         glClearColor(0.0, 0.0, 0.0, 0.0);
         glClear(GL_COLOR_BUFFER_BIT);
     }
@@ -136,9 +160,11 @@ private:
         }
         else if (key == GLFW_KEY_A && action == GLFW_PRESS) {
             angleAroundZ += 10;
+            updateRotate = true;
         }
         else if (key == GLFW_KEY_D && action == GLFW_PRESS) {
             angleAroundZ -= 10;
+            updateRotate = true;
         }
     }
 #pragma endregion
@@ -147,6 +173,8 @@ private:
 
 // 静态数据成员初始化
 numberType GUI::angleAroundZ = 0.0;
+
+bool GUI::updateRotate = false;
 
 }
 

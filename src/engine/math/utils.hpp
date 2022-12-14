@@ -11,6 +11,7 @@ namespace anya {
 
 // 常用数学常数
 constexpr numberType pi  = std::numbers::pi_v<numberType>;
+constexpr numberType inf = std::numeric_limits<numberType>::infinity();
 
 // 通用工具函数
 struct MathUtils {
@@ -23,7 +24,9 @@ struct MathUtils {
 
 // 变换矩阵的工厂函数
 struct Transform {
-    static Matrix44 RotateAroundZ(numberType angle) {
+    // 绕z轴旋转
+    static Matrix44
+    RotateAroundZ(numberType angle) {
         Matrix44 mat = Matrix44::Identity();
         numberType rad = MathUtils::angle2rad(angle);
         mat << std::cos(rad), -std::sin(rad), 0, 0,

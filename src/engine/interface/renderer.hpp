@@ -16,6 +16,7 @@ public:
     Scene  scene;   // 场景
 public:
     virtual void render() = 0;
+    [[nodiscard]] virtual Vector3 getPixel(int x, int y) const = 0;
 };
 
 }

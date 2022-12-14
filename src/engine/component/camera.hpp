@@ -107,7 +107,6 @@ public:
 
     // 视口变换
     [[nodiscard]] Matrix44 getViewPortMat() const {
-        // TODO 在这里测试一下 w h
         Matrix44 viewPortMat{};
         viewPortMat << view_width / 2, 0, 0, view_width / 2,
                        0, view_height / 2, 0, view_height / 2,
