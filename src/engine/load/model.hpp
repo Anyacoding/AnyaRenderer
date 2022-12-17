@@ -21,7 +21,7 @@ public:
     std::vector<anya::Vector3> localPositions;  // model未变换前的相对坐标
     std::vector<anya::Vector3> vertexes;        // 经过变换后的顶点坐标
     Matrix44 modelMat = Matrix44::Identity();   // 模型变换矩阵
-    Vector3 color{};
+    Vector3 color{};                            // 颜色信息
 public:
     // 载入初始坐标
     void
