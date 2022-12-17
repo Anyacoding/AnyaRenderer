@@ -16,8 +16,8 @@ private:
     // 底层数据存储, 列向量形式存储
     Vector<M> data[N];
 
-#pragma region 辅助类
 private:
+#pragma region 辅助类
     struct Loader {
         constexpr Loader(Matrix& m, int i): mat(m), cnt(i) {}
 
@@ -214,7 +214,13 @@ public:
         return ret;
     }
 
-    // TODO: 暂时不打算提供向量右乘矩阵，因为这里默认向量都是列向量了，右乘应该是用不上的
+    // 列向量右乘矩阵，相当于列向量和行向量相乘得到 N * N 的矩阵
+    constexpr friend Matrix<N, N>
+    operator*(const Vector<N>& lhs, const Matrix<M, N>& rhs) noexcept requires(M == 1) {
+        Matrix<N, N> ret{};
+        for (int i = 0; i < N; ++i) ret.setColVec(i, rhs(0, i) * lhs);
+        return ret;
+    }
 
     // 矩阵加法
     constexpr Matrix&
@@ -319,6 +325,8 @@ using Matrix33 = Matrix<3, 3>;
 using Matrix34 = Matrix<3, 4>;
 using Matrix43 = Matrix<4, 3>;
 using Matrix44 = Matrix<4, 4>;
+using RowVector3 = Matrix<1, 3>;
+using RowVector4 = Matrix<1, 4>;
 
 }
 

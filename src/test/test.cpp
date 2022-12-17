@@ -45,6 +45,7 @@ void vecTest() {
         std::cout << "测试三维向量转为齐次坐标向量:" << std::endl;
         anya::Vector3 vec3{ 1.0, 2.0, 3.0 };
         std::cout << vec3.to4() << std::endl;
+        std::cout << vec3.to4(0.0) << std::endl;
     }
 }
 
@@ -199,7 +200,15 @@ void matrixTest() {
     {
         std::cout << "测试单位矩阵:" << std::endl;
         anya::Matrix<5, 5> rhs = anya::Matrix<5, 5>::Identity();
-        std::cout << rhs;
+        std::cout << rhs << std::endl;
+    }
+
+    {
+        std::cout << "测试列向量和行向量相乘:" << std::endl;
+        anya::Vector3 lhs{3, 2, 1};
+        anya::Matrix<1, 3> rhs;
+        rhs << 3, 2, 1;
+        std::cout << lhs * rhs;
     }
 }
 

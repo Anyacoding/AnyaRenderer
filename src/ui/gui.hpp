@@ -86,7 +86,8 @@ private:
         ModeGuard guard(GL_POINTS);
         // TODO: 将渲染逻辑丢到另一个线程
         if (updateRotate) {
-            renderer->scene.models[0].RotateAroundZ(angleAroundZ);
+            renderer->scene.models[0].RotateAroundN(angleAroundZ, {0, 0, 1});
+            //renderer->scene.models[0].RotateAroundZ(angleAroundZ);
             renderer->render();
             updateRotate = false;
         }
@@ -99,14 +100,14 @@ private:
                 glVertex2d(x, y);
             }
         }
-//        for (const auto& model : renderer->scene.models) {
-//            for (const auto& vertex : model.vertexes) {
-//                glColor3d(0.5, 0.3, 1.0);
-//                auto x = vertex[0] / width * 2 - 1;
-//                auto y = vertex[1] / height * 2 - 1;
-//                glVertex2d(x, y);
-//            }
-//        }
+        //for (const auto& model : renderer->scene.models) {
+        //    for (const auto& vertex : model.vertexes) {
+        //        glColor3d(0.5, 0.3, 1.0);
+        //        auto x = vertex[0] / width * 2 - 1;
+        //        auto y = vertex[1] / height * 2 - 1;
+        //        glVertex2d(x, y);
+        //    }
+        //}
     }
 
 #pragma endregion

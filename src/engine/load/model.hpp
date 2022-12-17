@@ -35,6 +35,12 @@ public:
         modelMat = Transform::RotateAroundZ(angle);
     }
 
+    // 绕任意轴轴旋转
+    void
+    RotateAroundN(numberType angle, Vector3 axis) {
+        modelMat = Transform::RotateAroundN(angle, axis);
+    }
+
     // 转为齐次坐标顶点
     [[nodiscard]] std::array<Vector4, 3>
     toVector4() const {

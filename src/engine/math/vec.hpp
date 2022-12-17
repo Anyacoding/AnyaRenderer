@@ -125,9 +125,9 @@ public:
 
     // 三维向量转换为齐次坐标向量
     [[nodiscard]] constexpr Vector<4>
-    to4() const requires(N == 3) {
+    to4(numberType fill = 1.0) const requires(N == 3) {
         Vector<4> ret = to<4>();
-        ret(3) = 1.0;
+        ret(3) = fill;
         return ret;
     }
 #pragma endregion
