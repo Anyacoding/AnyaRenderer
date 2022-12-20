@@ -39,12 +39,12 @@ public:
         auto viewMat = scene.camera->getViewMat();
         auto projectionMat = scene.camera->getProjectionMat();
         viewPortMat = scene.camera->getViewPortMat();
-
         // 渲染每个model
         for (auto& model : scene.models) {
-            auto modelMat = model.modelMat;   // 获取每个model的modelMat
+            auto modelMat = model.modelMat;    // 获取每个model的modelMat
             MVP =  projectionMat * viewMat * modelMat;
             std::vector<anya::Vector4> worldPositions;
+            // TODO: 这里的视口变换逻辑有问题，需要修正
             for (const auto& local : model.localPositions) {
                 worldPositions.push_back(viewPortMat * MVP * local.to4());
             }
@@ -53,7 +53,7 @@ public:
                 worldPos /= worldPos.w();
                 model.vertexes.push_back(worldPos.to<3>());
             }
-            drawTriangle(model);
+            drawTriangleWithMSAA(model);
         }
     }
 
