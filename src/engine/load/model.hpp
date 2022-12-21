@@ -21,7 +21,6 @@ class Model {
 public:
     std::vector<anya::Triangle> TriangleList;   // model的三角形集合
     Matrix44 modelMat = Matrix44::Identity();   // 模型变换矩阵
-    Vector3 color{};                            // 颜色信息
 public:
     // 绕z轴旋转
     void
