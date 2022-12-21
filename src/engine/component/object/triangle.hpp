@@ -12,17 +12,21 @@ namespace anya {
 
 class Triangle {
 public:
-    std::array<Vector3, 3> vertexes;
+    std::array<Vector4, 3> vertexes;
     std::array<Vector3, 3> colors;
 public:
-    [[nodiscard]] Vector3 a() const { return vertexes[0]; }
-    [[nodiscard]] Vector3 b() const { return vertexes[1]; }
-    [[nodiscard]] Vector3 c() const { return vertexes[2]; }
+    [[nodiscard]] Vector4 a() const { return vertexes[0]; }
+    [[nodiscard]] Vector4 b() const { return vertexes[1]; }
+    [[nodiscard]] Vector4 c() const { return vertexes[2]; }
 
     void
-    setVertex(int index, Vector3 vertex) {
+    setVertex(int index, Vector4 vertex) {
         vertexes[index] = vertex;
     }
+
+    // 设置颜色
+    void
+    setColor(int index, Vector3 col) { colors[index] = col; }
 
     void
     setColor(int index, double r, double g, double b) {

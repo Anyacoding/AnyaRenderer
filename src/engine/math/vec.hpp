@@ -203,16 +203,28 @@ public:
 
 public:
 #pragma region 坐标
-    [[nodiscard]] constexpr numberType
+    [[nodiscard]] constexpr numberType&
+    x() noexcept requires(N >= 1) { return this->data[0]; }
+
+    [[nodiscard]] constexpr numberType&
+    y() noexcept requires(N >= 2) { return this->data[1]; }
+
+    [[nodiscard]] constexpr numberType&
+    z() noexcept requires(N >= 3) { return this->data[2]; }
+
+    [[nodiscard]] constexpr numberType&
+    w() noexcept requires(N >= 4) { return this->data[3]; }
+
+    [[nodiscard]] constexpr const numberType&
     x() const noexcept requires(N >= 1) { return this->data[0]; }
 
-    [[nodiscard]] constexpr numberType
+    [[nodiscard]] constexpr const numberType&
     y() const noexcept requires(N >= 2) { return this->data[1]; }
 
-    [[nodiscard]] constexpr numberType
+    [[nodiscard]] constexpr const numberType&
     z() const noexcept requires(N >= 3) { return this->data[2]; }
 
-    [[nodiscard]] constexpr numberType
+    [[nodiscard]] constexpr const numberType&
     w() const noexcept requires(N >= 4) { return this->data[3]; }
 
     // w != 0 时，该齐次坐标代表一个点，将该点标准化表示

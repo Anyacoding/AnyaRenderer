@@ -18,16 +18,23 @@ void show(const std::shared_ptr<Renderer>& renderer) {
 void runTask() {
     std::shared_ptr<Renderer> renderer = std::make_shared<Rasterizer>();
     anya::Model model1{}, model2{};
+    anya::Triangle triangle1{}, triangle2{};
 
-    model1.addLocalPosition({ 2, 0, -2 });
-    model1.addLocalPosition({ 0, 2, -2 });
-    model1.addLocalPosition({ -2, 0, -2 });
-    model1.setColor(217.0, 238.0, 185.0);
+    triangle1.setVertex(0, { 2, 0, -2, 1 });
+    triangle1.setVertex(1, { 0, 2, -2, 1 });
+    triangle1.setVertex(2, { -2, 0, -2, 1 });
+    triangle1.setColor(0, 217.0, 238.0, 185.0);
+    triangle1.setColor(1, 217.0, 238.0, 185.0);
+    triangle1.setColor(2, 217.0, 238.0, 185.0);
+    model1.TriangleList.push_back(triangle1);
 
-    model2.addLocalPosition({ 3.5, -1, -5 });
-    model2.addLocalPosition({ 2.5, 1.5, -5 });
-    model2.addLocalPosition({ -1, 0.5, -5 });
-    model2.setColor(185.0, 217.0, 238.0);
+    triangle2.setVertex(0, { 3.5, -1, -5, 1 });
+    triangle2.setVertex(1, { 2.5, 1.5, -5, 1 });
+    triangle2.setVertex(2, { -1, 0.5, -5, 1 });
+    triangle2.setColor(0, 185.0, 217.0, 238.0);
+    triangle2.setColor(1, 185.0, 217.0, 238.0);
+    triangle2.setColor(2, 185.0, 217.0, 238.0);
+    model2.TriangleList.push_back(triangle2);
 
     renderer->scene.models.push_back(model1);
     renderer->scene.models.push_back(model2);

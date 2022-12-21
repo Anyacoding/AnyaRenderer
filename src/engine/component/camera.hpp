@@ -122,6 +122,12 @@ public:
                        0, 0, 0, 1;
         return viewPortMat;
     }
+
+    // 深度信息修正参数
+    [[nodiscard]] std::pair<numberType, numberType>
+    getFixedArgs() const {
+        return {(zNear - zFar) / 2, (zNear + zFar) / 2};
+    }
 };
 
 }

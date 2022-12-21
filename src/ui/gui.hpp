@@ -101,7 +101,7 @@ private:
             }
         }
         //for (const auto& model : renderer->scene.models) {
-        //    for (const auto& vertex : model.vertexes) {
+        //    for (const auto& vertex : model.TriangleList) {
         //        glColor3d(0.5, 0.3, 1.0);
         //        auto x = vertex[0] / width * 2 - 1;
         //        auto y = vertex[1] / height * 2 - 1;
