@@ -1,0 +1,17 @@
+{
+  "renderer": {
+    "type": "Rasterizer"
+  },
+  "camera": {
+    "eye_pos": [0, 0, 5],
+    "obj_pos": [0, 0, 0],
+    "view_width": 800,
+    "view_height": 600,
+    "fovY": 45
+  },
+  "models": [
+    {
+      "objPath": "../art/models/spot/spot_triangulated_good.obj"
+    }
+  ]
+}

@@ -8,6 +8,7 @@
 #include <fstream>
 #include "matrix.hpp"
 #include "nlohmann/json.hpp"
+#include "shader/fragment_shader.hpp"
 
 using json = nlohmann::json;
 
@@ -75,6 +76,15 @@ struct JsonUtils {
         std::ifstream ifs(path);
         json ret = json::parse(ifs);
         return ret;
+    }
+};
+
+// shader的着色方法
+struct ShaderUtils {
+    static Vector3
+    normal_fragment_shader(const FragmentShader& fs) {
+        Vector3 ret = (fs.normal.to<3>().normalize() + Vector3{1, 1, 1}) / 2;
+        return ret * 255;
     }
 };
 

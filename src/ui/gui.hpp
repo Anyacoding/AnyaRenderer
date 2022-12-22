@@ -86,7 +86,7 @@ private:
         ModeGuard guard(GL_POINTS);
         // TODO: 将渲染逻辑丢到另一个线程
         if (updateRotate) {
-            renderer->scene.models[0].RotateAroundN(angleAroundZ, {0, 0, 1});
+            renderer->scene.models[0].RotateAroundN(angleAroundZ, {0, 1, 0});
             // renderer->scene.models[0].RotateAroundZ(angleAroundZ);
             renderer->render();
             updateRotate = false;

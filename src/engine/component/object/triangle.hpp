@@ -13,15 +13,23 @@ namespace anya {
 class Triangle {
 public:
     std::array<Vector4, 3> vertexes;
+    std::array<Vector4, 3> normals;
     std::array<Vector3, 3> colors;
 public:
     [[nodiscard]] Vector4 a() const { return vertexes[0]; }
     [[nodiscard]] Vector4 b() const { return vertexes[1]; }
     [[nodiscard]] Vector4 c() const { return vertexes[2]; }
 
+    // 设置顶点
     void
     setVertex(int index, Vector4 vertex) {
         vertexes[index] = vertex;
+    }
+
+    // 设置法线
+    void
+    setNormal(int index, Vector4 normal) {
+        normals[index] = normal;
     }
 
     // 设置颜色

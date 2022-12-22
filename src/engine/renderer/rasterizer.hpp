@@ -17,6 +17,7 @@ class Rasterizer: public Renderer {
 private:
     Matrix44 MVP;          // MVP变换矩阵
     Matrix44 viewPortMat;  // 视窗变换矩阵
+    Matrix44 invMat;       // 作用于法线的矩阵
 
     std::vector<Vector3> frame_buf;  // 帧缓存
     std::vector<numberType> z_buf;   // 深度缓存
@@ -45,10 +46,15 @@ public:
 
         // 渲染每个model
         for (auto& model : scene.models) {
+
             auto modelMat = model.modelMat;    // 获取每个model的modelMat
             MVP =  projectionMat * viewMat * modelMat;
+            invMat = (viewMat * modelMat).inverse().transpose();
+
             for (auto triangle : model.TriangleList) {
+                std::vector<Vector4> viewSpace{};       // viewSpace顶点集合
                 for (auto& vertex : triangle.vertexes) {
+                    viewSpace.push_back(viewMat * modelMat * vertex);
                     vertex = viewPortMat * MVP * vertex;
                     // 修正深度信息，方便后续插值
                     auto w = vertex.w();
@@ -56,7 +62,12 @@ public:
                     vertex.w() = w;
                     vertex.z() = vertex.z() * f1 + f2;
                 }
-                drawTriangleWithMSAA(triangle);
+                for (auto& normal : triangle.normals) {
+                    // 对法线进行变换
+                    normal = invMat * normal;
+                }
+                drawTriangle(triangle, viewSpace, model.fragmentShader);
+                // drawTriangle(triangle);
             }
         }
     }
@@ -89,7 +100,8 @@ private:
                 for (int k = 0; k < 4; ++k) {
                     if (insideTriangle(i + dx[k], j + dy[k], triangle.vertexes)) {
                         // 获取插值深度
-                        numberType z_interpolated = computeBarycentric2D(i + dx[k], j + dy[k], triangle);
+                        auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + dx[k], j + dy[k], triangle);
+                        numberType z_interpolated = attributeLerp(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
                         // 深度测试
                         if (z_interpolated < z_msaa[pid + k]) {
                             z_msaa[pid + k] = z_interpolated;
@@ -116,11 +128,46 @@ private:
             for (int j = floor; j <= top; ++j) {
                 if (insideTriangle(i + 0.5, j + 0.5, triangle.vertexes)) {
                     // 获取插值深度
-                    numberType z_interpolated = computeBarycentric2D(i + 0.5, j + 0.5, triangle);
+                    auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + 0.5, j + 0.5, triangle);
+                    numberType z_interpolated = attributeLerp(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
                     // 深度测试
                     if (z_interpolated < z_buf[getIndex(i, j)]) {
                         z_buf[getIndex(i, j)] = z_interpolated;
                         frame_buf[getIndex(i, j)] = triangle.colors[0];
+                    }
+                }
+            }
+        }
+    }
+
+    void
+    drawTriangle(const Triangle& triangle, const std::vector<Vector4>& viewSpace, FragmentShader& fragmentShader) {
+        // 缓存三角形的三个顶点
+        auto a = triangle.a();
+        auto b = triangle.b();
+        auto c = triangle.c();
+        // 计算包围盒
+        int left, right, floor, top;
+        std::tie(left, right, floor, top) = getBoundingBox(a, b, c);
+        // z-buffer算法
+        for (int i = left; i <= right; ++i) {
+            for (int j = floor; j <= top; ++j) {
+                if (insideTriangle(i + 0.5, j + 0.5, triangle.vertexes)) {
+                    // 获取插值深度
+                    auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + 0.5, j + 0.5, triangle);
+                    numberType z_lerp = attributeLerp(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
+                    // 深度测试
+                    if (z_lerp < z_buf[getIndex(i, j)]) {
+                        z_buf[getIndex(i, j)] = z_lerp;
+
+                        auto normal_lerp = attributeLerp(alpha, beta, gamma, triangle.normals[0], triangle.normals[1], triangle.normals[2]);
+                        auto color_lerp = attributeLerp(alpha, beta, gamma, triangle.colors[0], triangle.colors[1], triangle.colors[2]);
+                        auto shadingcoords_lerp = attributeLerp(alpha, beta, gamma, viewSpace[0], viewSpace[1], viewSpace[2]);
+
+                        fragmentShader.init(shadingcoords_lerp, color_lerp, normal_lerp);
+                        auto pixel_color = fragmentShader.process(fragmentShader);
+
+                        frame_buf[getIndex(i, j)] = pixel_color;
                     }
                 }
             }
@@ -149,8 +196,8 @@ private:
     }
 
     // 插值获取深度
-    numberType
-    computeBarycentric2D(numberType x, numberType y, const Triangle& triangle) {
+    std::tuple<numberType, numberType, numberType>
+    computeBarycentric2DWithFixed(numberType x, numberType y, const Triangle& triangle) {
         if (out_range(x, y))
             throw std::out_of_range("Rasterizer::computeBarycentric2D()");
         const auto& vertexes = triangle.vertexes;
@@ -158,9 +205,16 @@ private:
         numberType beta = (x*(vertexes[2].y() - vertexes[0].y()) + (vertexes[0].x() - vertexes[2].x())*y + vertexes[2].x()* vertexes[0].y() - vertexes[0].x()* vertexes[2].y()) / (vertexes[1].x()*(vertexes[2].y() - vertexes[0].y()) + (vertexes[0].x() - vertexes[2].x())* vertexes[1].y() + vertexes[2].x()* vertexes[0].y() - vertexes[0].x()* vertexes[2].y());
         numberType gamma = (x*(vertexes[0].y() - vertexes[1].y()) + (vertexes[1].x() - vertexes[0].x())*y + vertexes[0].x()* vertexes[1].y() - vertexes[1].x()* vertexes[0].y()) / (vertexes[2].x()*(vertexes[0].y() - vertexes[1].y()) + (vertexes[1].x() - vertexes[0].x())* vertexes[2].y() + vertexes[0].x()* vertexes[1].y() - vertexes[1].x()* vertexes[0].y());
         numberType w_reciprocal = 1.0 / (alpha / vertexes[0].w() + beta / vertexes[1].w() + gamma / vertexes[2].w());
-        numberType z_interpolated = alpha * vertexes[0].z() / vertexes[0].w() + beta * vertexes[1].z() / vertexes[1].w() + gamma * vertexes[2].z() / vertexes[2].w();
-        z_interpolated *= -w_reciprocal;
-        return z_interpolated;
+        alpha  = alpha / vertexes[0].w() * (-w_reciprocal);
+        beta  = beta / vertexes[1].w() * (-w_reciprocal);
+        gamma  = gamma / vertexes[2].w() * (-w_reciprocal);
+        return { alpha, beta, gamma };
+    }
+
+    template<class T>
+    T
+    attributeLerp(numberType alpha, numberType beta, numberType gamma, T a, T b, T c) {
+        return alpha * a + beta * b + gamma * c;
     }
 
     // 计算包围盒

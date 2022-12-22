@@ -41,6 +41,9 @@ private:
         json models = config["models"];
         for (auto item : models) {
             Model model(item["objPath"]);
+
+            model.fragmentShader.setMethod(ShaderUtils::normal_fragment_shader);
+            model.RotateAroundN(140, {0, 1, 0});
             this->_renderer->scene.models.push_back(model);
         }
         this->_renderer->scene.models[0].TriangleList[0].setColor(0, 217.0, 238.0, 185.0);
