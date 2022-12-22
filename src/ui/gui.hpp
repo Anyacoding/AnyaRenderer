@@ -9,10 +9,10 @@
 #include <iostream>
 #include <memory>
 #include <utility>
-#include "math/vec.hpp"
-#include "math/matrix.hpp"
+#include "tool/vec.hpp"
+#include "tool/matrix.hpp"
 #include <GLFW/glfw3.h>
-#include "math/utils.hpp"
+#include "tool/utils.hpp"
 #include "interface/renderer.hpp"
 #include "renderer/rasterizer.hpp"
 #include<windows.h>

@@ -5,7 +5,11 @@
 #ifndef ANYA_ENGINE_UTILS_HPP
 #define ANYA_ENGINE_UTILS_HPP
 
+#include <fstream>
 #include "matrix.hpp"
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
 
 namespace anya {
 
@@ -62,6 +66,16 @@ struct Transform {
     }
 #pragma endregion
 
+};
+
+// json的便捷工具库
+struct JsonUtils {
+    static json
+    load(const std::string& path) {
+        std::ifstream ifs(path);
+        json ret = json::parse(ifs);
+        return ret;
+    }
 };
 
 }

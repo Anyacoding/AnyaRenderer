@@ -1,11 +1,11 @@
 #include <iostream>
 #include "test/test.h"
-#include "math/vec.hpp"
-#include "math/matrix.hpp"
+#include "tool/vec.hpp"
 #include "ui/gui.hpp"
 #include "renderer/rasterizer.hpp"
 #include "load/model.hpp"
 #include "component/camera.hpp"
+#include "load/context.hpp"
 
 using namespace anya;
 
@@ -15,36 +15,15 @@ void show(const std::shared_ptr<Renderer>& renderer) {
     gui.run();
 }
 
-void runTask() {
-    std::shared_ptr<Renderer> renderer = std::make_shared<Rasterizer>();
-    anya::Model model1{}, model2{};
-    anya::Triangle triangle1{}, triangle2{};
-
-    triangle1.setVertex(0, { 2, 0, -2, 1 });
-    triangle1.setVertex(1, { 0, 2, -2, 1 });
-    triangle1.setVertex(2, { -2, 0, -2, 1 });
-    triangle1.setColor(0, 217.0, 238.0, 185.0);
-    triangle1.setColor(1, 217.0, 238.0, 185.0);
-    triangle1.setColor(2, 217.0, 238.0, 185.0);
-    model1.TriangleList.push_back(triangle1);
-
-    triangle2.setVertex(0, { 3.5, -1, -5, 1 });
-    triangle2.setVertex(1, { 2.5, 1.5, -5, 1 });
-    triangle2.setVertex(2, { -1, 0.5, -5, 1 });
-    triangle2.setColor(0, 185.0, 217.0, 238.0);
-    triangle2.setColor(1, 185.0, 217.0, 238.0);
-    triangle2.setColor(2, 185.0, 217.0, 238.0);
-    model2.TriangleList.push_back(triangle2);
-
-    renderer->scene.models.push_back(model1);
-    renderer->scene.models.push_back(model2);
-    renderer->scene.camera = std::make_shared<Camera>(Vector3{0, 0, 5}, Vector3{0, 0, -4}, 800, 600, 45);
-    show(renderer);
+void runTask(const std::string& path) {
+    Context context;
+    context.loadFromJson(JsonUtils::load(path));
+    show(context._renderer);
 }
 
 int main() {
     std::cout << "Hello, MnZn!" << std::endl;
-    runTask();
+    runTask("../art/context/z-buffer.json");
     return 0;
 }
 

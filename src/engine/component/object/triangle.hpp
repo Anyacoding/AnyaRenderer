@@ -5,7 +5,7 @@
 #ifndef ANYA_ENGINE_TRIANGLE_HPP
 #define ANYA_ENGINE_TRIANGLE_HPP
 
-#include "math/matrix.hpp"
+#include "tool/matrix.hpp"
 #include <array>
 
 namespace anya {

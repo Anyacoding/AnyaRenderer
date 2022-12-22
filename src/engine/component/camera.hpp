@@ -5,8 +5,8 @@
 #ifndef ANYA_ENGINE_CAMERA_HPP
 #define ANYA_ENGINE_CAMERA_HPP
 
-#include "math/matrix.hpp"
-#include "math/utils.hpp"
+#include "tool/matrix.hpp"
+#include "tool/utils.hpp"
 #include <cmath>
 #include <GLFW/glfw3.h>
 
@@ -42,7 +42,7 @@ public:
         // 宽高比
         aspect_ratio = view_width / view_height;
         // 观察方向
-        gaze_pos = (eye_pos - obj_pos).normalize();
+        gaze_pos = (obj_pos - eye_pos).normalize();
         // TODO: 视点的正上方向(还不会求我去)
     }
 

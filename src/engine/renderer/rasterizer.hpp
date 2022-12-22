@@ -6,8 +6,8 @@
 #define ANYA_ENGINE_RASTERIZER_HPP
 
 #include "interface/renderer.hpp"
-#include "math/matrix.hpp"
-#include "math/utils.hpp"
+#include "tool/matrix.hpp"
+#include "tool/utils.hpp"
 
 // 本模块实现最基本的光栅化成像渲染器
 

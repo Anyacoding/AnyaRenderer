@@ -5,8 +5,8 @@
 #ifndef ANYA_ENGINE_TEST_H
 #define ANYA_ENGINE_TEST_H
 
-#include "math/vec.hpp"
-#include "math/matrix.hpp"
+#include "tool/vec.hpp"
+#include "tool/matrix.hpp"
 #include <GLFW/glfw3.h>
 
 void vecTest();
