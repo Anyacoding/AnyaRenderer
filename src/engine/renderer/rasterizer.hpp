@@ -26,6 +26,8 @@ private:
     std::vector<numberType> z_msaa;
 
     GLdouble view_width = 0.0, view_height = 0.0;  // 视窗
+
+    numberType fixed{};                            // 重心坐标修正系数
 public:
     void
     render() override {
@@ -46,8 +48,13 @@ public:
 
         // 渲染每个model
         for (auto& model : scene.models) {
+            Matrix44 scale{};
+            scale << 2.5, 0, 0, 0,
+                     0, 2.5, 0, 0,
+                     0, 0, 2.5, 0,
+                     0, 0, 0, 1;
+            auto modelMat = model.modelMat * scale;    // 获取每个model的modelMat
 
-            auto modelMat = model.modelMat;    // 获取每个model的modelMat
             MVP =  projectionMat * viewMat * modelMat;
             invMat = (viewMat * modelMat).inverse().transpose();
 
@@ -155,18 +162,16 @@ private:
                 if (insideTriangle(i + 0.5, j + 0.5, triangle.vertexes)) {
                     // 获取插值深度
                     auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + 0.5, j + 0.5, triangle);
-                    numberType z_lerp = attributeLerp(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
+                    numberType z_lerp = -attributeLerp(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
                     // 深度测试
                     if (z_lerp < z_buf[getIndex(i, j)]) {
                         z_buf[getIndex(i, j)] = z_lerp;
-
                         auto normal_lerp = attributeLerp(alpha, beta, gamma, triangle.normals[0], triangle.normals[1], triangle.normals[2]);
                         auto color_lerp = attributeLerp(alpha, beta, gamma, triangle.colors[0], triangle.colors[1], triangle.colors[2]);
                         auto shadingcoords_lerp = attributeLerp(alpha, beta, gamma, viewSpace[0], viewSpace[1], viewSpace[2]);
 
                         fragmentShader.init(shadingcoords_lerp, color_lerp, normal_lerp);
                         auto pixel_color = fragmentShader.process(fragmentShader);
-
                         frame_buf[getIndex(i, j)] = pixel_color;
                     }
                 }
@@ -204,17 +209,17 @@ private:
         numberType alpha = (x*(vertexes[1].y() - vertexes[2].y()) + (vertexes[2].x() - vertexes[1].x())*y + vertexes[1].x()* vertexes[2].y() - vertexes[2].x()* vertexes[1].y()) / (vertexes[0].x()*(vertexes[1].y() - vertexes[2].y()) + (vertexes[2].x() - vertexes[1].x())* vertexes[0].y() + vertexes[1].x()* vertexes[2].y() - vertexes[2].x()* vertexes[1].y());
         numberType beta = (x*(vertexes[2].y() - vertexes[0].y()) + (vertexes[0].x() - vertexes[2].x())*y + vertexes[2].x()* vertexes[0].y() - vertexes[0].x()* vertexes[2].y()) / (vertexes[1].x()*(vertexes[2].y() - vertexes[0].y()) + (vertexes[0].x() - vertexes[2].x())* vertexes[1].y() + vertexes[2].x()* vertexes[0].y() - vertexes[0].x()* vertexes[2].y());
         numberType gamma = (x*(vertexes[0].y() - vertexes[1].y()) + (vertexes[1].x() - vertexes[0].x())*y + vertexes[0].x()* vertexes[1].y() - vertexes[1].x()* vertexes[0].y()) / (vertexes[2].x()*(vertexes[0].y() - vertexes[1].y()) + (vertexes[1].x() - vertexes[0].x())* vertexes[2].y() + vertexes[0].x()* vertexes[1].y() - vertexes[1].x()* vertexes[0].y());
-        numberType w_reciprocal = 1.0 / (alpha / vertexes[0].w() + beta / vertexes[1].w() + gamma / vertexes[2].w());
-        alpha  = alpha / vertexes[0].w() * (-w_reciprocal);
-        beta  = beta / vertexes[1].w() * (-w_reciprocal);
-        gamma  = gamma / vertexes[2].w() * (-w_reciprocal);
+        fixed = 1.0 / (alpha / vertexes[0].w() + beta / vertexes[1].w() + gamma / vertexes[2].w());
+        alpha  = alpha / vertexes[0].w();
+        beta  = beta / vertexes[1].w();
+        gamma  = gamma / vertexes[2].w();
         return { alpha, beta, gamma };
     }
 
     template<class T>
     T
     attributeLerp(numberType alpha, numberType beta, numberType gamma, T a, T b, T c) {
-        return alpha * a + beta * b + gamma * c;
+        return (alpha * a + beta * b + gamma * c) * fixed;
     }
 
     // 计算包围盒

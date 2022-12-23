@@ -3,10 +3,10 @@
     "type": "Rasterizer"
   },
   "camera": {
-    "eye_pos": [0, 0, 5],
+    "eye_pos": [0, 0, 10],
     "obj_pos": [0, 0, 0],
-    "view_width": 800,
-    "view_height": 600,
+    "view_width": 700,
+    "view_height": 700,
     "fovY": 45
   },
   "models": [
