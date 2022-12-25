@@ -73,6 +73,16 @@ public:
         std::cout << "vertex: " << vertexes.size() << ", face: " << TriangleList.size() << std::endl;
     }
 public:
+    // 绕x轴旋转
+    void
+    RotateAroundX(numberType angle) {
+        modelMat = Transform::RotateAroundX(angle);
+    }
+    // 绕y轴旋转
+    void
+    RotateAroundY(numberType angle) {
+        modelMat = Transform::RotateAroundY(angle);
+    }
     // 绕z轴旋转
     void
     RotateAroundZ(numberType angle) {

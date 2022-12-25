@@ -99,7 +99,27 @@ public:
         };
     }
 
-    // 向量的L2范数，也就是向量的标量的大小
+    // 按位乘
+    [[nodiscard]] constexpr Vector
+    mut(const Vector& rhs) const noexcept {
+        Vector ret{};
+        for (int i = 0; i < N; ++i) {
+            ret[i] = data[i] * rhs[i];
+        }
+        return ret;
+    }
+
+    // 按位除
+    [[nodiscard]] constexpr Vector
+    div(const Vector& rhs) const {
+        Vector ret{};
+        for (int i = 0; i < N; ++i) {
+            ret[i] = data[i] / rhs[i];
+        }
+        return ret;
+    }
+
+    // 向量的L2范数，也就是向量的膜
     [[nodiscard]] constexpr numberType
     norm2() const { return std::sqrt(dot(*this)); }
 

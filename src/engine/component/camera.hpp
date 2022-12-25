@@ -52,7 +52,6 @@ public:
     };
 
 public:
-    // TODO: 优化视图变换
     // 将相机坐标系转换为世界坐标系，即视图变换，此过程中观察的对象会跟着一起运动
     [[nodiscard]] Matrix44 getViewMat() const {
         // 先将相机移动到世界坐标系原点
@@ -104,11 +103,12 @@ public:
         //           0, 0, 0, 1;
         // Mortho = Mscale * Mtrans;
 
+        // TODO: 这里有一个诡异的修正符号 -2 * f * n / (f - n)，没有这个符号就是深度就是反的
         // 这里直接一步到位填好投影矩阵
         Matrix44 Mprojection{};
         Mprojection << 2 * n / (r - l), 0, (l + r) / (l - r), 0,
                        0, 2 * n / (t - b), (b + t) / (b - t), 0,
-                       0, 0, (f + n) / (n - f), 2 * f * n / (f - n),
+                       0, 0, (f + n) / (n - f), -2 * f * n / (f - n),
                        0, 0, 1, 0;
         return Mprojection;
     }

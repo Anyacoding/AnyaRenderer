@@ -73,6 +73,10 @@ public:
                     // 对法线进行变换
                     normal = invMat * normal;
                 }
+                triangle.setColor(0, 148, 121.0, 92.0);
+                triangle.setColor(1, 148, 121.0, 92.0);
+                triangle.setColor(2, 148, 121.0, 92.0);
+
                 drawTriangle(triangle, viewSpace, model.fragmentShader);
                 // drawTriangle(triangle);
             }
@@ -108,7 +112,7 @@ private:
                     if (insideTriangle(i + dx[k], j + dy[k], triangle.vertexes)) {
                         // 获取插值深度
                         auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + dx[k], j + dy[k], triangle);
-                        numberType z_interpolated = attributeLerp(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
+                        numberType z_interpolated = interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
                         // 深度测试
                         if (z_interpolated < z_msaa[pid + k]) {
                             z_msaa[pid + k] = z_interpolated;
@@ -136,7 +140,7 @@ private:
                 if (insideTriangle(i + 0.5, j + 0.5, triangle.vertexes)) {
                     // 获取插值深度
                     auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + 0.5, j + 0.5, triangle);
-                    numberType z_interpolated = attributeLerp(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
+                    numberType z_interpolated = interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
                     // 深度测试
                     if (z_interpolated < z_buf[getIndex(i, j)]) {
                         z_buf[getIndex(i, j)] = z_interpolated;
@@ -149,6 +153,7 @@ private:
 
     void
     drawTriangle(const Triangle& triangle, const std::vector<Vector4>& viewSpace, FragmentShader& fragmentShader) {
+        auto v = triangle.vertexes;
         // 缓存三角形的三个顶点
         auto a = triangle.a();
         auto b = triangle.b();
@@ -162,15 +167,15 @@ private:
                 if (insideTriangle(i + 0.5, j + 0.5, triangle.vertexes)) {
                     // 获取插值深度
                     auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + 0.5, j + 0.5, triangle);
-                    numberType z_lerp = -attributeLerp(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
+                    numberType z_lerp = interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
                     // 深度测试
                     if (z_lerp < z_buf[getIndex(i, j)]) {
                         z_buf[getIndex(i, j)] = z_lerp;
-                        auto normal_lerp = attributeLerp(alpha, beta, gamma, triangle.normals[0], triangle.normals[1], triangle.normals[2]);
-                        auto color_lerp = attributeLerp(alpha, beta, gamma, triangle.colors[0], triangle.colors[1], triangle.colors[2]);
-                        auto shadingcoords_lerp = attributeLerp(alpha, beta, gamma, viewSpace[0], viewSpace[1], viewSpace[2]);
-
-                        fragmentShader.init(shadingcoords_lerp, color_lerp, normal_lerp);
+                        auto normal_lerp = interpolate(alpha, beta, gamma, triangle.normals[0], triangle.normals[1], triangle.normals[2]);
+                        auto color_lerp = interpolate(alpha, beta, gamma, triangle.colors[0], triangle.colors[1], triangle.colors[2]);
+                        auto shadingcoords_lerp = interpolate(alpha, beta, gamma, viewSpace[0], viewSpace[1], viewSpace[2]);
+                        // 法向量要记得单位化!! 查了一晚上的bug呜呜
+                        fragmentShader.init(shadingcoords_lerp, color_lerp, normal_lerp.to<3>().normalize().to4(0));
                         auto pixel_color = fragmentShader.process(fragmentShader);
                         frame_buf[getIndex(i, j)] = pixel_color;
                     }
@@ -200,7 +205,7 @@ private:
         return (static_cast<int>(view_height) - 1 - y) * static_cast<int>(view_width) + x;
     }
 
-    // 插值获取深度
+    // 获取重心坐标
     std::tuple<numberType, numberType, numberType>
     computeBarycentric2DWithFixed(numberType x, numberType y, const Triangle& triangle) {
         if (out_range(x, y))
@@ -209,6 +214,7 @@ private:
         numberType alpha = (x*(vertexes[1].y() - vertexes[2].y()) + (vertexes[2].x() - vertexes[1].x())*y + vertexes[1].x()* vertexes[2].y() - vertexes[2].x()* vertexes[1].y()) / (vertexes[0].x()*(vertexes[1].y() - vertexes[2].y()) + (vertexes[2].x() - vertexes[1].x())* vertexes[0].y() + vertexes[1].x()* vertexes[2].y() - vertexes[2].x()* vertexes[1].y());
         numberType beta = (x*(vertexes[2].y() - vertexes[0].y()) + (vertexes[0].x() - vertexes[2].x())*y + vertexes[2].x()* vertexes[0].y() - vertexes[0].x()* vertexes[2].y()) / (vertexes[1].x()*(vertexes[2].y() - vertexes[0].y()) + (vertexes[0].x() - vertexes[2].x())* vertexes[1].y() + vertexes[2].x()* vertexes[0].y() - vertexes[0].x()* vertexes[2].y());
         numberType gamma = (x*(vertexes[0].y() - vertexes[1].y()) + (vertexes[1].x() - vertexes[0].x())*y + vertexes[0].x()* vertexes[1].y() - vertexes[1].x()* vertexes[0].y()) / (vertexes[2].x()*(vertexes[0].y() - vertexes[1].y()) + (vertexes[1].x() - vertexes[0].x())* vertexes[2].y() + vertexes[0].x()* vertexes[1].y() - vertexes[1].x()* vertexes[0].y());
+
         fixed = 1.0 / (alpha / vertexes[0].w() + beta / vertexes[1].w() + gamma / vertexes[2].w());
         alpha  = alpha / vertexes[0].w();
         beta  = beta / vertexes[1].w();
@@ -218,17 +224,17 @@ private:
 
     template<class T>
     T
-    attributeLerp(numberType alpha, numberType beta, numberType gamma, T a, T b, T c) {
+    interpolate(numberType alpha, numberType beta, numberType gamma, T a, T b, T c) {
         return (alpha * a + beta * b + gamma * c) * fixed;
     }
 
     // 计算包围盒
     static std::tuple<int, int, int, int>
     getBoundingBox(Vector4 a, Vector4 b, Vector4 c) {
-        int left = std::min(static_cast<int>(a.x()), std::min(static_cast<int>(b.x()), static_cast<int>(c.x())));
-        int right = std::max(static_cast<int>(a.x()), std::max(static_cast<int>(b.x()), static_cast<int>(c.x()))) + 1;
-        int floor = std::min(static_cast<int>(a.y()), std::min(static_cast<int>(b.y()), static_cast<int>(c.y())));
-        int top = std::max(static_cast<int>(a.y()), std::max(static_cast<int>(b.y()), static_cast<int>(c.y()))) + 1;
+        int left = static_cast<int>(std::min(a.x(), std::min(b.x(), c.x())));
+        int right = static_cast<int>(std::max(a.x(), std::max(b.x(), c.x())));
+        int floor = static_cast<int>(std::min(a.y(), std::min(b.y(), c.y())));
+        int top = static_cast<int>(std::max(a.y(), std::max(b.y(), c.y())));
         return {left, right, floor, top};
     }
 
