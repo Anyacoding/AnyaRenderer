@@ -6,15 +6,17 @@
 #define ANYA_ENGINE_TRIANGLE_HPP
 
 #include "tool/matrix.hpp"
+#include "load/texture.hpp"
 #include <array>
 
 namespace anya {
 
 class Triangle {
 public:
-    std::array<Vector4, 3> vertexes;
-    std::array<Vector4, 3> normals;
-    std::array<Vector3, 3> colors;
+    std::array<Vector4, 3> vertexes;  // 顶点集合
+    std::array<Vector4, 3> normals;   // 法线集合
+    std::array<Vector3, 3> colors;    // 颜色集合
+    std::array<Vector<2>, 3> uvs;     // 纹理坐标集合
 public:
     [[nodiscard]] Vector4 a() const { return vertexes[0]; }
     [[nodiscard]] Vector4 b() const { return vertexes[1]; }
@@ -44,6 +46,13 @@ public:
         }
         colors[index] = make_Vec(r / 255.0, g / 255.0, b / 255.0);
     }
+
+    // 设置纹理坐标
+    void
+    setUV(int index, Vector<2> uv) { uvs[index] = uv; }
+
+    void
+    setUV(int index, numberType u, numberType v) { uvs[index] = { u, v }; }
 };
 
 }

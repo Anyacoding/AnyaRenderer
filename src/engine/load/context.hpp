@@ -29,6 +29,7 @@ private:
         // 加载renderer字段
         json renderer = config["renderer"];
         this->_renderer = makeRenderer(renderer["type"]);
+
         // 加载camera字段
         json camera = config["camera"];
         Vector3 eye_pos = toVector3(camera["eye_pos"]);
@@ -37,12 +38,32 @@ private:
         numberType view_height = camera["view_height"];
         numberType fovY = camera["fovY"];
         this->_renderer->scene.camera = std::make_shared<Camera>(eye_pos, obj_pos, view_width, view_height, fovY);
+
         // 加载models字段
         json models = config["models"];
         for (auto item : models) {
+            // 加载model的obj
             Model model(item["objPath"]);
-            model.fragmentShader.setMethod(ShaderUtils::phong_fragment_shader);
-            model.RotateAroundN(140, {0, 1, 0});
+
+            // 加载model的shaders
+            json shader = item["shader"];
+            model.setFragmentShaderMethod(shader["fragmentShader"]);
+
+            // 加载model的rotate
+            json rotate = item["rotate"];
+            model.RotateAroundN(rotate["angle"], toVector3(rotate["axis"]));
+
+            // 加载model的texture
+            json texture = item["texture"];
+            model.fragmentShader.texture = std::make_shared<Texture>(texture["texturePath"]);
+        #ifdef Z_BUFFER_TEST
+            model.TriangleList[0].setColor(0, 217.0, 238.0, 185.0);
+            model.TriangleList[0].setColor(1, 217.0, 238.0, 185.0);
+            model.TriangleList[0].setColor(2, 217.0, 238.0, 185.0);
+            model.TriangleList[1].setColor(0, 185.0, 217.0, 238.0);
+            model.TriangleList[1].setColor(1, 185.0, 217.0, 238.0);
+            model.TriangleList[1].setColor(2, 185.0, 217.0, 238.0);
+        #endif
             this->_renderer->scene.models.push_back(model);
         }
     }

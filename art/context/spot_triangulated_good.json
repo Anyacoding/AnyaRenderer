@@ -11,7 +11,17 @@
   },
   "models": [
     {
-      "objPath": "../art/models/spot/spot_triangulated_good.obj"
+      "objPath": "../art/models/spot/spot_triangulated_good.obj",
+      "shader": {
+        "fragmentShader": "texture_fragment_shader"
+      },
+      "rotate": {
+        "angle": 140,
+        "axis": [0, 1, 0]
+      },
+      "texture": {
+        "texturePath": "../art/models/spot/spot_texture.png"
+      }
     }
   ]
 }

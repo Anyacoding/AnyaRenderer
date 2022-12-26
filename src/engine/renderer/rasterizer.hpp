@@ -26,7 +26,6 @@ private:
     std::vector<numberType> z_msaa;
 
     GLdouble view_width = 0.0, view_height = 0.0;  // 视窗
-
     numberType fixed{};                            // 重心坐标修正系数
 public:
     void
@@ -48,11 +47,13 @@ public:
 
         // 渲染每个model
         for (auto& model : scene.models) {
-            Matrix44 scale{};
+            Matrix44 scale = Matrix44::Identity();
+        #ifndef Z_BUFFER_TEST
             scale << 2.5, 0, 0, 0,
                      0, 2.5, 0, 0,
                      0, 0, 2.5, 0,
                      0, 0, 0, 1;
+        #endif
             auto modelMat = model.modelMat * scale;    // 获取每个model的modelMat
 
             MVP =  projectionMat * viewMat * modelMat;
@@ -73,12 +74,14 @@ public:
                     // 对法线进行变换
                     normal = invMat * normal;
                 }
+            #ifdef Z_BUFFER_TEST
+                drawTriangle(triangle);
+            #else
                 triangle.setColor(0, 148, 121.0, 92.0);
                 triangle.setColor(1, 148, 121.0, 92.0);
                 triangle.setColor(2, 148, 121.0, 92.0);
-
                 drawTriangle(triangle, viewSpace, model.fragmentShader);
-                // drawTriangle(triangle);
+            #endif
             }
         }
     }
@@ -173,9 +176,11 @@ private:
                         z_buf[getIndex(i, j)] = z_lerp;
                         auto normal_lerp = interpolate(alpha, beta, gamma, triangle.normals[0], triangle.normals[1], triangle.normals[2]);
                         auto color_lerp = interpolate(alpha, beta, gamma, triangle.colors[0], triangle.colors[1], triangle.colors[2]);
+                        auto uv_lerp = interpolate(alpha, beta, gamma, triangle.uvs[0], triangle.uvs[1], triangle.uvs[2]);
                         auto shadingcoords_lerp = interpolate(alpha, beta, gamma, viewSpace[0], viewSpace[1], viewSpace[2]);
+
                         // 法向量要记得单位化!! 查了一晚上的bug呜呜
-                        fragmentShader.init(shadingcoords_lerp, color_lerp, normal_lerp.to<3>().normalize().to4(0));
+                        fragmentShader.init(shadingcoords_lerp, color_lerp, normal_lerp.to<3>().normalize().to4(0), uv_lerp);
                         auto pixel_color = fragmentShader.process(fragmentShader);
                         frame_buf[getIndex(i, j)] = pixel_color;
                     }
