@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(AnyaEngine)
 
+
 # C++标准
 set(CMAKE_CXX_STANDARD 20)
 
@@ -22,3 +23,6 @@ target_sources(main PRIVATE ${source})
 
 # 链接第三方库
 target_link_libraries(main opengl32 glfw3)
+
+# 使用Release版本
+# SET(CMAKE_BUILD_TYPE "Release")

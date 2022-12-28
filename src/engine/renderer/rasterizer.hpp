@@ -69,11 +69,13 @@ public:
                     vertex /= w;
                     vertex.w() = w;
                     vertex.z() = vertex.z() * f1 + f2;
+
                 }
                 for (auto& normal : triangle.normals) {
                     // 对法线进行变换
                     normal = invMat * normal;
                 }
+
             #ifdef Z_BUFFER_TEST
                 drawTriangle(triangle);
             #else
@@ -167,12 +169,13 @@ private:
         // z-buffer算法
         for (int i = left; i <= right; ++i) {
             for (int j = floor; j <= top; ++j) {
-                if (insideTriangle(i + 0.5, j + 0.5, triangle.vertexes)) {
+                if (insideTriangle(i, j, triangle.vertexes)) {
                     // 获取插值深度
                     auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + 0.5, j + 0.5, triangle);
                     numberType z_lerp = interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
                     // 深度测试
                     if (z_lerp < z_buf[getIndex(i, j)]) {
+
                         z_buf[getIndex(i, j)] = z_lerp;
                         auto normal_lerp = interpolate(alpha, beta, gamma, triangle.normals[0], triangle.normals[1], triangle.normals[2]);
                         auto color_lerp = interpolate(alpha, beta, gamma, triangle.colors[0], triangle.colors[1], triangle.colors[2]);

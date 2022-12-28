@@ -118,6 +118,12 @@ public:
         else if (method == "texture_fragment_shader") {
             fragmentShader.setMethod(ShaderUtils::texture_fragment_shader);
         }
+        else if (method == "bump_fragment_shader") {
+            fragmentShader.setMethod(ShaderUtils::bump_fragment_shader);
+        }
+        else if (method == "displacement_fragment_shader") {
+            fragmentShader.setMethod(ShaderUtils::displacement_fragment_shader);
+        }
         else {
             throw std::runtime_error("fragment_shader_method type error");
         }

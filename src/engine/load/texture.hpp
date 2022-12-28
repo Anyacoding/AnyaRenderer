@@ -22,6 +22,7 @@ private:
     int width = 0, height = 0;     // 图片的长宽
     int n = 0;                     // 图片自身的颜色的通道数
     static constexpr int bpp = 3;  // 自己设置的颜色通道数
+
 public:
     explicit Texture(const std::string& path) {
         unsigned char* data = stbi_load(path.c_str(), &width, &height, &n, bpp);
@@ -34,6 +35,7 @@ public:
             stbi_image_free(data);
         }
     }
+
 public:
     void
     loadFromRawData(const unsigned char* data) {
@@ -43,21 +45,32 @@ public:
                 numberType r = data[k * bpp];
                 numberType g = data[k * bpp + 1];
                 numberType b = data[k * bpp + 2];
-                colors[j + i * width] = Vector3 {r, g, b} / 255;
+                colors[j + i * width] = Vector3 {r, g, b};
             }
         }
     }
 
     [[nodiscard]] Vector3
     getColor(numberType u, numberType v) const {
-        u *= (width - 1);  v *= (height - 1);
-        int modu = (int)std::fabs(u), modv = (int)std::fabs(v);
+        u = std::fmin(1, std::fmax(u, 0));
+        v = std::fmin(1, std::fmax(v, 0));
+
+        auto modu = int(u * (width - 1));
+        auto modv = int(v * (height - 1));
+
         if (out_range(modu, modv)) {
             throw std::out_of_range("Texture::getColor");
         }
         return colors[modu + modv * width];
     }
+
 public:
+    [[nodiscard]] int
+    getWidth() const noexcept { return width; }
+
+    [[nodiscard]] int
+    getHeight() const noexcept { return height; }
+
     [[nodiscard]] constexpr bool
     out_range(int u, int v) const {
         return u < 0 || u >= width || v < 0 || v >= height;

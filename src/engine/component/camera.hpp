@@ -126,6 +126,7 @@ public:
     // 深度信息修正参数
     [[nodiscard]] std::pair<numberType, numberType>
     getFixedArgs() const {
+        return {(50 - 0.1) / 2.0, (50 + 0.1) / 2.0};
         return {(zNear - zFar) / 2, (zNear + zFar) / 2};
     }
 };
