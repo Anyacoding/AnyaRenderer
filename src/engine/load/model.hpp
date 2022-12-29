@@ -14,14 +14,9 @@
 #include "shader/fragment_shader.hpp"
 #include "shader/vertex_shader.hpp"
 #include "load/texture.hpp"
+#include "shader/methods.hpp"
 
 namespace anya {
-
-// 线框模式或三角形模式
-enum class Primitive{
-    Line,
-    Triangle
-};
 
 class Model {
 public:

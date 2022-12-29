@@ -32,6 +32,8 @@ public:
     }
 };
 
+
+
 }
 
 #endif //ANYA_ENGINE_FRAGMENT_SHADER_HPP

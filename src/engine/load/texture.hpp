@@ -5,11 +5,11 @@
 #ifndef ANYA_ENGINE_TEXTURE_HPP
 #define ANYA_ENGINE_TEXTURE_HPP
 
-#include "tool/vec.hpp"
-
 #define STB_IMAGE_IMPLEMENTATION	// include之前必须定义
 #include "STB/stb_image.h"
 #undef STB_IMAGE_IMPLEMENTATION
+
+#include "tool/utils.hpp"
 
 // stb的库像素数据都是从左到右，从上到下存储
 // 我们要转为通用纹理坐标，左下角为(0,0) , 右上角为(width-1, height-1)
@@ -50,18 +50,49 @@ public:
         }
     }
 
+    // Nearst
     [[nodiscard]] Vector3
     getColor(numberType u, numberType v) const {
         u = std::fmin(1, std::fmax(u, 0));
         v = std::fmin(1, std::fmax(v, 0));
 
-        auto modu = int(u * (width - 1));
-        auto modv = int(v * (height - 1));
+        auto u_img = int(u * (width - 1));
+        auto v_img = int(v * (height - 1));
 
-        if (out_range(modu, modv)) {
+        if (out_range(u_img, v_img)) {
             throw std::out_of_range("Texture::getColor");
         }
-        return colors[modu + modv * width];
+        return colors[u_img + v_img * width];
+    }
+
+    // Bilinear 双线性插值
+    [[nodiscard]] Vector3
+    getColorBilinear(numberType u, numberType v) const {
+        u = std::fmin(1, std::fmax(u, 0));
+        v = std::fmin(1, std::fmax(v, 0));
+
+        auto u_img = u * (width - 1);
+        auto v_img = v * (height - 1);
+        numberType u0 = std::fmax(0, std::floor(u_img - 0.5));
+        numberType u1 = std::fmin(width - 1, std::floor(u_img + 0.5));
+        numberType v0 = std::fmax(0, std::floor(v_img - 0.5));
+        numberType v1 = std::fmin(height - 1, std::floor(v_img + 0.5));
+        numberType s = (u_img - u0) / (u1 - u0);
+        numberType t = (v_img - v0) / (v1 - v0);
+
+        if (out_range(u0, v0) || out_range(u0, v1) || out_range(u1, v0) || out_range(u1, v1)) {
+            throw std::out_of_range("Texture::getColor");
+        }
+        auto c00 = colors[int(u0 + v0 * width)];
+        auto c01 = colors[int(u0 + v1 * width)];
+        auto c10 = colors[int(u1 + v0 * width)];
+        auto c11 = colors[int(u1 + v1 * width)];
+
+        auto c0 = MathUtils::lerp(s, c00, c10);
+        auto c1 = MathUtils::lerp(s, c01, c11);
+        auto color = MathUtils::lerp(t, c0, c1);
+
+        return color;
     }
 
 public:
@@ -72,8 +103,8 @@ public:
     getHeight() const noexcept { return height; }
 
     [[nodiscard]] constexpr bool
-    out_range(int u, int v) const {
-        return u < 0 || u >= width || v < 0 || v >= height;
+    out_range(numberType u, numberType v) const {
+        return (int)u < 0 || (int)u >= width || (int)v < 0 || (int)v >= height;
     }
 };
 
