@@ -16,7 +16,7 @@ link_directories(dependent/lib)
 add_executable(main)
 
 # 递归搜索文件并自动更新
-file(GLOB_RECURSE source CONFIGURE_DEPENDS src/*.cpp src/*.c src/*.hpp)
+file(GLOB_RECURSE source CONFIGURE_DEPENDS src/*.cpp src/*.c src/*.hpp dependent/src/*.cpp)
 
 # 添加源文件
 target_sources(main PRIVATE ${source})

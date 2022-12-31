@@ -52,7 +52,7 @@ public:
     };
 
 public:
-    // 将相机坐标系转换为世界坐标系，即视图变换，此过程中观察的对象会跟着一起运动
+    // 从世界空间转换为观察空间，即视图变换，此过程中观察的对象会跟着摄像机一起运动
     [[nodiscard]] Matrix44 getViewMat() const {
         // 先将相机移动到世界坐标系原点
         Matrix44 translate{};
@@ -126,7 +126,6 @@ public:
     // 深度信息修正参数
     [[nodiscard]] std::pair<numberType, numberType>
     getFixedArgs() const {
-        return {(50 - 0.1) / 2.0, (50 + 0.1) / 2.0};
         return {(zNear - zFar) / 2, (zNear + zFar) / 2};
     }
 };

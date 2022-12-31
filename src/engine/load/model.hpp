@@ -81,6 +81,7 @@ public:
         ifs.close();
         std::cout << "vertex: " << vertexes.size() << ", face: " << TriangleList.size() << std::endl;
     }
+
 public:
     // 绕x轴旋转
     void
