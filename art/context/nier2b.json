@@ -1,0 +1,254 @@
+{
+  "renderer": {
+    "type": "Rasterizer"
+  },
+  "camera": {
+    "eye_pos": [0, 2.5, 10],
+    "obj_pos": [0, 0, 0],
+    "view_width": 1920,
+    "view_height": 1080,
+    "fovY": 45
+  },
+  "models": [
+    {
+      "objPath": "../art/models/nier2b/nier2b0.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.07
+      },
+      "texture": {
+        "texturePath": "../art/models/nier2b/suit_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/nier2b/nier2b1.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.07
+      },
+      "texture": {
+        "texturePath": "../art/models/nier2b/suit_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/nier2b/nier2b2.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.07
+      },
+      "texture": {
+        "texturePath": "../art/models/nier2b/suit_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/nier2b/nier2b3.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.07
+      },
+      "texture": {
+        "texturePath": "../art/models/nier2b/suit_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/nier2b/nier2b4.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.07
+      },
+      "texture": {
+        "texturePath": "../art/models/nier2b/suit_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/nier2b/nier2b5.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.07
+      },
+      "texture": {
+        "texturePath": "../art/models/nier2b/suit_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/nier2b/nier2b6.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.07
+      },
+      "texture": {
+        "texturePath": "../art/models/nier2b/head_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/nier2b/nier2b7.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.07
+      },
+      "texture": {
+        "texturePath": "../art/models/nier2b/head_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/nier2b/nier2b8.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.07
+      },
+      "texture": {
+        "texturePath": "../art/models/nier2b/head_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/nier2b/nier2b9.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.07
+      },
+      "texture": {
+        "texturePath": "../art/models/nier2b/hair0_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/nier2b/nier2b10.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.07
+      },
+      "texture": {
+        "texturePath": "../art/models/nier2b/hair2_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/nier2b/nier2b11.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.07
+      },
+      "texture": {
+        "texturePath": "../art/models/nier2b/hair0_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/nier2b/nier2b12.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.07
+      },
+      "texture": {
+        "texturePath": "../art/models/nier2b/hair1_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/nier2b/nier2b13.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.07
+      },
+      "texture": {
+        "texturePath": "../art/models/nier2b/sword_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/nier2b/nier2b14.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.07
+      },
+      "texture": {
+        "texturePath": "../art/models/nier2b/sword_diffuse.tga"
+      }
+    }
+  ]
+}

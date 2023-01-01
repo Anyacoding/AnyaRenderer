@@ -51,11 +51,17 @@ private:
 
             // 加载model的rotate
             json rotate = item["rotate"];
-            model.RotateAroundN(rotate["angle"], toVector3(rotate["axis"]));
+            model.setBaseMat(Transform::RotateAroundN(rotate["angle"], toVector3(rotate["axis"])));
+
+            // 加载model的scale
+            json scale = item["scale"];
+            model.setBaseMat(Transform::scale(scale["ratio"]));
 
             // 加载model的texture
-            json texture = item["texture"];
-            model.fragmentShader.texture = std::make_shared<Texture>(texture["texturePath"]);
+            if (item.value("texture", json::object()) != json::object()) {
+                json texture = item["texture"];
+                model.fragmentShader.texture = std::make_shared<Texture>(texture["texturePath"]);
+            }
         #ifdef Z_BUFFER_TEST
             model.TriangleList[0].setColor(0, 217.0, 238.0, 185.0);
             model.TriangleList[0].setColor(1, 217.0, 238.0, 185.0);

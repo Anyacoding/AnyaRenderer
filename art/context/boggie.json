@@ -1,0 +1,78 @@
+{
+  "renderer": {
+    "type": "Rasterizer"
+  },
+  "camera": {
+    "eye_pos": [0, 0, 10],
+    "obj_pos": [0, 0, 0],
+    "view_width": 1920,
+    "view_height": 1080,
+    "fovY": 45
+  },
+  "models": [
+    {
+      "objPath": "../art/models/boggie/body.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": 50,
+        "axis": [0, 1, 0]
+      },
+      "scale": {
+        "ratio": 2.5
+      },
+      "texture": {
+        "texturePath": "../art/models/boggie/body_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/boggie/eyes.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": 50,
+        "axis": [0, 1, 0]
+      },
+      "scale": {
+        "ratio": 2.5
+      },
+      "texture": {
+        "texturePath": "../art/models/boggie/eyes_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/boggie/head.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": 50,
+        "axis": [0, 1, 0]
+      },
+      "scale": {
+        "ratio": 2.5
+      },
+      "texture": {
+        "texturePath": "../art/models/boggie/head_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/floor/floor.obj",
+      "shader": {
+        "fragmentShader": "texture_fragment_shader"
+      },
+      "rotate": {
+        "angle": 50,
+        "axis": [0, 1, 0]
+      },
+      "scale": {
+        "ratio": 2.5
+      },
+      "texture": {
+        "texturePath": "../art/models/floor/floor_diffuse.tga"
+      }
+    }
+  ]
+}

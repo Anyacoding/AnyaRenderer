@@ -11,16 +11,13 @@
   },
   "models": [
     {
-      "objPath": "../art/models/z-buffer.obj",
+      "objPath": "../art/models/z-buffer/z-buffer.obj",
       "shader": {
         "fragmentShader": "phong_fragment_shader"
       },
       "rotate": {
         "angle": 0,
         "axis": [0, 1, 0]
-      },
-      "texture": {
-        "texturePath": "../art/models/spot/spot_texture.png"
       }
     }
   ]

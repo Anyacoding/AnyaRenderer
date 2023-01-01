@@ -1,0 +1,126 @@
+{
+  "renderer": {
+    "type": "Rasterizer"
+  },
+  "camera": {
+    "eye_pos": [0, 2, 10],
+    "obj_pos": [0, 0, 0],
+    "view_width": 1920,
+    "view_height": 1080,
+    "fovY": 45
+  },
+  "models": [
+    {
+      "objPath": "../art/models/elfgirl/base.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.1
+      },
+      "texture": {
+        "texturePath": "../art/models/elfgirl/base_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/elfgirl/body0.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.1
+      },
+      "texture": {
+        "texturePath": "../art/models/elfgirl/Body_tex_003.png"
+      }
+    },
+    {
+      "objPath": "../art/models/elfgirl/body1.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.1
+      },
+      "texture": {
+        "texturePath": "../art/models/elfgirl/Body_tex_003.png"
+      }
+    },
+    {
+      "objPath": "../art/models/elfgirl/body2.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.1
+      },
+      "texture": {
+        "texturePath": "../art/models/elfgirl/Body_tex_003.png"
+      }
+    },
+    {
+      "objPath": "../art/models/elfgirl/face0.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.1
+      },
+      "texture": {
+        "texturePath": "../art/models/elfgirl/face_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/elfgirl/face1.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.1
+      },
+      "texture": {
+        "texturePath": "../art/models/elfgirl/face_diffuse.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/elfgirl/hair.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.1
+      },
+      "texture": {
+        "texturePath": "../art/models/elfgirl/hair_diffuse.tga"
+      }
+    }
+  ]
+}

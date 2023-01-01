@@ -16,7 +16,7 @@ link_directories(dependent/lib)
 add_executable(main)
 
 # 递归搜索文件并自动更新
-file(GLOB_RECURSE source CONFIGURE_DEPENDS src/*.cpp src/*.c src/*.hpp dependent/src/*.cpp)
+file(GLOB_RECURSE source CONFIGURE_DEPENDS src/*.cpp src/*.c src/*.hpp dependent/src/*.cpp dependent/src/*.c)
 
 # 添加源文件
 target_sources(main PRIVATE ${source})
@@ -25,4 +25,4 @@ target_sources(main PRIVATE ${source})
 target_link_libraries(main opengl32 glfw3)
 
 # 使用Release版本
-# SET(CMAKE_BUILD_TYPE "Release")
+SET(CMAKE_BUILD_TYPE "Release")

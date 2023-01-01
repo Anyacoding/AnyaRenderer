@@ -21,6 +21,7 @@ namespace anya {
 class Model {
 public:
     std::vector<anya::Triangle> TriangleList;   // model的三角形集合
+    Matrix44 baselMat = Matrix44::Identity();   // 模型载入时的变换
     Matrix44 modelMat = Matrix44::Identity();   // 模型变换矩阵
     FragmentShader fragmentShader{};            // 片元着色器
 public:
@@ -57,6 +58,9 @@ public:
             }
             else if (type == "vt") {
                 iss >> uv.x() >> uv.y();
+                if (uv.x() > 1) {
+                    uv.x() -= 1;
+                }
                 uvs.push_back(uv);
             }
             else if (type == "f") {
@@ -86,25 +90,26 @@ public:
     // 绕x轴旋转
     void
     RotateAroundX(numberType angle) {
-        modelMat = Transform::RotateAroundX(angle);
+        modelMat = Transform::RotateAroundX(angle) * baselMat;
     }
     // 绕y轴旋转
     void
     RotateAroundY(numberType angle) {
-        modelMat = Transform::RotateAroundY(angle);
+        modelMat = Transform::RotateAroundY(angle) * baselMat;
     }
     // 绕z轴旋转
     void
     RotateAroundZ(numberType angle) {
-        modelMat = Transform::RotateAroundZ(angle);
+        modelMat = Transform::RotateAroundZ(angle) * baselMat;
     }
     // 绕任意轴轴旋转
     void
     RotateAroundN(numberType angle, Vector3 axis) {
-        modelMat = Transform::RotateAroundN(angle, axis);
+        modelMat = Transform::RotateAroundN(angle, axis) * baselMat;
     }
 public:
-    void setFragmentShaderMethod(const std::string& method) {
+    void
+    setFragmentShaderMethod(const std::string& method) {
         if (method == "phong_fragment_shader") {
             fragmentShader.setMethod(ShaderUtils::phong_fragment_shader);
         }
@@ -120,9 +125,19 @@ public:
         else if (method == "displacement_fragment_shader") {
             fragmentShader.setMethod(ShaderUtils::displacement_fragment_shader);
         }
+        else if (method == "simple_fragment_shader") {
+            fragmentShader.setMethod(ShaderUtils::simple_fragment_shader);
+        }
         else {
             throw std::runtime_error("fragment_shader_method type error");
         }
+    }
+
+    // 载入时设置基础矩阵
+    void
+    setBaseMat(Matrix44 mat) {
+        baselMat = mat * baselMat;
+        modelMat = baselMat;
     }
 };
 

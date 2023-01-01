@@ -73,6 +73,17 @@ struct Transform {
     }
 #pragma endregion
 
+#pragma region 缩放
+    static Matrix44
+    scale(numberType ratio) {
+        Matrix44 scale = Matrix44::Identity();
+        scale << ratio, 0, 0, 0,
+                 0, ratio, 0, 0,
+                 0, 0, ratio, 0,
+                 0, 0, 0, 1;
+        return scale;
+    }
+#pragma endregion
 };
 
 // json的便捷工具库

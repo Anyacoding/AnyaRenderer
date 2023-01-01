@@ -14,6 +14,18 @@ namespace anya {
 // shader的着色方法
 struct ShaderUtils {
     static Vector3
+    simple_fragment_shader(const FragmentShader& fs) {
+        Vector3 finalColor{};
+        if (fs.texture) {
+            finalColor = fs.texture->getColorBilinear(fs.uv[0], fs.uv[1]) / 255;
+        }
+        else {
+            finalColor = fs.color;
+        }
+        return finalColor;
+    }
+
+    static Vector3
     normal_fragment_shader(const FragmentShader& fs) {
         Vector3 ret = (fs.normal.to<3>().normalize() + Vector3{1, 1, 1}) / 2;
         return ret;
@@ -34,11 +46,12 @@ struct ShaderUtils {
         Vector3 eye_pos = {0, 0, 10};                    // 观察位置
         numberType p = 150.0;                            // Phong反射模型幂系数
 
+        Vector3 color = fs.color;                            // 颜色
         Vector3 point = fs.viewSpacePosition.to<3>();          // 着色点
         Vector3 normal = fs.normal.to<3>();                    // 法线
 
         // Blinn-Phong整体计算公式
-        Vector3 ret{0, 0, 0};
+        Vector3 ret{};
         for (auto& light : lights) {
             Vector3 l = (light.position - point).normalize();  // 入射方向l
             Vector3 v = (eye_pos - point).normalize();         // 观察方向v
@@ -62,7 +75,7 @@ struct ShaderUtils {
             finalColor = fs.color;
         }
         Vector3 ka = {0.005, 0.005, 0.005};    // 泛光系数
-        Vector3 kd = finalColor;                 // 漫反射系数
+        Vector3 kd = finalColor;               // 漫反射系数
         Vector3 ks = {0.7937, 0.7937, 0.7937}; // 高光系数
 
         // 多个光源
@@ -79,7 +92,7 @@ struct ShaderUtils {
         Vector3 normal = fs.normal.to<3>();                    // 法线
 
         // Blinn-Phong整体计算公式
-        Vector3 ret{0, 0, 0};
+        Vector3 ret{};
         for (auto& light : lights) {
             Vector3 l = (light.position - point).normalize();  // 入射方向l
             Vector3 v = (eye_pos - point).normalize();         // 观察方向v
@@ -137,6 +150,7 @@ struct ShaderUtils {
         Vector3 eye_pos = {0, 0, 10};                    // 观察位置
         numberType p = 150.0;                            // Phong反射模型幂系数
 
+        Vector3 color = fs.color;                            // 颜色
         Vector3 point = fs.viewSpacePosition.to<3>();    // 着色点
         Vector3 normal = fs.normal.to<3>();              // 法线
 
@@ -164,7 +178,7 @@ struct ShaderUtils {
         point += (kn * normal * fs.texture->getColorBilinear(u, v).norm2());
 
         // Blinn-Phong整体计算公式
-        Vector3 ret{0, 0, 0};
+        Vector3 ret{};
         for (auto& light : lights) {
             Vector3 l = (light.position - point).normalize();  // 入射方向l
             Vector3 v = (eye_pos - point).normalize();         // 观察方向v

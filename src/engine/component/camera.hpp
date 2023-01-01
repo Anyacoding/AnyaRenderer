@@ -32,6 +32,7 @@ private:
     GLdouble fovY;                       // 视野角度
     GLdouble zNear = -0.1, zFar = -50.0; // 视锥近远平面距离
     GLdouble aspect_ratio;               // 宽高比
+
 public:
     Camera(const Vector3& eye_pos,    // 摄像机位置
            const Vector3& obj_pos,    // 物体的位置
@@ -50,6 +51,12 @@ public:
     getWH() const {
         return { view_width, view_height };
     };
+
+    // 设置相机位置
+    void
+    setCameraPos(const Vector3& pos) {
+        eye_pos = pos;
+    }
 
 public:
     // 从世界空间转换为观察空间，即视图变换，此过程中观察的对象会跟着摄像机一起运动

@@ -1,0 +1,62 @@
+{
+  "renderer": {
+    "type": "Rasterizer"
+  },
+  "camera": {
+    "eye_pos": [0, 1, 10],
+    "obj_pos": [0, 0, 0],
+    "view_width": 1920,
+    "view_height": 1080,
+    "fovY": 45
+  },
+  "models": [
+    {
+      "objPath": "../art/models/robot/robot0.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.2
+      },
+      "texture": {
+        "texturePath": "../art/models/robot/robot_basecolor.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/robot/robot1.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.2
+      },
+      "texture": {
+        "texturePath": "../art/models/robot/robot_basecolor.tga"
+      }
+    },
+    {
+      "objPath": "../art/models/robot/robot2.obj",
+      "shader": {
+        "fragmentShader": "simple_fragment_shader"
+      },
+      "rotate": {
+        "angle": -90,
+        "axis": [1, 0, 0]
+      },
+      "scale": {
+        "ratio": 0.2
+      },
+      "texture": {
+        "texturePath": "../art/models/robot/robot_basecolor.tga"
+      }
+    }
+  ]
+}

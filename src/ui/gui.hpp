@@ -5,17 +5,17 @@
 #ifndef ANYA_ENGINE_GUI_HPP
 #define ANYA_ENGINE_GUI_HPP
 
+#include <GLFW/glfw3.h>
+
 #include <string>
 #include <iostream>
 #include <memory>
 #include <utility>
 #include "tool/vec.hpp"
 #include "tool/matrix.hpp"
-#include <GLFW/glfw3.h>
 #include "tool/utils.hpp"
 #include "interface/renderer.hpp"
 #include "renderer/rasterizer.hpp"
-#include<windows.h>
 
 namespace anya{
 
@@ -25,12 +25,13 @@ private:
     std::string_view title;
     // 宽高
     GLdouble width, height;
+
     // 窗口handle
     GLFWwindow* window = nullptr;
     // 渲染器，使用指针方便将来使用多态
     std::shared_ptr<Renderer> renderer;
     // 绕z轴旋转角
-    static numberType angleAroundZ;
+    static numberType angleAroundN;
     static bool       updateRotate;
 public:
     GUI(std::string_view title, GLdouble width, GLdouble height, std::shared_ptr<Renderer> renderer)
@@ -54,6 +55,7 @@ public:
         // 设置窗口回调函数, eg: 按esc退出
         setCallBack();
 
+        // 设置视口大小
         setViewport();
 
         // 双缓冲交换间隔设置为1，以免交换频繁造成屏幕撕裂
@@ -63,10 +65,14 @@ public:
 
         // render loop
         while (!glfwWindowShouldClose(window)) {
-            clearWith();              // 清除颜色缓存
-            glfwPollEvents();         // 非阻塞处理IO事件
-            update();                 // 更新画面
-            glfwSwapBuffers(window);  // 双缓冲区交换
+            // 非阻塞处理IO事件
+            glfwPollEvents();
+            // 清除颜色缓存
+            clearWith();
+            // 更新画面
+            update();
+            // 双缓冲区交换
+            glfwSwapBuffers(window);
         }
     }
 private:
@@ -86,7 +92,9 @@ private:
         ModeGuard guard(GL_POINTS);
         // TODO: 将渲染逻辑丢到另一个线程
         if (updateRotate) {
-            renderer->scene.models[0].RotateAroundN(angleAroundZ, {0, 1, 0});
+            for (auto& model : renderer->scene.models) {
+                model.RotateAroundN(angleAroundN, {1, 0, 0});
+            }
             renderer->render();
             updateRotate = false;
         }
@@ -95,18 +103,10 @@ private:
             for (int j = 0; j < static_cast<int>(height); ++j) {
                 auto y = static_cast<numberType>(j) / height * 2 - 1;
                 auto color = renderer->getPixel(i, j);
-                glColor3d(color[0], color[1], color[2]);
-                glVertex2d(x, y);
+                 glColor3d(color[0], color[1], color[2]);
+                 glVertex2d(x, y);
             }
         }
-        // for (const auto& model : renderer->scene.models) {
-        //     for (const auto& vertex : model.TriangleList) {
-        //         glColor3d(0.5, 0.3, 1.0);
-        //         auto x = vertex[0] / width * 2 - 1;
-        //         auto y = vertex[1] / height * 2 - 1;
-        //         glVertex2d(x, y);
-        //     }
-        // }
     }
 
 #pragma endregion
@@ -122,6 +122,8 @@ private:
         return true;
     }
 
+    // make sure the viewport matches the new window dimensions; note that width and
+    // height will be significantly larger than specified on retina displays.
     GLFWwindow*
     createHandle() {
         window = glfwCreateWindow(static_cast<int>(width), static_cast<int>(height), title.data(), nullptr, nullptr);
@@ -129,8 +131,6 @@ private:
             std::cerr << "Failed to create GLFW window" << std::endl;
             return nullptr;
         }
-        // make sure the viewport matches the new window dimensions; note that width and
-        // height will be significantly larger than specified on retina displays.
         return window;
     }
 
@@ -148,8 +148,8 @@ private:
     }
 
     static void
-    clearWith() {
-        glClearColor(0.0, 0.0, 0.0, 0.0);
+    clearWith(Vector4 color = {0, 0, 0, 0}) {
+        glClearColor(color.x(), color.y(), color.z(), color.w());
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
@@ -159,11 +159,11 @@ private:
             glfwSetWindowShouldClose(window, GLFW_TRUE);
         }
         else if (key == GLFW_KEY_A && action == GLFW_PRESS) {
-            angleAroundZ += 10;
+            angleAroundN += 10;
             updateRotate = true;
         }
         else if (key == GLFW_KEY_D && action == GLFW_PRESS) {
-            angleAroundZ -= 10;
+            angleAroundN -= 10;
             updateRotate = true;
         }
     }
@@ -172,7 +172,7 @@ private:
 };
 
 // 静态数据成员初始化
-numberType GUI::angleAroundZ = 0.0;
+numberType GUI::angleAroundN = 0.0;
 
 bool GUI::updateRotate = false;
 

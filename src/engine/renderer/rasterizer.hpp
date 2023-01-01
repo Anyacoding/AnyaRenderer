@@ -31,7 +31,7 @@ public:
     render() override {
         std::tie(view_width, view_height) = scene.camera->getWH();
         // 初始化buffer的大小
-        frame_buf.assign(static_cast<long long>(view_width * view_height), {0, 0, 0});
+        frame_buf.assign(static_cast<long long>(view_width * view_height), Vector3{92, 121.0, 92.0} / 255);
         z_buf.assign(static_cast<long long>(view_width * view_height), inf);
         frame_msaa.assign(static_cast<long long>(view_width * view_height * 4), {0, 0, 0});
         z_msaa.assign(static_cast<long long>(view_width * view_height * 4), inf);
@@ -47,19 +47,13 @@ public:
         // 渲染每个model
         for (auto& model : scene.models) {
             Matrix44 scale = Matrix44::Identity();
-        #ifndef Z_BUFFER_TEST
-            scale << 2.5, 0, 0, 0,
-                     0, 2.5, 0, 0,
-                     0, 0, 2.5, 0,
-                     0, 0, 0, 1;
-        #endif
             auto modelMat = model.modelMat * scale;    // 获取每个model的modelMat
-
             MVP =  projectionMat * viewMat * modelMat;
             invMat = (viewMat * modelMat).inverse().transpose();
 
             for (auto triangle : model.TriangleList) {
-                std::vector<Vector4> viewSpace{};       // viewSpace顶点集合
+                // viewSpace顶点集合
+                std::vector<Vector4> viewSpace{};
                 for (auto& vertex : triangle.vertexes) {
                     viewSpace.push_back(viewMat * modelMat * vertex);
                     vertex = viewPortMat * MVP * vertex;
@@ -163,8 +157,7 @@ private:
         auto b = triangle.b();
         auto c = triangle.c();
         // 计算包围盒
-        int left, right, floor, top;
-        std::tie(left, right, floor, top) = getBoundingBox(a, b, c);
+        auto[left, right, floor, top] = getBoundingBox(a, b, c);
         // z-buffer算法
         for (int i = left; i <= right; ++i) {
             for (int j = floor; j <= top; ++j) {
@@ -196,8 +189,9 @@ private:
     // 叉积判断点是否在三角形内
     bool
     insideTriangle(numberType x, numberType y, const std::array<Vector4, 3>& vertexes) {
-        if (out_range(x, y))
-            throw std::out_of_range("Rasterizer::insideTriangle()");
+        if (out_range(x, y)) {
+            return false;
+        }
         Vector3 q{x, y, vertexes[0].to<3>()[2]};
         Vector3 ab = vertexes[1].to<3>() - vertexes[0].to<3>(), bc = vertexes[2].to<3>() - vertexes[1].to<3>(), ca = vertexes[0].to<3>() - vertexes[2].to<3>();
         Vector3 aq = q - vertexes[0].to<3>(), bq = q - vertexes[1].to<3>(), cq = q - vertexes[2].to<3>();
