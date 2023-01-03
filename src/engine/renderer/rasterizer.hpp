@@ -30,8 +30,8 @@ public:
     void
     render() override {
         std::tie(view_width, view_height) = scene.camera->getWH();
-        // 初始化buffer的大小
-        frame_buf.assign(static_cast<long long>(view_width * view_height), Vector3{92, 121.0, 92.0} / 255);
+        // 初始化buffer的大小   绿幕: Vector3{92, 121.0, 92.0} / 255
+        frame_buf.assign(static_cast<long long>(view_width * view_height), Vector3{38.25, 38.25, 38.25} / 255);
         z_buf.assign(static_cast<long long>(view_width * view_height), inf);
         frame_msaa.assign(static_cast<long long>(view_width * view_height * 4), {0, 0, 0});
         z_msaa.assign(static_cast<long long>(view_width * view_height * 4), inf);

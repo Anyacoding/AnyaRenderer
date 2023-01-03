@@ -74,7 +74,7 @@ struct ShaderUtils {
         else {
             finalColor = fs.color;
         }
-        Vector3 ka = {0.005, 0.005, 0.005};    // 泛光系数
+        Vector3 ka = {0.239, 0.239, 0.239};    // 泛光系数
         Vector3 kd = finalColor;               // 漫反射系数
         Vector3 ks = {0.7937, 0.7937, 0.7937}; // 高光系数
 
@@ -83,7 +83,7 @@ struct ShaderUtils {
         auto light2 = Light{{-20, 20, 0}, {500, 500, 500}};
         std::vector<Light> lights = {light1, light2};
 
-        Vector3 ambient_light_intensity = {10, 10, 10};  // 环境光强度
+        Vector3 ambient_light_intensity = kd;  // 环境光强度
         Vector3 eye_pos = {0, 0, 10};                    // 观察位置
         numberType p = 150.0;                            // Phong反射模型幂系数
 
@@ -92,7 +92,7 @@ struct ShaderUtils {
         Vector3 normal = fs.normal.to<3>();                    // 法线
 
         // Blinn-Phong整体计算公式
-        Vector3 ret{};
+        Vector3 ret = {};
         for (auto& light : lights) {
             Vector3 l = (light.position - point).normalize();  // 入射方向l
             Vector3 v = (eye_pos - point).normalize();         // 观察方向v

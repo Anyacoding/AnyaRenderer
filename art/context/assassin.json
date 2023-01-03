@@ -3,75 +3,75 @@
     "type": "Rasterizer"
   },
   "camera": {
-    "eye_pos": [0, 3, 10],
+    "eye_pos": [0, 2.5, 10],
     "obj_pos": [0, 0, 0],
-    "view_width": 1920,
+    "view_width": 1080,
     "view_height": 1080,
     "fovY": 45
   },
   "models": [
     {
-      "objPath": "../art/models/kgirl/body.obj",
+      "objPath": "../art/models/assassin/body.obj",
       "shader": {
         "fragmentShader": "texture_fragment_shader"
       },
       "rotate": {
-        "angle": -90,
-        "axis": [1, 0.01, 0]
+        "angle": 0.1,
+        "axis": [0, 1, 0]
       },
       "scale": {
-        "ratio": 0.03
+        "ratio": 0.025
       },
       "texture": {
-        "texturePath": "../art/models/kgirl/kgirl_diffuse.tga"
+        "texturePath": "../art/models/assassin/body_basecolor.tga"
       }
     },
     {
-      "objPath": "../art/models/kgirl/face.obj",
+      "objPath": "../art/models/assassin/face.obj",
       "shader": {
         "fragmentShader": "texture_fragment_shader"
       },
       "rotate": {
-        "angle": -90,
-        "axis": [1, 0.01, 0]
+        "angle": 0.1,
+        "axis": [0, 1, 0]
       },
       "scale": {
-        "ratio": 0.03
+        "ratio": 0.025
       },
       "texture": {
-        "texturePath": "../art/models/kgirl/kgirl_diffuse.tga"
+        "texturePath": "../art/models/assassin/face_basecolor.tga"
       }
     },
     {
-      "objPath": "../art/models/kgirl/hair.obj",
+      "objPath": "../art/models/assassin/hair.obj",
       "shader": {
         "fragmentShader": "texture_fragment_shader"
       },
       "rotate": {
-        "angle": -90,
-        "axis": [1, 0.01, 0]
+        "angle": 0.1,
+        "axis": [0, 1, 0]
       },
       "scale": {
-        "ratio": 0.03
+        "ratio": 0.025
       },
       "texture": {
-        "texturePath": "../art/models/kgirl/kgirl_diffuse.tga"
+        "texturePath": "../art/models/assassin/hair_basecolor.tga"
       }
     },
     {
-      "objPath": "../art/models/kgirl/pupils.obj",
+      "objPath": "../art/models/assassin/weapon.obj",
       "shader": {
         "fragmentShader": "texture_fragment_shader"
       },
       "rotate": {
-        "angle": -90,
-        "axis": [1, 0.01, 0]
+        "angle": 0.1,
+        "axis": [0, 1, 0]
       },
       "scale": {
-        "ratio": 0.03
+        "ratio": 0.025
       },
       "texture": {
-        "texturePath": "../art/models/kgirl/kgirl_diffuse.tga"
+        "texturePath": "../art/models/assassin/weapon_basecolor.tga"
       }
     }
   ]

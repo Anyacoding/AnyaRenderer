@@ -13,7 +13,7 @@
     {
       "objPath": "../art/models/robot/robot0.obj",
       "shader": {
-        "fragmentShader": "simple_fragment_shader"
+        "fragmentShader": "texture_fragment_shader"
       },
       "rotate": {
         "angle": -90,
@@ -29,7 +29,7 @@
     {
       "objPath": "../art/models/robot/robot1.obj",
       "shader": {
-        "fragmentShader": "simple_fragment_shader"
+        "fragmentShader": "texture_fragment_shader"
       },
       "rotate": {
         "angle": -90,
@@ -45,7 +45,7 @@
     {
       "objPath": "../art/models/robot/robot2.obj",
       "shader": {
-        "fragmentShader": "simple_fragment_shader"
+        "fragmentShader": "texture_fragment_shader"
       },
       "rotate": {
         "angle": -90,

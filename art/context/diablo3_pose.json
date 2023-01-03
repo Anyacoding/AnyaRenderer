@@ -13,7 +13,7 @@
     {
       "objPath": "../art/models/diablo3_pose/diablo3_pose.obj",
       "shader": {
-        "fragmentShader": "simple_fragment_shader"
+        "fragmentShader": "texture_fragment_shader"
       },
       "rotate": {
         "angle": 20,

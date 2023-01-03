@@ -19,6 +19,9 @@
         "angle": 140,
         "axis": [0, 1, 0]
       },
+      "scale": {
+        "ratio": 2.5
+      },
       "texture": {
         "texturePath": "../art/models/spot/spot_texture.png"
       }

@@ -5,7 +5,7 @@
   "camera": {
     "eye_pos": [0, 2, 10],
     "obj_pos": [0, 0, 0],
-    "view_width": 1920,
+    "view_width": 1080,
     "view_height": 1080,
     "fovY": 45
   },
@@ -13,7 +13,7 @@
     {
       "objPath": "../art/models/elfgirl/base.obj",
       "shader": {
-        "fragmentShader": "simple_fragment_shader"
+        "fragmentShader": "texture_fragment_shader"
       },
       "rotate": {
         "angle": -90,
@@ -29,7 +29,7 @@
     {
       "objPath": "../art/models/elfgirl/body0.obj",
       "shader": {
-        "fragmentShader": "simple_fragment_shader"
+        "fragmentShader": "texture_fragment_shader"
       },
       "rotate": {
         "angle": -90,
@@ -45,7 +45,7 @@
     {
       "objPath": "../art/models/elfgirl/body1.obj",
       "shader": {
-        "fragmentShader": "simple_fragment_shader"
+        "fragmentShader": "texture_fragment_shader"
       },
       "rotate": {
         "angle": -90,
@@ -61,7 +61,7 @@
     {
       "objPath": "../art/models/elfgirl/body2.obj",
       "shader": {
-        "fragmentShader": "simple_fragment_shader"
+        "fragmentShader": "texture_fragment_shader"
       },
       "rotate": {
         "angle": -90,
@@ -77,7 +77,7 @@
     {
       "objPath": "../art/models/elfgirl/face0.obj",
       "shader": {
-        "fragmentShader": "simple_fragment_shader"
+        "fragmentShader": "texture_fragment_shader"
       },
       "rotate": {
         "angle": -90,
@@ -93,7 +93,7 @@
     {
       "objPath": "../art/models/elfgirl/face1.obj",
       "shader": {
-        "fragmentShader": "simple_fragment_shader"
+        "fragmentShader": "texture_fragment_shader"
       },
       "rotate": {
         "angle": -90,
@@ -109,7 +109,7 @@
     {
       "objPath": "../art/models/elfgirl/hair.obj",
       "shader": {
-        "fragmentShader": "simple_fragment_shader"
+        "fragmentShader": "texture_fragment_shader"
       },
       "rotate": {
         "angle": -90,

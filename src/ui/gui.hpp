@@ -25,14 +25,15 @@ private:
     std::string_view title;
     // 宽高
     GLdouble width, height;
-
     // 窗口handle
     GLFWwindow* window = nullptr;
     // 渲染器，使用指针方便将来使用多态
     std::shared_ptr<Renderer> renderer;
-    // 绕z轴旋转角
+    // 绕N轴旋转角
     static numberType angleAroundN;
     static bool       updateRotate;
+    // 旋转轴
+    static Vector3 axis;
 public:
     GUI(std::string_view title, GLdouble width, GLdouble height, std::shared_ptr<Renderer> renderer)
         :title(title), width(width), height(height), renderer(std::move(renderer)) {}
@@ -93,7 +94,7 @@ private:
         // TODO: 将渲染逻辑丢到另一个线程
         if (updateRotate) {
             for (auto& model : renderer->scene.models) {
-                model.RotateAroundN(angleAroundN, {1, 0, 0});
+                model.RotateAroundN(angleAroundN, axis);
             }
             renderer->render();
             updateRotate = false;
@@ -166,6 +167,15 @@ private:
             angleAroundN -= 10;
             updateRotate = true;
         }
+        else if (key == GLFW_KEY_X && action == GLFW_PRESS) {
+            axis = {1, 0, 0};
+        }
+        else if (key == GLFW_KEY_Y && action == GLFW_PRESS) {
+            axis = {0, 1, 0};
+        }
+        else if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
+            axis = {0, 0, 1};
+        }
     }
 #pragma endregion
 
@@ -173,8 +183,8 @@ private:
 
 // 静态数据成员初始化
 numberType GUI::angleAroundN = 0.0;
-
 bool GUI::updateRotate = false;
+Vector3 GUI::axis = Vector3{0, 1, 0};
 
 }
 

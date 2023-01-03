@@ -18,6 +18,9 @@
       "rotate": {
         "angle": 0,
         "axis": [0, 1, 0]
+      },
+      "scale": {
+        "ratio": 1
       }
     }
   ]
