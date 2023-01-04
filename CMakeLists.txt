@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(AnyaEngine)
+project(AnyaRenderer)
 
 
 # C++标准

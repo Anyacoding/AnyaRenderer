@@ -1,16 +1,18 @@
-# AnyaEngine
-- ```AnyaEngine``` 是一个迷你的图形引擎，目前实现了部分光栅化的功能.
+# AnyaRenderer
+- ```AnyaRenderer``` 是一个迷你的软渲染器，目前实现了光栅化的功能，基于 C++20 开发.
 - 实现了矩阵向量库，线性插值，z-buffe 深度检测， MSAA 抗锯齿等功能.
 
 ## 编译环境
-- C++20
-- Windows or Linux
+- MinGW w64 9.0
+- Windows
 
 ## 构建系统
 - CMake
 
 ## 第三方库
 - GLFW
+- nlohmann
+- stb_image
 
 ## DEMO
 ### 光栅化

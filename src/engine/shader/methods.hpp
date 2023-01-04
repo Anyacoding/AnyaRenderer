@@ -46,9 +46,9 @@ struct ShaderUtils {
         Vector3 eye_pos = {0, 0, 10};                    // 观察位置
         numberType p = 150.0;                            // Phong反射模型幂系数
 
-        Vector3 color = fs.color;                            // 颜色
-        Vector3 point = fs.viewSpacePosition.to<3>();          // 着色点
-        Vector3 normal = fs.normal.to<3>();                    // 法线
+        Vector3 color = fs.color;                        // 颜色
+        Vector3 point = fs.viewSpacePosition.to<3>();    // 着色点
+        Vector3 normal = fs.normal.to<3>();              // 法线
 
         // Blinn-Phong整体计算公式
         Vector3 ret{};
