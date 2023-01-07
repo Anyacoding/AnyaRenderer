@@ -11,7 +11,7 @@ using namespace anya;
 
 void show(const std::shared_ptr<Renderer>& renderer) {
     auto [w, h] = renderer->scene.camera->getWH();
-    GUI gui("AnyaEngine", w, h, renderer);
+    GUI gui("AnyaRenderer", w, h, renderer);
     gui.run();
 }
 
@@ -26,4 +26,15 @@ int main() {
     runTask("../art/context/elfgirl.json");
     return 0;
 }
+
+// 目前可选模型：
+// 1.assassin.json
+// 2.azura.json
+// 3.boggie.json
+// 4.diablo3_pose.json
+// 5.elfgirl.json
+// 6.kgirl.json
+// 7.marry.json
+// 8.robot.json
+// 9.spot_triangulated_good.json
 

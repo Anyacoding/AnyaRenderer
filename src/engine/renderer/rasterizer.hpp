@@ -30,10 +30,11 @@ public:
     void
     render() override {
         std::tie(view_width, view_height) = scene.camera->getWH();
-        // 初始化buffer的大小   绿幕: Vector3{92, 121.0, 92.0} / 255
-        frame_buf.assign(static_cast<long long>(view_width * view_height), Vector3{38.25, 38.25, 38.25} / 255);
+        // 初始化buffer的大小   绿幕: Vector3{92, 121.0, 92.0} / 255   灰慕: Vector3{38.25, 38.25, 38.25} / 255
+        Vector3 background = Vector3{38.25, 38.25, 38.25} / 255;
+        frame_buf.assign(static_cast<long long>(view_width * view_height), background);
         z_buf.assign(static_cast<long long>(view_width * view_height), inf);
-        frame_msaa.assign(static_cast<long long>(view_width * view_height * 4), {0, 0, 0});
+        frame_msaa.assign(static_cast<long long>(view_width * view_height * 4), background / 4);
         z_msaa.assign(static_cast<long long>(view_width * view_height * 4), inf);
 
         // 获取MVP矩阵
@@ -75,7 +76,7 @@ public:
                 triangle.setColor(0, 148, 121.0, 92.0);
                 triangle.setColor(1, 148, 121.0, 92.0);
                 triangle.setColor(2, 148, 121.0, 92.0);
-                drawTriangle(triangle, viewSpace, model.fragmentShader);
+                drawTriangleWithMSAA(triangle, viewSpace, model.fragmentShader);
             #endif
             }
         }
@@ -151,7 +152,6 @@ private:
 
     void
     drawTriangle(const Triangle& triangle, const std::vector<Vector4>& viewSpace, FragmentShader& fragmentShader) {
-        auto v = triangle.vertexes;
         // 缓存三角形的三个顶点
         auto a = triangle.a();
         auto b = triangle.b();
@@ -161,7 +161,7 @@ private:
         // z-buffer算法
         for (int i = left; i <= right; ++i) {
             for (int j = floor; j <= top; ++j) {
-                if (insideTriangle(i, j, triangle.vertexes)) {
+                if (insideTriangle(i + 0.5, j + 0.5, triangle.vertexes)) {
                     // 获取插值深度
                     auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + 0.5, j + 0.5, triangle);
                     numberType z_lerp = interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
@@ -180,6 +180,48 @@ private:
                         frame_buf[getIndex(i, j)] = pixel_color;
                     }
                 }
+            }
+        }
+    }
+
+    void
+    drawTriangleWithMSAA(const Triangle& triangle, const std::vector<Vector4>& viewSpace, FragmentShader& fragmentShader) {
+        // 缓存三角形的三个顶点
+        auto a = triangle.a();
+        auto b = triangle.b();
+        auto c = triangle.c();
+        // 计算包围盒
+        auto[left, right, floor, top] = getBoundingBox(a, b, c);
+        // MSAA准备
+        int pid = 0;               // 当前像素在frame_msaa中的位置
+        const std::array<numberType, 4> dx = { 0.25, 0.25, 0.75, 0.75 };
+        const std::array<numberType, 4> dy = { 0.25, 0.75, 0.25, 0.75 };
+        // z-buffer算法
+        for (int i = left; i <= right; ++i) {
+            for (int j = floor; j <= top; ++j) {
+                pid = getIndex(i, j) * 4;
+                // 4倍采样进行模糊
+                for (int k = 0; k < 4; ++k) {
+                    if (insideTriangle(i + dx[k], j + dy[k], triangle.vertexes)) {
+                        // 获取插值深度
+                        auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + dx[k], j + dy[k], triangle);
+                        numberType z_lerp = interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
+                        // 深度测试
+                        if (z_lerp < z_msaa[pid + k]) {
+                            z_msaa[pid + k] = z_lerp;
+                            auto normal_lerp = interpolate(alpha, beta, gamma, triangle.normals[0], triangle.normals[1], triangle.normals[2]);
+                            auto color_lerp = interpolate(alpha, beta, gamma, triangle.colors[0], triangle.colors[1], triangle.colors[2]);
+                            auto uv_lerp = interpolate(alpha, beta, gamma, triangle.uvs[0], triangle.uvs[1], triangle.uvs[2]);
+                            auto shadingcoords_lerp = interpolate(alpha, beta, gamma, viewSpace[0], viewSpace[1], viewSpace[2]);
+
+                            // 法向量要记得单位化!! 查了一晚上的bug呜呜
+                            fragmentShader.init(shadingcoords_lerp, color_lerp, normal_lerp.to<3>().normalize().to4(0), uv_lerp);
+                            auto pixel_color = fragmentShader.process(fragmentShader);
+                            frame_msaa[pid + k] = pixel_color / 4;
+                        }
+                    }
+                }
+                frame_buf[getIndex(i, j)] = frame_msaa[pid] + frame_msaa[pid + 1] + frame_msaa[pid + 2] + frame_msaa[pid + 3];
             }
         }
     }
@@ -230,13 +272,13 @@ private:
     }
 
     // 计算包围盒
-    static std::tuple<int, int, int, int>
-    getBoundingBox(Vector4 a, Vector4 b, Vector4 c) {
+    [[nodiscard]] std::tuple<int, int, int, int>
+    getBoundingBox(Vector4 a, Vector4 b, Vector4 c) const {
         int left = static_cast<int>(std::min(a.x(), std::min(b.x(), c.x())));
         int right = static_cast<int>(std::max(a.x(), std::max(b.x(), c.x())));
         int floor = static_cast<int>(std::min(a.y(), std::min(b.y(), c.y())));
         int top = static_cast<int>(std::max(a.y(), std::max(b.y(), c.y())));
-        return {left, right, floor, top};
+        return {left >= 0 ? left : 0, right < view_width ? right : view_width - 1, floor >= 0 ? floor : 0, top < view_height ? top : view_height - 1};
     }
 
     // 越界判断

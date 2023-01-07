@@ -13,7 +13,7 @@
     {
       "objPath": "../art/models/boggie/body.obj",
       "shader": {
-        "fragmentShader": "texture_fragment_shader"
+        "fragmentShader": "simple_fragment_shader"
       },
       "rotate": {
         "angle": 50,
@@ -29,7 +29,7 @@
     {
       "objPath": "../art/models/boggie/eyes.obj",
       "shader": {
-        "fragmentShader": "texture_fragment_shader"
+        "fragmentShader": "simple_fragment_shader"
       },
       "rotate": {
         "angle": 50,
@@ -45,7 +45,7 @@
     {
       "objPath": "../art/models/boggie/head.obj",
       "shader": {
-        "fragmentShader": "texture_fragment_shader"
+        "fragmentShader": "simple_fragment_shader"
       },
       "rotate": {
         "angle": 50,
@@ -61,7 +61,7 @@
     {
       "objPath": "../art/models/floor/floor.obj",
       "shader": {
-        "fragmentShader": "texture_fragment_shader"
+        "fragmentShader": "simple_fragment_shader"
       },
       "rotate": {
         "angle": 50,
