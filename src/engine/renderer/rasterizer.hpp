@@ -31,10 +31,9 @@ public:
     render() override {
         std::tie(view_width, view_height) = scene.camera->getWH();
         // 初始化buffer的大小   绿幕: Vector3{92, 121.0, 92.0} / 255   灰慕: Vector3{38.25, 38.25, 38.25} / 255
-        Vector3 background = Vector3{38.25, 38.25, 38.25} / 255;
-        frame_buf.assign(static_cast<long long>(view_width * view_height), background);
+        frame_buf.assign(static_cast<long long>(view_width * view_height), scene.background);
         z_buf.assign(static_cast<long long>(view_width * view_height), inf);
-        frame_msaa.assign(static_cast<long long>(view_width * view_height * 4), background / 4);
+        frame_msaa.assign(static_cast<long long>(view_width * view_height * 4), scene.background / 4);
         z_msaa.assign(static_cast<long long>(view_width * view_height * 4), inf);
 
         // 获取MVP矩阵
@@ -44,9 +43,10 @@ public:
 
         // 缓存深度信息修正参数
         auto[f1, f2] = scene.camera->getFixedArgs();
-
+        
         // 渲染每个model
         for (auto& model : scene.models) {
+            // TODO: 将顶点的处理逻辑丢到vertex_shader里
             Matrix44 scale = Matrix44::Identity();
             auto modelMat = model.modelMat * scale;    // 获取每个model的modelMat
             MVP =  projectionMat * viewMat * modelMat;

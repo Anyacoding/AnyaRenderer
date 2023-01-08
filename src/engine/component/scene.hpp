@@ -15,6 +15,7 @@ class Scene {
 public:
     std::vector<Model> models{};      // 要渲染的模型集合(光栅化使用)
     std::shared_ptr<Camera> camera;   // 摄像机
+    Vector3 background{};             // 背景颜色
 public:
     void
     addModel(const Model& model) {

@@ -39,6 +39,9 @@ private:
         numberType fovY = camera["fovY"];
         this->_renderer->scene.camera = std::make_shared<Camera>(eye_pos, obj_pos, view_width, view_height, fovY);
 
+        // 加载background字段
+        this->_renderer->scene.background = toVector3(config["background"]) / 255;
+
         // 加载models字段
         json models = config["models"];
         for (auto item : models) {

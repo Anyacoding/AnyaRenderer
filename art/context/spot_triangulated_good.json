@@ -9,6 +9,7 @@
     "view_height": 700,
     "fovY": 45
   },
+  "background": [0, 0, 0],
   "models": [
     {
       "objPath": "../art/models/spot/spot_triangulated_good.obj",

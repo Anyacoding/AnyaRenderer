@@ -109,7 +109,7 @@ struct ShaderUtils {
     bump_fragment_shader(const FragmentShader& fs) {
         Vector3 normal = fs.normal.to<3>();                    // 法线
 
-        // TODO: 不是很懂，课上也讲的不是很清楚，后面再说
+        // TODO: 不是很懂，讲的不是很清楚，后面再说
         numberType kh = 0.2, kn = 0.1;
 
         numberType x = normal.x();
@@ -154,8 +154,6 @@ struct ShaderUtils {
         Vector3 point = fs.viewSpacePosition.to<3>();    // 着色点
         Vector3 normal = fs.normal.to<3>();              // 法线
 
-
-        // TODO: 有bug，暂且不能使用
         numberType kh = 0.2, kn = 0.1;
 
         numberType x = normal.x();
