@@ -5,7 +5,7 @@
   },
   "renderer": {
     "type": "Rasterizer",
-    "background": [38.25, 38.25, 38.25]
+    "background": [0, 0, 0]
   },
   "camera": {
     "eye_pos": [0, 0, 10],

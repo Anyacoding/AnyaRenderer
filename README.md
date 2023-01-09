@@ -19,6 +19,7 @@
 |------------------------------------------------|-------------|
 | <img src="art/image/triangle.png" width="600"> | `Triangle`  |
 | <img src="art/image/MSAA.jpg" width="600">     | `MSAA`      |
+| <img src="art/image/cow.png" width="600">      | `Cow`       |
 | <img src="art/image/elfgirl.png" width="600">  | `Elfgirl`   |
 | <img src="art/image/azura.png" width="600">    | `Azura`     |
 | <img src="art/image/diablo3.png" width="600">  | `Diablo3`   |
@@ -27,4 +28,3 @@
 | <img src="art/image/assassin.png" width="600"> | `Assassin`  |
 | <img src="art/image/marry.png" width="600">    | `Marry`     |
 | <img src="art/image/kgirl.png" width="600">    | `Kgirl`     |
-| <img src="art/image/cow.png" width="600">      | `Cow`       |
