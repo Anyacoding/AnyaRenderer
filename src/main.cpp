@@ -27,7 +27,7 @@ int main() {
     return 0;
 }
 
-// Ŀǰ��ѡģ��:
+// 目前可选模型:
 // 1.assassin.json
 // 2.azura.json
 // 3.boggie.json
