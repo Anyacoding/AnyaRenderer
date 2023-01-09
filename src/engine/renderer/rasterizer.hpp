@@ -31,10 +31,11 @@ public:
     render() override {
         std::tie(view_width, view_height) = scene.camera->getWH();
         // 初始化buffer的大小   绿幕: Vector3{92, 121.0, 92.0} / 255   灰慕: Vector3{38.25, 38.25, 38.25} / 255
-        frame_buf.assign(static_cast<long long>(view_width * view_height), scene.background);
+        frame_buf.assign(static_cast<long long>(view_width * view_height), this->background);
         z_buf.assign(static_cast<long long>(view_width * view_height), inf);
-        frame_msaa.assign(static_cast<long long>(view_width * view_height * 4), scene.background / 4);
+        frame_msaa.assign(static_cast<long long>(view_width * view_height * 4), this->background / 4);
         z_msaa.assign(static_cast<long long>(view_width * view_height * 4), inf);
+        outPutImage->clearWith(background);
 
         // 获取MVP矩阵
         auto viewMat = scene.camera->getViewMat();
@@ -43,7 +44,7 @@ public:
 
         // 缓存深度信息修正参数
         auto[f1, f2] = scene.camera->getFixedArgs();
-        
+
         // 渲染每个model
         for (auto& model : scene.models) {
             // TODO: 将顶点的处理逻辑丢到vertex_shader里
@@ -89,7 +90,7 @@ public:
     }
 
 private:
-    // 采样
+#pragma region 采样
     void
     drawTriangleWithMSAA(const Triangle& triangle) {
         // 缓存三角形的三个顶点
@@ -167,7 +168,6 @@ private:
                     numberType z_lerp = interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
                     // 深度测试
                     if (z_lerp < z_buf[getIndex(i, j)]) {
-
                         z_buf[getIndex(i, j)] = z_lerp;
                         auto normal_lerp = interpolate(alpha, beta, gamma, triangle.normals[0], triangle.normals[1], triangle.normals[2]);
                         auto color_lerp = interpolate(alpha, beta, gamma, triangle.colors[0], triangle.colors[1], triangle.colors[2]);
@@ -178,6 +178,7 @@ private:
                         fragmentShader.init(shadingcoords_lerp, color_lerp, normal_lerp.to<3>().normalize().to4(0), uv_lerp);
                         auto pixel_color = fragmentShader.process(fragmentShader);
                         frame_buf[getIndex(i, j)] = pixel_color;
+                        outPutImage->setPixel(i, j, pixel_color);
                     }
                 }
             }
@@ -222,9 +223,11 @@ private:
                     }
                 }
                 frame_buf[getIndex(i, j)] = frame_msaa[pid] + frame_msaa[pid + 1] + frame_msaa[pid + 2] + frame_msaa[pid + 3];
+                outPutImage->setPixel(i, j, frame_buf[getIndex(i, j)]);
             }
         }
     }
+#pragma endregion
 
 private:
 #pragma region 辅助函数

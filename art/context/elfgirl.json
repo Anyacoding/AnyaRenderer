@@ -1,6 +1,11 @@
 {
+  "image": {
+    "name": "elfgirl",
+    "suffix": "png"
+  },
   "renderer": {
-    "type": "Rasterizer"
+    "type": "Rasterizer",
+    "background": [38.25, 38.25, 38.25]
   },
   "camera": {
     "eye_pos": [0, 2, 10],
@@ -9,7 +14,6 @@
     "view_height": 1080,
     "fovY": 45
   },
-  "background": [38.25, 38.25, 38.25],
   "models": [
     {
       "objPath": "../art/models/elfgirl/base.obj",

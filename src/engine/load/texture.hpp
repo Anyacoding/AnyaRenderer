@@ -9,6 +9,10 @@
 #include "STB/stb_image.h"
 #undef STB_IMAGE_IMPLEMENTATION
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "STB/stb_image_write.h"
+#undef STB_IMAGE_WRITE_IMPLEMENTATION
+
 #include "tool/utils.hpp"
 
 // stb的库像素数据都是从左到右，从上到下存储
@@ -30,11 +34,16 @@ public:
             std::cerr << "ERROR IMAGE NOT FOUND" << std::endl;
         }
         else {
-            std::cout << "image width: " << width << " " << "image height: " << height << std::endl;
+            std::cout << "image width: " << width << " " << "image height: " << height << std::endl << std::endl;
             loadFromRawData(data);
             stbi_image_free(data);
         }
     }
+
+    explicit Texture(int w, int h, Vector3 bg): width(w), height(h), colors(w * h, bg)
+    {}
+
+    Texture() = default;
 
 public:
     void
@@ -50,6 +59,49 @@ public:
         }
     }
 
+    [[nodiscard]] std::vector<stbi_uc>
+    generateBuffer() const {
+        std::vector<stbi_uc> buffer(width * height * bpp);
+        for (int i = height - 1, k = 0; i >= 0; --i) {
+            for (int j = 0; j < width; ++j, ++k) {
+                // TODO: 因为颜色溢出会导致保存图片出现异常，所以要尽快封装color类
+                auto color = getPixel(j, i);
+                auto r = color[0];
+                auto g = color[1];
+                auto b = color[2];
+                r = r < 0 ? 0 : r;  r = r > 1 ? 1 : r;
+                g = g < 0 ? 0 : g;  g = g > 1 ? 1 : g;
+                b = b < 0 ? 0 : b;  b = b > 1 ? 1 : b;
+                buffer[k * bpp]     = stbi_uc(r * 255);
+                buffer[k * bpp + 1] = stbi_uc(g * 255);
+                buffer[k * bpp + 2] = stbi_uc(b * 255);
+            }
+        }
+        return buffer;
+    }
+
+    void
+    saveToDisk(const std::string& path) const {
+        auto it = path.find_last_of('.');
+        if (it == std::string::npos) {
+            std::cerr << "An illegal path!" << std::endl;
+            return;
+        }
+        std::string ext = path.substr(it + 1);
+        auto buffer = generateBuffer();
+
+        if (ext == "bmp") {
+            stbi_write_bmp(path.c_str(), width, height, bpp, buffer.data());
+        }
+        else if (ext == "png") {
+            stbi_write_png(path.c_str(), width, height, bpp, buffer.data(), 0);
+        }
+        else if (ext == "jpg") {
+            stbi_write_jpg(path.c_str(), width, height, bpp, buffer.data(), 100);
+        }
+    }
+
+public:
     // Nearst
     [[nodiscard]] Vector3
     getColor(numberType u, numberType v) const {
@@ -101,6 +153,23 @@ public:
 
     [[nodiscard]] int
     getHeight() const noexcept { return height; }
+
+    void
+    setPixel(int x, int y, Vector3 color) {
+        if (out_range(x, y))
+            throw std::out_of_range("Texture::setPixel(int x, int y)");
+        colors[x + y * width] = color;
+    }
+
+    [[nodiscard]] Vector3
+    getPixel(int x, int y) const {
+        if (out_range(x, y))
+            throw std::out_of_range("Texture::setPixel(int x, int y)");
+        return colors[x + y * width];
+    }
+
+    void
+    clearWith(Vector3 bg = {0, 0, 0}) { colors.assign(width * height, bg); }
 
     [[nodiscard]] constexpr bool
     out_range(numberType u, numberType v) const {

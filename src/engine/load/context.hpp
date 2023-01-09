@@ -29,6 +29,7 @@ private:
         // 加载renderer字段
         json renderer = config["renderer"];
         this->_renderer = makeRenderer(renderer["type"]);
+        this->_renderer->background = toVector3(renderer["background"]) / 255;
 
         // 加载camera字段
         json camera = config["camera"];
@@ -39,8 +40,10 @@ private:
         numberType fovY = camera["fovY"];
         this->_renderer->scene.camera = std::make_shared<Camera>(eye_pos, obj_pos, view_width, view_height, fovY);
 
-        // 加载background字段
-        this->_renderer->scene.background = toVector3(config["background"]) / 255;
+        // 加载image字段
+        json image = config["image"];
+        _renderer->savePathName = buildSavePath(image["name"], image["suffix"]);
+        this->_renderer->outPutImage = std::make_shared<Texture>(view_width, view_height, this->_renderer->background);
 
         // 加载models字段
         json models = config["models"];
@@ -95,6 +98,14 @@ private:
         else {
             throw std::runtime_error("json obj can not be transform by toVector3()");
         }
+    }
+
+    static std::string
+    buildSavePath(const std::string& name, const std::string& suffix) {
+        // path = "../art/image/${imageName}.${fileSuffix}"
+        std::string path;
+        path += "../art/image/" + name + "." + suffix;
+        return path;
     }
 };
 

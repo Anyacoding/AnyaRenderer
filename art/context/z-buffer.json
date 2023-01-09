@@ -1,6 +1,7 @@
 {
   "renderer": {
-    "type": "Rasterizer"
+    "type": "Rasterizer",
+    "background": [38.25, 38.25, 38.25]
   },
   "camera": {
     "eye_pos": [0, 0, 5],
@@ -9,7 +10,6 @@
     "view_height": 600,
     "fovY": 45
   },
-  "background": [38.25, 38.25, 38.25],
   "models": [
     {
       "objPath": "../art/models/z-buffer/z-buffer.obj",

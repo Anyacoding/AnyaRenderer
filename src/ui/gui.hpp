@@ -6,7 +6,6 @@
 #define ANYA_ENGINE_GUI_HPP
 
 #include <GLFW/glfw3.h>
-
 #include <string>
 #include <iostream>
 #include <memory>
@@ -21,68 +20,71 @@ namespace anya{
 
 class GUI {
 private:
-    // æ ‡é¢˜
+    // ±êÌâ
     std::string_view title;
-    // å®½é«˜
+    // ¿í¸ß
     GLdouble width, height;
-    // çª—å£handle
+    // ´°¿Úhandle
     GLFWwindow* window = nullptr;
-    // æ¸²æŸ“å™¨ï¼Œä½¿ç”¨æŒ‡é’ˆæ–¹ä¾¿å°†æ¥ä½¿ç”¨å¤šæ€
+    // äÖÈ¾Æ÷£¬Ê¹ÓÃÖ¸Õë·½±ã½«À´Ê¹ÓÃ¶àÌ¬
     std::shared_ptr<Renderer> renderer;
-    // ç»•Nè½´æ—‹è½¬è§’
+    // ÈÆNÖáĞı×ª½Ç
     static numberType angleAroundN;
     static bool       updateRotate;
-    // æ—‹è½¬è½´
+    // Ğı×ªÖá
     static Vector3 axis;
+    // ±£´æ½ØÍ¼
+    static bool isSaved;
 public:
     GUI(std::string_view title, GLdouble width, GLdouble height, std::shared_ptr<Renderer> renderer)
         :title(title), width(width), height(height), renderer(std::move(renderer)) {}
 
     ~GUI() {
-        glfwTerminate();   // çœŸæ­£ç»ˆæ­¢å¹¶é‡Šæ”¾glfwèµ„æº
+        glfwTerminate();   // ÕæÕıÖÕÖ¹²¢ÊÍ·Åglfw×ÊÔ´
     }
 
     void
     run() {
-        // åˆå§‹åŒ–glfw
+        // ³õÊ¼»¯glfw
         if (!init()) return;
 
-        // glfwåˆ›å»ºçª—å£
+        // glfw´´½¨´°¿Ú
         if ((window = createHandle()) == nullptr) return;
 
-        // glfwæ„é€ OpenGlä¸Šä¸‹æ–‡
+        // glfw¹¹ÔìOpenGlÉÏÏÂÎÄ
         glfwMakeContextCurrent(window);
 
-        // è®¾ç½®çª—å£å›è°ƒå‡½æ•°, eg: æŒ‰escé€€å‡º
+        // ÉèÖÃ´°¿Ú»Øµ÷º¯Êı, eg: °´escÍË³ö
         setCallBack();
 
-        // è®¾ç½®è§†å£å¤§å°
+        // ÉèÖÃÊÓ¿Ú´óĞ¡
         setViewport();
 
-        // åŒç¼“å†²äº¤æ¢é—´éš”è®¾ç½®ä¸º1ï¼Œä»¥å…äº¤æ¢é¢‘ç¹é€ æˆå±å¹•æ’•è£‚
+        // Ë«»º³å½»»»¼ä¸ôÉèÖÃÎª1£¬ÒÔÃâ½»»»Æµ·±Ôì³ÉÆÁÄ»ËºÁÑ
         glfwSwapInterval(1);
 
+        // TODO: ½«äÖÈ¾Âß¼­¶ªµ½ÁíÒ»¸öÏß³Ì
         renderer->render();
 
         // render loop
         while (!glfwWindowShouldClose(window)) {
-            // éé˜»å¡å¤„ç†IOäº‹ä»¶
+            // ·Ç×èÈû´¦ÀíIOÊÂ¼ş
             glfwPollEvents();
-            // æ¸…é™¤é¢œè‰²ç¼“å­˜
-            clearWith();
-            // æ›´æ–°ç”»é¢
+            // Çå³ıÑÕÉ«»º´æ
+            // clearWith();
+            // ¸üĞÂ»­Ãæ
             update();
-            // åŒç¼“å†²åŒºäº¤æ¢
+            // Ë«»º³åÇø½»»»
             glfwSwapBuffers(window);
         }
     }
 private:
-#pragma region ç”»é¢æ›´æ–°é€»è¾‘
+#pragma region »­Ãæ¸üĞÂÂß¼­
 
-    // è‡ªåŠ¨æ§åˆ¶ç»˜å›¾æ¨¡å¼ä½œç”¨åŸŸ
+    // ×Ô¶¯¿ØÖÆ»æÍ¼Ä£Ê½×÷ÓÃÓò
     struct ModeGuard {
-        // æ§åˆ¶ç±»å‹:   GL_TRIANGLES, GL_LINES, GL_POINTS, GL_POLYGON
-        // åˆ†åˆ«è¡¨ç¤º:   ä¸‰è§’å½¢,        çº¿æ®µ,      åƒç´ ,       å¤šè¾¹å½¢
+        // ¿ØÖÆÀàĞÍ:   GL_TRIANGLES, GL_LINES, GL_POINTS, GL_POLYGON
+        // ·Ö±ğ±íÊ¾:   Èı½ÇĞÎ,        Ïß¶Î,      ÏñËØ,       ¶à±ßĞÎ
         explicit ModeGuard(GLenum mode) { glBegin(mode); }
 
         ~ModeGuard() { glEnd(); }
@@ -91,7 +93,6 @@ private:
     void
     update() {
         ModeGuard guard(GL_POINTS);
-        // TODO: å°†æ¸²æŸ“é€»è¾‘ä¸¢åˆ°å¦ä¸€ä¸ªçº¿ç¨‹
         if (updateRotate) {
             for (auto& model : renderer->scene.models) {
                 model.RotateAroundN(angleAroundN, axis);
@@ -104,16 +105,21 @@ private:
             for (int j = 0; j < static_cast<int>(height); ++j) {
                 auto y = static_cast<numberType>(j) / height * 2 - 1;
                 auto color = renderer->getPixel(i, j);
-                 glColor3d(color[0], color[1], color[2]);
-                 glVertex2d(x, y);
+                glColor3d(color[0], color[1], color[2]);
+                glVertex2d(x, y);
             }
+        }
+        if (isSaved) {
+            renderer->outPutImage->saveToDisk(renderer->savePathName);
+            std::cout << "Save Successfully!" << std::endl;
+            isSaved = false;
         }
     }
 
 #pragma endregion
 
 private:
-#pragma region å°è£…OpenGlçš„å¸¸ç”¨å‡½æ•°
+#pragma region ·â×°OpenGlµÄ³£ÓÃº¯Êı
     static bool
     init() {
         if (glfwInit() == false) {
@@ -150,7 +156,7 @@ private:
 
     static void
     clearWith(Vector4 color = {0, 0, 0, 0}) {
-        glClearColor(color.x(), color.y(), color.z(), color.w());
+        glClearColor(float(color.x()), float(color.y()), float(color.z()), float(color.w()));
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
@@ -176,15 +182,22 @@ private:
         else if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
             axis = {0, 0, 1};
         }
+        else if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
+            axis = {0, 0, 1};
+        }
+        else if (key == GLFW_KEY_ENTER && action == GLFW_PRESS) {
+            isSaved = true;
+        }
     }
 #pragma endregion
 
 };
 
-// é™æ€æ•°æ®æˆå‘˜åˆå§‹åŒ–
+// ¾²Ì¬Êı¾İ³ÉÔ±³õÊ¼»¯
 numberType GUI::angleAroundN = 0.0;
 bool GUI::updateRotate = false;
 Vector3 GUI::axis = Vector3{0, 1, 0};
+bool GUI::isSaved = false;
 
 }
 

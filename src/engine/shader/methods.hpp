@@ -83,9 +83,9 @@ struct ShaderUtils {
         auto light2 = Light{{-20, 20, 0}, {500, 500, 500}};
         std::vector<Light> lights = {light1, light2};
 
-        Vector3 ambient_light_intensity = kd;  // 环境光强度
-        Vector3 eye_pos = {0, 0, 10};                    // 观察位置
-        numberType p = 150.0;                            // Phong反射模型幂系数
+        Vector3 ambient_light_intensity = kd;                  // 环境光强度
+        Vector3 eye_pos = {0, 0, 10};                          // 观察位置
+        numberType p = 150.0;                                  // Phong反射模型幂系数
 
         Vector3 color = finalColor;                            // 颜色
         Vector3 point = fs.viewSpacePosition.to<3>();          // 着色点

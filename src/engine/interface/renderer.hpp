@@ -13,7 +13,10 @@ namespace anya {
 
 class Renderer {
 public:
-    Scene  scene;   // 场景
+    Scene  scene{};                          // 场景
+    Vector3 background{};                    // 背景颜色
+    std::shared_ptr<Texture> outPutImage{};  // 输出图片
+    std::string savePathName;                // 保存路径
 public:
     virtual void render() = 0;
     [[nodiscard]] virtual Vector3 getPixel(int x, int y) const = 0;
