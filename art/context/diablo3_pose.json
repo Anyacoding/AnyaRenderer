@@ -25,7 +25,7 @@
         "axis": [0, 1, 0]
       },
       "scale": {
-        "ratio": 2.5
+        "ratio": 2.7
       },
       "texture": {
         "texturePath": "../art/models/diablo3_pose/diablo3_pose_diffuse.tga"
@@ -41,7 +41,7 @@
         "axis": [0, 1, 0]
       },
       "scale": {
-        "ratio": 2.5
+        "ratio": 2.7
       },
       "texture": {
         "texturePath": "../art/models/floor/floor_diffuse.tga"

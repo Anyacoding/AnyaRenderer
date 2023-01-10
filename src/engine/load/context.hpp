@@ -102,9 +102,9 @@ private:
 
     static std::string
     buildSavePath(const std::string& name, const std::string& suffix) {
-        // path = "../art/image/${imageName}.${fileSuffix}"
+        // path = "../art/images/${imageName}.${fileSuffix}"
         std::string path;
-        path += "../art/image/" + name + "." + suffix;
+        path += "../art/images/" + name + "." + suffix;
         return path;
     }
 };

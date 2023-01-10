@@ -8,7 +8,7 @@
     "background": [38.25, 38.25, 38.25]
   },
   "camera": {
-    "eye_pos": [0, 2.3, 10],
+    "eye_pos": [-0.3, 2.7, 10],
     "obj_pos": [0, 0, 0],
     "view_width": 1080,
     "view_height": 1080,
@@ -25,7 +25,7 @@
         "axis": [1, 0, 0]
       },
       "scale": {
-        "ratio": 0.13
+        "ratio": 0.14
       },
       "texture": {
         "texturePath": "../art/models/elfgirl/base_diffuse.tga"
@@ -41,7 +41,7 @@
         "axis": [1, 0, 0]
       },
       "scale": {
-        "ratio": 0.13
+        "ratio": 0.14
       },
       "texture": {
         "texturePath": "../art/models/elfgirl/Body_tex_003.png"
@@ -57,7 +57,7 @@
         "axis": [1, 0, 0]
       },
       "scale": {
-        "ratio": 0.13
+        "ratio": 0.14
       },
       "texture": {
         "texturePath": "../art/models/elfgirl/Body_tex_003.png"
@@ -73,7 +73,7 @@
         "axis": [1, 0, 0]
       },
       "scale": {
-        "ratio": 0.13
+        "ratio": 0.14
       },
       "texture": {
         "texturePath": "../art/models/elfgirl/Body_tex_003.png"
@@ -89,7 +89,7 @@
         "axis": [1, 0, 0]
       },
       "scale": {
-        "ratio": 0.13
+        "ratio": 0.14
       },
       "texture": {
         "texturePath": "../art/models/elfgirl/face_diffuse.tga"
@@ -105,7 +105,7 @@
         "axis": [1, 0, 0]
       },
       "scale": {
-        "ratio": 0.13
+        "ratio": 0.14
       },
       "texture": {
         "texturePath": "../art/models/elfgirl/face_diffuse.tga"
@@ -121,7 +121,7 @@
         "axis": [1, 0, 0]
       },
       "scale": {
-        "ratio": 0.13
+        "ratio": 0.14
       },
       "texture": {
         "texturePath": "../art/models/elfgirl/hair_diffuse.tga"
