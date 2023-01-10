@@ -15,16 +15,16 @@
 - stb_image
 
 ## Screenshots
-| Scene                                          | Description |
-|------------------------------------------------|-------------|
-| <img src="art/image/triangle.png" width="600"> | `Triangle`  |
-| <img src="art/image/MSAA.jpg" width="600">     | `MSAA`      |
-| <img src="art/image/cow.png" width="600">      | `Cow`       |
-| <img src="art/image/elfgirl.png" width="600">  | `Elfgirl`   |
-| <img src="art/image/azura.png" width="600">    | `Azura`     |
-| <img src="art/image/diablo3.png" width="600">  | `Diablo3`   |
-| <img src="art/image/boggie.png" width="600">   | `Boggie`    |
-| <img src="art/image/robot.png" width="600">    | `Robot`     |
-| <img src="art/image/assassin.png" width="600"> | `Assassin`  |
-| <img src="art/image/marry.png" width="600">    | `Marry`     |
-| <img src="art/image/kgirl.png" width="600">    | `Kgirl`     |
+| Scene                                           | Description |
+|-------------------------------------------------|-------------|
+| <img src="art/images/triangle.png" width="600"> | `Triangle`  |
+| <img src="art/images/MSAA.jpg" width="600">     | `MSAA`      |
+| <img src="art/images/cow.png" width="600">      | `Cow`       |
+| <img src="art/images/elfgirl.png" width="600">  | `Elfgirl`   |
+| <img src="art/images/azura.png" width="600">    | `Azura`     |
+| <img src="art/images/diablo3.png" width="600">  | `Diablo3`   |
+| <img src="art/images/boggie.png" width="600">   | `Boggie`    |
+| <img src="art/images/robot.png" width="600">    | `Robot`     |
+| <img src="art/images/assassin.png" width="600"> | `Assassin`  |
+| <img src="art/images/marry.png" width="600">    | `Marry`     |
+| <img src="art/images/kgirl.png" width="600">    | `Kgirl`     |
