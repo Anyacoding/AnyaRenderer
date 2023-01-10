@@ -8,7 +8,7 @@
     "background": [38.25, 38.25, 38.25]
   },
   "camera": {
-    "eye_pos": [0, 1, 10],
+    "eye_pos": [0, 1.5, 10],
     "obj_pos": [0, 0, 0],
     "view_width": 1080,
     "view_height": 1080,
@@ -25,7 +25,7 @@
         "axis": [1, 0, 0]
       },
       "scale": {
-        "ratio": 0.2
+        "ratio": 0.25
       },
       "texture": {
         "texturePath": "../art/models/robot/robot_basecolor.tga"
@@ -41,7 +41,7 @@
         "axis": [1, 0, 0]
       },
       "scale": {
-        "ratio": 0.2
+        "ratio": 0.25
       },
       "texture": {
         "texturePath": "../art/models/robot/robot_basecolor.tga"
@@ -57,7 +57,7 @@
         "axis": [1, 0, 0]
       },
       "scale": {
-        "ratio": 0.2
+        "ratio": 0.25
       },
       "texture": {
         "texturePath": "../art/models/robot/robot_basecolor.tga"
