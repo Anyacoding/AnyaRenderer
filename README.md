@@ -95,7 +95,7 @@ src
 │   │ 
 │   ├── load                    // 资源载入
 │   │   ├── context.hpp         // 上下文载入
-│   │   ├── model.hpp           // 光栅化器模型载入
+│   │   ├── model.hpp           // 模型载入
 │   │   └── texture.hpp         // 图像纹理载入
 │   │
 │   ├── renderer                // 渲染器

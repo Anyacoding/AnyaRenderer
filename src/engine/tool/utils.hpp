@@ -31,6 +31,14 @@ struct MathUtils {
     lerp(numberType k, const T& v0, const T& v1) {
         return v0 + k * (v1 - v0);
     }
+
+    // 约束范围
+    static constexpr numberType
+    clamp(numberType lower, numberType upper, numberType val) {
+        val = val < lower ? lower : val;
+        val = val > upper ? upper : val;
+        return val;
+    }
 };
 
 // 变换矩阵的工厂函数

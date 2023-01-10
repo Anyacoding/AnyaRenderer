@@ -64,17 +64,13 @@ public:
         std::vector<stbi_uc> buffer(width * height * bpp);
         for (int i = height - 1, k = 0; i >= 0; --i) {
             for (int j = 0; j < width; ++j, ++k) {
-                // TODO: 因为颜色溢出会导致保存图片出现异常，所以要尽快封装color类
-                auto color = getPixel(j, i);
-                auto r = color[0];
-                auto g = color[1];
-                auto b = color[2];
-                r = r < 0 ? 0 : r;  r = r > 1 ? 1 : r;
-                g = g < 0 ? 0 : g;  g = g > 1 ? 1 : g;
-                b = b < 0 ? 0 : b;  b = b > 1 ? 1 : b;
-                buffer[k * bpp]     = stbi_uc(r * 255);
-                buffer[k * bpp + 1] = stbi_uc(g * 255);
-                buffer[k * bpp + 2] = stbi_uc(b * 255);
+                auto color = getPixel(j, i) * 255;
+                auto r = MathUtils::clamp(0, 255, color[0]);
+                auto g = MathUtils::clamp(0, 255, color[1]);
+                auto b = MathUtils::clamp(0, 255, color[2]);
+                buffer[k * bpp]     = stbi_uc(r);
+                buffer[k * bpp + 1] = stbi_uc(g);
+                buffer[k * bpp + 2] = stbi_uc(b);
             }
         }
         return buffer;
