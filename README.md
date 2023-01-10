@@ -2,11 +2,11 @@
 - ```AnyaRenderer``` 是一个迷你的软渲染器，目前实现了光栅化的功能，基于 C++20 开发。
 - 实现了矩阵向量库，线性插值，z-buffer 深度检测， MSAA 抗锯齿等功能。
 
-## Development environment
+## Development Environment
 - Clion + MinGW w64 9.0
 - Windows
 
-## Build
+## Build System
 - CMake VERSION 3.20
 
 ## Dependent
@@ -58,3 +58,63 @@
     - [ ] AABB包围盒
     - [ ] 层次包围盒
 
+## Modules
+```
+AnyaRenderer
+├── art             // 美术资源
+│   ├── context     // 上下文配置文件
+│   ├── models      // 模型文件 
+│   └── images      // 输出图片
+│
+├── dependent       // 第三方库
+│   ├── include     // 引入的头文件
+│   ├── lib         // 需要链接的静态库和动态库文件
+│   └── src         // 引入的源码
+│
+├── src             // 项目源码
+├── .gitattributes  // git项目属性
+├── .gitignore      // git忽略文件
+├── .clang-format   // 格式控制文件
+├── CMakeLists.txt  // 项目构建配置
+└── README.md       // 介绍文件
+    
+```
+### Source Code Module
+```
+src
+├── engine
+│   ├── component               // 场景组件
+│   │   ├── camera.hpp          // 摄像机
+│   │   ├── light.hpp           // 光源
+│   │   ├── object              // 图元
+│   │   │   └── triangle.hpp    // 三角形
+│   │   └── scene.hpp           // 场景类
+│   │
+│   ├── interface               // 接口
+│   │   └── renderer.hpp        // 渲染器接口
+│   │ 
+│   ├── load                    // 资源载入
+│   │   ├── context.hpp         // 上下文载入
+│   │   ├── model.hpp           // 光栅化器模型载入
+│   │   └── texture.hpp         // 图像纹理载入
+│   │
+│   ├── renderer                // 渲染器
+│   │   └── rasterizer.hpp      // 光栅化器
+│   │
+│   ├── shader                  // 着色器
+│   │   ├── fragment_shader.hpp // 片元着色器
+│   │   ├── vertex_shader.hpp   // 顶点着色器
+│   │   └── methods.hpp         // 着色方法
+│   │
+│   └── tool                    // 工具
+│       ├── matrix.hpp          // 矩阵类
+│       ├── vec.hpp             // 向量类
+│       └── utils.hpp           // 常用工具函数
+│ 
+├── ui                          // 图形界面
+│   └── gui.hpp                 // 负责展示实时渲染效果和实现交互
+├── test                        // 测试
+│   ├── test.cpp                // 测试单元
+│   └── test.h                  // 测试头文件
+└── main.cpp                    // 入口文件
+```
