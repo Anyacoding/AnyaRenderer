@@ -16,6 +16,7 @@
 #include "interface/renderer.hpp"
 #include "renderer/rasterizer.hpp"
 
+
 namespace anya{
 
 class GUI {
@@ -30,11 +31,11 @@ private:
     std::shared_ptr<Renderer> renderer;
     // 绕N轴旋转角
     static numberType angleAroundN;
-    static bool       updateRotate;
     // 旋转轴
     static Vector3 axis;
-    // 保存截图
+    // 状态变量
     static bool isSaved;
+    static bool updateRotate;
 public:
     GUI(std::string_view title, GLdouble width, GLdouble height, std::shared_ptr<Renderer> renderer)
         :title(title), width(width), height(height), renderer(std::move(renderer)) {}
@@ -71,7 +72,7 @@ public:
             // 非阻塞处理IO事件
             glfwPollEvents();
             // 清除颜色缓存
-            // clearWith();
+            clearWith();
             // 更新画面
             update();
             // 双缓冲区交换

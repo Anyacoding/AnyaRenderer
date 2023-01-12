@@ -1,0 +1,35 @@
+{
+  "image": {
+    "name": "sketch",
+    "suffix": "png"
+  },
+  "renderer": {
+    "type": "Rasterizer",
+    "background": [38.25, 38.25, 38.25]
+  },
+  "camera": {
+    "eye_pos": [0, 3, 10],
+    "obj_pos": [0, 0, 0],
+    "view_width": 1080,
+    "view_height": 1080,
+    "fovY": 45
+  },
+  "models": [
+    {
+      "objPath": "../art/models/sketch/final_v01.obj",
+      "shader": {
+        "fragmentShader": "texture_fragment_shader"
+      },
+      "rotate": {
+        "angle": 20,
+        "axis": [0, 1, 0]
+      },
+      "scale": {
+        "ratio": 0.04
+      },
+      "texture": {
+        "texturePath": "../art/models/sketch/all.png"
+      }
+    }
+  ]
+}

@@ -7,6 +7,7 @@
 
 #include "interface/renderer.hpp"
 #include "tool/utils.hpp"
+#include "tool/progress.hpp"
 
 // 本模块实现最基本的光栅化成像渲染器
 
@@ -20,7 +21,6 @@ private:
 
     std::vector<Vector3> frame_buf;  // 帧缓存
     std::vector<numberType> z_buf;   // 深度缓存
-
     std::vector<Vector3> frame_msaa; // MSAA 4倍采样
     std::vector<numberType> z_msaa;
 

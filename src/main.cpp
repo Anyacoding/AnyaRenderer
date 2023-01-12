@@ -1,9 +1,5 @@
 #include <iostream>
-#include "test/test.h"
-#include "tool/vec.hpp"
 #include "ui/gui.hpp"
-#include "renderer/rasterizer.hpp"
-#include "load/model.hpp"
 #include "component/camera.hpp"
 #include "load/context.hpp"
 

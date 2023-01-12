@@ -17,7 +17,7 @@ namespace anya {
 constexpr numberType pi  = std::numbers::pi_v<numberType>;
 constexpr numberType inf = std::numeric_limits<numberType>::infinity();
 
-// 通用工具函数
+// 通用数学工具函数
 struct MathUtils {
     // 角度转弧度
     static constexpr numberType
