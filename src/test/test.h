@@ -14,5 +14,6 @@ void matrixTest();
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 int testGlfw();
+void testRayTracer();
 
 #endif //ANYA_ENGINE_TEST_H

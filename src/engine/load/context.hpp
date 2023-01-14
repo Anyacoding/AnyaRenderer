@@ -49,52 +49,28 @@ private:
         _renderer->savePathName = buildSavePath(image["name"], image["suffix"]);
         this->_renderer->outPutImage = std::make_shared<Texture>(view_width, view_height, this->_renderer->background);
 
-        // 加载models字段
-        json models = config["models"];
-        for (auto item : models) {
-            // 加载model的obj
-            Model model(item["objPath"]);
-
-            // 加载model的shaders
-            json shader = item["shader"];
-            model.setFragmentShaderMethod(shader["fragmentShader"]);
-
-            // 加载model的rotate
-            json rotate = item["rotate"];
-            model.setBaseMat(Transform::RotateAroundN(rotate["angle"], toVector3(rotate["axis"])));
-
-            // 加载model的scale
-            json scale = item["scale"];
-            model.setBaseMat(Transform::scale(scale["ratio"]));
-
-            // 加载model的texture
-            if (item.value("texture", json::object()) != json::object()) {
-                json texture = item["texture"];
-                model.fragmentShader.texture = std::make_shared<Texture>(texture["texturePath"]);
+        if (renderer["type"] == "Rasterizer") {
+            // 加载models字段
+            json models = config["models"];
+            for (const auto& item : models) {
+                this->_renderer->scene.addModel(toModel(item));
             }
-        #ifdef Z_BUFFER_TEST
-            model.TriangleList[0].setColor(0, 217.0, 238.0, 185.0);
-            model.TriangleList[0].setColor(1, 217.0, 238.0, 185.0);
-            model.TriangleList[0].setColor(2, 217.0, 238.0, 185.0);
-            model.TriangleList[1].setColor(0, 185.0, 217.0, 238.0);
-            model.TriangleList[1].setColor(1, 185.0, 217.0, 238.0);
-            model.TriangleList[1].setColor(2, 185.0, 217.0, 238.0);
-        #endif
-            this->_renderer->scene.addModel(model);
+        }
+        else if (renderer["type"] == "RayTracer") {
+            // 加载objects字段
+            json objects = config["objects"];
+            for (const auto& item : objects) {
+                this->_renderer->scene.addObject(toObject(item));
+            }
+            // 加载lights字段
+            json lights = config["lights"];
+            for (const auto& item : lights) {
+                this->_renderer->scene.addLight(toLight(item));
+            }
         }
     }
 
 private:
-    static std::shared_ptr<Renderer>
-    makeRenderer(const std::string& type) {
-        if (type == "Rasterizer") {
-            return std::make_shared<Rasterizer>();
-        }
-        else {
-            throw std::runtime_error("renderer type error");
-        }
-    }
-
     static Vector3
     toVector3(const json& obj) {
         if (obj.is_array() && obj.size() == 3) {
@@ -102,6 +78,123 @@ private:
         }
         else {
             throw std::runtime_error("json obj can not be transform by toVector3()");
+        }
+    }
+
+    static Vector2
+    toVector2(const json& obj) {
+        if (obj.is_array() && obj.size() == 2) {
+            return { obj[0], obj[1] };
+        }
+        else {
+            throw std::runtime_error("json obj can not be transform by toVector3()");
+        }
+    }
+
+    static Model
+    toModel(const json& item) {
+        // 加载model的obj
+        Model model(item["objPath"]);
+
+        // 加载model的shaders
+        json shader = item["shader"];
+        model.setFragmentShaderMethod(shader["fragmentShader"]);
+
+        // 加载model的rotate
+        json rotate = item["rotate"];
+        model.setBaseMat(Transform::RotateAroundN(rotate["angle"], toVector3(rotate["axis"])));
+
+        // 加载model的scale
+        json scale = item["scale"];
+        model.setBaseMat(Transform::scale(scale["ratio"]));
+
+        // 加载model的texture
+        if (item.value("texture", json::object()) != json::object()) {
+            json texture = item["texture"];
+            model.fragmentShader.texture = std::make_shared<Texture>(texture["texturePath"]);
+        }
+    #ifdef Z_BUFFER_TEST
+        model.TriangleList[0].setColor(0, 217.0, 238.0, 185.0);
+        model.TriangleList[0].setColor(1, 217.0, 238.0, 185.0);
+        model.TriangleList[0].setColor(2, 217.0, 238.0, 185.0);
+        model.TriangleList[1].setColor(0, 185.0, 217.0, 238.0);
+        model.TriangleList[1].setColor(1, 185.0, 217.0, 238.0);
+        model.TriangleList[1].setColor(2, 185.0, 217.0, 238.0);
+    #endif
+        return model;
+    }
+
+    static std::shared_ptr<Object>
+    toObject(const json& item) {
+        std::string type = item["type"];
+        if (type == "sphere") {
+            return toSphere(item);
+        }
+        else if (type == "triangle") {
+            return toTriangle(item);
+        }
+        else {
+            throw std::runtime_error("object type error");
+        }
+    }
+
+    // TODO: 优化材质导入
+    static std::shared_ptr<Object>
+    toSphere(const json& obj) {
+        auto center = toVector3(obj["center"]);
+        numberType radius = obj["radius"];
+        std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>(center, radius);
+
+        json material = obj["material"];
+        std::string MaterialType = material["type"];
+        if (MaterialType == "REFLECTION_AND_REFRACTION") {
+            sphere->materialType = REFLECTION_AND_REFRACTION;
+            sphere->ior = material["ior"];
+        }
+        else if (MaterialType == "DIFFUSE_AND_GLOSSY") {
+            sphere->materialType = DIFFUSE_AND_GLOSSY;
+            sphere->diffuseColor = toVector3(material["diffuseColor"]);
+        }
+        else {
+            throw std::runtime_error("material type error");
+        }
+
+        return sphere;
+    }
+
+    static std::shared_ptr<Object>
+    toTriangle(const json& obj) {
+        std::shared_ptr<Triangle> triangle = std::make_shared<Triangle>();
+        json vertexes = obj["vertexes"];
+        int index = 0;
+        for (const auto& vertex : vertexes) {
+            triangle->setVertex(index, toVector3(vertex).to4());
+            ++index;
+        }
+        json stCoordinates = obj["stCoordinates"];
+        index = 0;
+        for (const auto& st : stCoordinates) {
+            triangle->setST(index, toVector2(st));
+            ++index;
+        }
+        return triangle;
+    }
+
+    static Light
+    toLight(const json& obj) {
+        return Light{ toVector3(obj["position"]), toVector3(obj["intensity"]) };
+    }
+
+    static std::shared_ptr<Renderer>
+    makeRenderer(const std::string& type) {
+        if (type == "Rasterizer") {
+            return std::make_shared<Rasterizer>();
+        }
+        else if (type == "RayTracer") {
+            return std::make_shared<RayTracer>();
+        }
+        else {
+            throw std::runtime_error("renderer type error");
         }
     }
 

@@ -20,6 +20,7 @@
 - Save: 按下```Enter```保存当前模型姿态为图片。
 
 ## Screenshots
+### Models
 | Scene                                           | Description |
 |-------------------------------------------------|-------------|
 | <img src="art/images/triangle.png" width="600"> | `Triangle`  |
@@ -34,16 +35,22 @@
 | <img src="art/images/marry.png" width="600">    | `Marry`     |
 | <img src="art/images/kgirl.png" width="600">    | `Kgirl`     |
 
+### Environments
+| Scene                                                | Description     |
+|------------------------------------------------------|-----------------|
+| <img src="art/images/whitted_style.png" width="600"> | `Whitted Style` |
+
+
 ## Feature
 - [x] 数学
     - [x] 向量运算
     - [x] 矩阵运算
     - [x] 工具函数
-- [ ] 图元
-    - [ ] 球体
+- [x] 图元
+    - [x] 球体
     - [ ] 矩形
     - [x] 三角形
-    - [ ] 模型
+    - [x] 模型
 - [x] 纹理
     - [x] 单色纹理
     - [x] 图片纹理
@@ -51,7 +58,7 @@
     - [x] Bilinear双线性插值
 - [x] 渲染
     - [x] 光栅化
-    - [ ] 光线追踪
+    - [x] 光线追踪
     - [x] 着色器
     - [x] MSAA抗锯齿
 - [ ] 加速结构

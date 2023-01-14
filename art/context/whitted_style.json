@@ -1,0 +1,79 @@
+{
+  "image": {
+    "name": "whitted_style",
+    "suffix": "png"
+  },
+  "renderer": {
+    "type": "RayTracer",
+    "background": [59.99997, 172.00005, 214.999935]
+  },
+  "camera": {
+    "eye_pos": [0, 0, 0],
+    "obj_pos": [0, 0, 0],
+    "view_width": 1080,
+    "view_height": 1080,
+    "fovY": 90
+  },
+  "objects": [
+    {
+      "type": "sphere",
+      "center": [-1, 0, -12],
+      "radius": 2,
+      "material": {
+        "type": "DIFFUSE_AND_GLOSSY",
+        "diffuseColor": [0.6, 0.7, 0.8]
+      }
+    },
+    {
+      "type": "sphere",
+      "center": [0.5, -0.5, -8],
+      "radius": 1.5,
+      "material": {
+        "type": "REFLECTION_AND_REFRACTION",
+        "ior": 1.5
+      }
+    },
+    {
+      "type": "triangle",
+      "vertexes": [
+        [-5,-3,-6],
+        [5,-3,-6],
+        [-5,-3,-16]
+      ],
+      "stCoordinates": [
+        [0, 0],
+        [1, 0],
+        [0, 1]
+      ],
+      "material": {
+        "type": "DIFFUSE_AND_GLOSSY"
+      }
+    },
+    {
+      "type": "triangle",
+      "vertexes": [
+        [5,-3,-6],
+        [5,-3,-16],
+        [-5,-3,-16]
+      ],
+      "stCoordinates": [
+        [1, 0],
+        [1, 1],
+        [0, 1]
+      ],
+      "material": {
+        "type": "DIFFUSE_AND_GLOSSY"
+      }
+    }
+  ],
+  "lights": [
+    {
+      "position": [-20, 70, 20],
+      "intensity": [0.5, 0.5, 0.5]
+    },
+    {
+      "position": [30, 50, -12],
+      "intensity": [0.5, 0.5, 0.5]
+    }
+  ]
+}
