@@ -1,5 +1,5 @@
 # AnyaRenderer
-- ```AnyaRenderer``` 是一个迷你的软渲染器，目前实现了光栅化的功能，基于 C++20 开发。
+- ```AnyaRenderer``` 是一个迷你的软渲染器，目前实现了光栅化和 Whitted Style 风格的光线追踪的功能，基于 C++20 开发。
 - 实现了矩阵向量库，线性插值，z-buffer 深度检测， MSAA 抗锯齿等功能。
 
 ## Development Environment

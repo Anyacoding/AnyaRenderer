@@ -8,10 +8,10 @@
     "background": [59.99997, 172.00005, 214.999935]
   },
   "camera": {
-    "eye_pos": [0, 0, 0],
+    "eye_pos": [0, 0, -1],
     "obj_pos": [0, 0, 0],
-    "view_width": 1080,
-    "view_height": 1080,
+    "view_width": 1280,
+    "view_height": 960,
     "fovY": 90
   },
   "objects": [
