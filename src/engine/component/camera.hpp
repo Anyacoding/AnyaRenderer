@@ -7,6 +7,7 @@
 
 #include "tool/matrix.hpp"
 #include "tool/utils.hpp"
+#include "component/ray.hpp"
 #include <cmath>
 #include <GLFW/glfw3.h>
 
@@ -27,7 +28,6 @@ private:
     Vector3 eye_pos;                  // 摄像机位置
     Vector3 gaze_pos;                 // 观察方向
     Vector3 view_up;                  // 视点的正上方向
-
     GLdouble view_width, view_height;    // 视窗大小
     GLdouble fovY;                       // 视野角度
     GLdouble zNear = -0.1, zFar = -50.0; // 视锥近远平面距离
@@ -47,15 +47,28 @@ public:
         // TODO: 视点的正上方向(还不会求我去)
     }
 
+    // 获取长宽
     [[nodiscard]] std::pair<GLdouble, GLdouble>
     getWH() const {
         return { view_width, view_height };
-    };
+    }
+
+    // 获取视野角度
+    [[nodiscard]] numberType
+    getFovY() const noexcept { return fovY; }
 
     // 设置相机位置
     void
-    setCameraPos(const Vector3& pos) {
-        eye_pos = pos;
+    setCameraPos(const Vector3& pos) { eye_pos = pos; }
+
+    // 获取相机位置
+    [[nodiscard]] const Vector3&
+    getEyePos() const { return eye_pos; }
+
+    // 深度信息修正参数
+    [[nodiscard]] std::pair<numberType, numberType>
+    getFixedArgs() const {
+        return {(zNear - zFar) / 2, (zNear + zFar) / 2};
     }
 
 public:
@@ -130,11 +143,19 @@ public:
         return viewPortMat;
     }
 
-    // 深度信息修正参数
-    [[nodiscard]] std::pair<numberType, numberType>
-    getFixedArgs() const {
-        return {(zNear - zFar) / 2, (zNear + zFar) / 2};
+public:
+    // 发出光线，用于光线追踪
+    [[nodiscard]] Ray
+    biuRay(int i, int j) const {
+        Ray ray{};
+        numberType scale = std::tan(fovY / 2);
+        numberType x = (2 * ((i + 0.5) / view_width) - 1) * scale * aspect_ratio;
+        numberType y = (1 - 2 * ((j + 0.5) / view_height)) * scale;
+        ray.dir = Vector3{x, y, -1}.normalize();
+        ray.pos = eye_pos;
+        return ray;
     }
+
 };
 
 }

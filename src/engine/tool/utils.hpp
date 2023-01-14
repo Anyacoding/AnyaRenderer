@@ -16,6 +16,8 @@ namespace anya {
 // 常用数学常数
 constexpr numberType pi  = std::numbers::pi_v<numberType>;
 constexpr numberType inf = std::numeric_limits<numberType>::infinity();
+constexpr numberType KMAX = std::numeric_limits<numberType>::max();
+constexpr numberType epsilon = 0.00001;
 
 // 通用数学工具函数
 struct MathUtils {
@@ -32,12 +34,37 @@ struct MathUtils {
         return v0 + k * (v1 - v0);
     }
 
+    // 重心坐标插值
+    template<class T>
+    static T
+    interpolate(numberType alpha, numberType beta, numberType gamma, T a, T b, T c, numberType fixed = 1.0) {
+        return (alpha * a + beta * b + gamma * c) * fixed;
+    }
+
     // 约束范围
     static constexpr numberType
     clamp(numberType lower, numberType upper, numberType val) {
-        val = val < lower ? lower : val;
-        val = val > upper ? upper : val;
-        return val;
+        return std::max(lower, std::min(upper, val));
+    }
+
+    // 解二元一次函数的根
+    static std::optional<std::pair<numberType, numberType>>
+    solveQuadratic(numberType a, numberType b, numberType c) {
+        std::optional<std::pair<numberType, numberType>> ans;
+        numberType delta = std::pow(b, 2) - 4 * a * c;
+        if (delta < 0) {
+            return ans;
+        }
+        else if (delta < 1e-8) {
+            numberType t = -b / (2 * a);
+            ans.emplace(std::make_pair(t, t));
+        }
+        else {
+            numberType t0 = (-b - std::sqrt(delta)) / (2 * a);
+            numberType t1 = (-b + std::sqrt(delta)) / (2 * a);
+            ans.emplace(std::make_pair(t0, t1));
+        }
+        return ans;
     }
 };
 

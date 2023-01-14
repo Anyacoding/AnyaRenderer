@@ -6,14 +6,17 @@
 #define ANYA_ENGINE_CONTEXT_HPP
 
 #include "interface/renderer.hpp"
+#include "renderer/raytracer.hpp"
 #include "component/scene.hpp"
-#include "memory"
+#include "component/object/sphere.hpp"
+#include <memory>
 
 namespace anya {
 
 class Context {
 public:
     std::shared_ptr<Renderer> _renderer;
+
 public:
     void
     loadFromJson(const json& config) {
@@ -23,6 +26,7 @@ public:
             printf("loadFromJson error: %s", err.what());
         }
     }
+
 private:
     void
     load(const json& config) {
@@ -76,9 +80,10 @@ private:
             model.TriangleList[1].setColor(1, 185.0, 217.0, 238.0);
             model.TriangleList[1].setColor(2, 185.0, 217.0, 238.0);
         #endif
-            this->_renderer->scene.models.push_back(model);
+            this->_renderer->scene.addModel(model);
         }
     }
+
 private:
     static std::shared_ptr<Renderer>
     makeRenderer(const std::string& type) {

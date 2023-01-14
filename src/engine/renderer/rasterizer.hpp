@@ -25,8 +25,10 @@ private:
     std::vector<numberType> z_msaa;
 
     GLdouble view_width = 0.0, view_height = 0.0;  // 视窗
-    numberType fixed{};                            // 重心坐标修正系数
+    numberType fixed = 1.0;                        // 重心坐标修正系数
+
 public:
+#pragma region renderer方法
     void
     render() override {
         std::tie(view_width, view_height) = scene.camera->getWH();
@@ -35,7 +37,7 @@ public:
         z_buf.assign(static_cast<long long>(view_width * view_height), inf);
         frame_msaa.assign(static_cast<long long>(view_width * view_height * 4), this->background / 4);
         z_msaa.assign(static_cast<long long>(view_width * view_height * 4), inf);
-        outPutImage->clearWith(background);
+        outPutImage->clearWith(this->background);
 
         // 获取MVP矩阵
         auto viewMat = scene.camera->getViewMat();
@@ -88,6 +90,7 @@ public:
     getPixel(int x, int y) const override {
         return frame_buf[getIndex(x, y)];
     }
+#pragma endregion
 
 private:
 #pragma region 采样
@@ -112,7 +115,7 @@ private:
                     if (insideTriangle(i + dx[k], j + dy[k], triangle.vertexes)) {
                         // 获取插值深度
                         auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + dx[k], j + dy[k], triangle);
-                        numberType z_interpolated = interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
+                        numberType z_interpolated = MathUtils::interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z(), fixed);
                         // 深度测试
                         if (z_interpolated < z_msaa[pid + k]) {
                             z_msaa[pid + k] = z_interpolated;
@@ -140,7 +143,7 @@ private:
                 if (insideTriangle(i + 0.5, j + 0.5, triangle.vertexes)) {
                     // 获取插值深度
                     auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + 0.5, j + 0.5, triangle);
-                    numberType z_interpolated = interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
+                    numberType z_interpolated = MathUtils::interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z(), fixed);
                     // 深度测试
                     if (z_interpolated < z_buf[getIndex(i, j)]) {
                         z_buf[getIndex(i, j)] = z_interpolated;
@@ -165,14 +168,14 @@ private:
                 if (insideTriangle(i + 0.5, j + 0.5, triangle.vertexes)) {
                     // 获取插值深度
                     auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + 0.5, j + 0.5, triangle);
-                    numberType z_lerp = interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
+                    numberType z_lerp = MathUtils::interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z(), fixed);
                     // 深度测试
                     if (z_lerp < z_buf[getIndex(i, j)]) {
                         z_buf[getIndex(i, j)] = z_lerp;
-                        auto normal_lerp = interpolate(alpha, beta, gamma, triangle.normals[0], triangle.normals[1], triangle.normals[2]);
-                        auto color_lerp = interpolate(alpha, beta, gamma, triangle.colors[0], triangle.colors[1], triangle.colors[2]);
-                        auto uv_lerp = interpolate(alpha, beta, gamma, triangle.uvs[0], triangle.uvs[1], triangle.uvs[2]);
-                        auto shadingcoords_lerp = interpolate(alpha, beta, gamma, viewSpace[0], viewSpace[1], viewSpace[2]);
+                        auto normal_lerp = MathUtils::interpolate(alpha, beta, gamma, triangle.normals[0], triangle.normals[1], triangle.normals[2], fixed);
+                        auto color_lerp = MathUtils::interpolate(alpha, beta, gamma, triangle.colors[0], triangle.colors[1], triangle.colors[2], fixed);
+                        auto uv_lerp = MathUtils::interpolate(alpha, beta, gamma, triangle.uvs[0], triangle.uvs[1], triangle.uvs[2], fixed);
+                        auto shadingcoords_lerp = MathUtils::interpolate(alpha, beta, gamma, viewSpace[0], viewSpace[1], viewSpace[2], fixed);
 
                         // 法向量要记得单位化!! 查了一晚上的bug呜呜
                         fragmentShader.init(shadingcoords_lerp, color_lerp, normal_lerp.to<3>().normalize().to4(0), uv_lerp);
@@ -206,14 +209,14 @@ private:
                     if (insideTriangle(i + dx[k], j + dy[k], triangle.vertexes)) {
                         // 获取插值深度
                         auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + dx[k], j + dy[k], triangle);
-                        numberType z_lerp = interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z());
+                        numberType z_lerp = MathUtils::interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z(), fixed);
                         // 深度测试
                         if (z_lerp < z_msaa[pid + k]) {
                             z_msaa[pid + k] = z_lerp;
-                            auto normal_lerp = interpolate(alpha, beta, gamma, triangle.normals[0], triangle.normals[1], triangle.normals[2]);
-                            auto color_lerp = interpolate(alpha, beta, gamma, triangle.colors[0], triangle.colors[1], triangle.colors[2]);
-                            auto uv_lerp = interpolate(alpha, beta, gamma, triangle.uvs[0], triangle.uvs[1], triangle.uvs[2]);
-                            auto shadingcoords_lerp = interpolate(alpha, beta, gamma, viewSpace[0], viewSpace[1], viewSpace[2]);
+                            auto normal_lerp = MathUtils::interpolate(alpha, beta, gamma, triangle.normals[0], triangle.normals[1], triangle.normals[2], fixed);
+                            auto color_lerp = MathUtils::interpolate(alpha, beta, gamma, triangle.colors[0], triangle.colors[1], triangle.colors[2], fixed);
+                            auto uv_lerp = MathUtils::interpolate(alpha, beta, gamma, triangle.uvs[0], triangle.uvs[1], triangle.uvs[2], fixed);
+                            auto shadingcoords_lerp = MathUtils::interpolate(alpha, beta, gamma, viewSpace[0], viewSpace[1], viewSpace[2], fixed);
 
                             // 法向量要记得单位化!! 查了一晚上的bug呜呜
                             fragmentShader.init(shadingcoords_lerp, color_lerp, normal_lerp.to<3>().normalize().to4(0), uv_lerp);
@@ -266,12 +269,6 @@ private:
         beta  = beta / vertexes[1].w();
         gamma  = gamma / vertexes[2].w();
         return { alpha, beta, gamma };
-    }
-
-    template<class T>
-    T
-    interpolate(numberType alpha, numberType beta, numberType gamma, T a, T b, T c) {
-        return (alpha * a + beta * b + gamma * c) * fixed;
     }
 
     // 计算包围盒

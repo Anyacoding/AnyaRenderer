@@ -1,11 +1,12 @@
 //
-// Created by DELL on 2023/1/10.
+// Created by Anya on 2023/1/10.
 //
 
 #ifndef ANYA_RENDERER_COLOR_HPP
 #define ANYA_RENDERER_COLOR_HPP
 
 #include "tool/vec.hpp"
+#include "tool/utils.hpp"
 
 namespace anya {
 
@@ -34,6 +35,7 @@ public:
         green = vec.y();
         blue = vec.z();
     }
+
 public:
     [[nodiscard]] constexpr numberType&
     r() noexcept {
