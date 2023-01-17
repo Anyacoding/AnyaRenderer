@@ -123,7 +123,7 @@ public:
         //           0, 0, 0, 1;
         // Mortho = Mscale * Mtrans;
 
-        // TODO: 这里有修正符号 -2 * f * n / (f - n)，没有这个符号就是深度就是反的，主要原因是我们采用的是右手系，而opengl是左手系
+        // 这里有修正符号 -2 * f * n / (f - n)，没有这个符号就是深度就是反的，主要原因是我们采用的是右手系，而opengl是左手系
         // 这里直接一步到位填好投影矩阵
         Matrix44 Mprojection{};
         Mprojection << 2 * n / (r - l), 0, (l + r) / (l - r), 0,

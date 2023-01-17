@@ -12,7 +12,6 @@
 #include "tool/utils.hpp"
 #include "component/object/triangle.hpp"
 #include "shader/fragment_shader.hpp"
-#include "shader/vertex_shader.hpp"
 #include "load/texture.hpp"
 #include "shader/methods.hpp"
 

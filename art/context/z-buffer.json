@@ -1,7 +1,11 @@
 {
+  "image": {
+    "name": "z-buffer",
+    "suffix": "png"
+  },
   "renderer": {
     "type": "Rasterizer",
-    "background": [38.25, 38.25, 38.25]
+    "background": [0, 0, 0]
   },
   "camera": {
     "eye_pos": [0, 0, 5],
@@ -14,7 +18,7 @@
     {
       "objPath": "../art/models/z-buffer/z-buffer.obj",
       "shader": {
-        "fragmentShader": "phong_fragment_shader"
+        "fragmentShader": "simple_fragment_shader"
       },
       "rotate": {
         "angle": 0,

@@ -21,7 +21,7 @@ void runTask(const std::string& path) {
 
 int main() {
     std::cout << "Hello, MnZn!" << std::endl;
-    runTask("../art/context/whitted_style.json");
+    runTask("../art/context/elfgirl.json");
     return 0;
 }
 

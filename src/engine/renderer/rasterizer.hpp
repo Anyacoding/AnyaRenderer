@@ -7,7 +7,7 @@
 
 #include "interface/renderer.hpp"
 #include "tool/utils.hpp"
-#include "tool/progress.hpp"
+
 
 // 本模块实现最基本的光栅化成像渲染器
 
@@ -49,9 +49,8 @@ public:
 
         // 渲染每个model
         for (auto& model : scene.models) {
-            // TODO: 将顶点的处理逻辑丢到vertex_shader里
-            Matrix44 scale = Matrix44::Identity();
-            auto modelMat = model.modelMat * scale;    // 获取每个model的modelMat
+            // 获取每个model的modelMat
+            auto modelMat = model.modelMat;
             MVP =  projectionMat * viewMat * modelMat;
             invMat = (viewMat * modelMat).inverse().transpose();
 
@@ -66,21 +65,18 @@ public:
                     vertex /= w;
                     vertex.w() = w;
                     vertex.z() = vertex.z() * f1 + f2;
-
                 }
                 for (auto& normal : triangle.normals) {
                     // 对法线进行变换
                     normal = invMat * normal;
                 }
 
-            #ifdef Z_BUFFER_TEST
-                drawTriangle(triangle);
-            #else
+            #ifndef Z_BUFFER_TEST
                 triangle.setColor(0, 148, 121.0, 92.0);
                 triangle.setColor(1, 148, 121.0, 92.0);
                 triangle.setColor(2, 148, 121.0, 92.0);
-                drawTriangleWithMSAA(triangle, viewSpace, model.fragmentShader);
             #endif
+                drawTriangleWithMSAA(triangle, viewSpace, model.fragmentShader);
             }
         }
     }
@@ -94,66 +90,6 @@ public:
 
 private:
 #pragma region 采样
-    void
-    drawTriangleWithMSAA(const Triangle& triangle) {
-        // 缓存三角形的三个顶点
-        auto a = triangle.a();
-        auto b = triangle.b();
-        auto c = triangle.c();
-        // 计算包围盒
-        auto[left, right, floor, top] = getBoundingBox(a, b, c);
-        // MSAA准备
-        int pid = 0;               // 当前像素在frame_msaa中的位置
-        const std::array<numberType, 4> dx = { 0.25, 0.25, 0.75, 0.75 };
-        const std::array<numberType, 4> dy = { 0.25, 0.75, 0.25, 0.75 };
-        // z-buffer算法
-        for (int i = left; i <= right; ++i) {
-            for (int j = floor; j <= top; ++j) {
-                pid = getIndex(i, j) * 4;
-                // 4倍采样进行模糊
-                for (int k = 0; k < 4; ++k) {
-                    if (insideTriangle(i + dx[k], j + dy[k], triangle.vertexes)) {
-                        // 获取插值深度
-                        auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + dx[k], j + dy[k], triangle);
-                        numberType z_interpolated = MathUtils::interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z(), fixed);
-                        // 深度测试
-                        if (z_interpolated < z_msaa[pid + k]) {
-                            z_msaa[pid + k] = z_interpolated;
-                            frame_msaa[pid + k] = triangle.colors[0] / 4;
-                        }
-                    }
-                }
-                frame_buf[getIndex(i, j)] = frame_msaa[pid] + frame_msaa[pid + 1] + frame_msaa[pid + 2] + frame_msaa[pid + 3];
-            }
-        }
-    }
-
-    void
-    drawTriangle(const Triangle& triangle) {
-        // 缓存三角形的三个顶点
-        auto a = triangle.a();
-        auto b = triangle.b();
-        auto c = triangle.c();
-        // 计算包围盒
-        int left, right, floor, top;
-        std::tie(left, right, floor, top) = getBoundingBox(a, b, c);
-        // z-buffer算法
-        for (int i = left; i <= right; ++i) {
-            for (int j = floor; j <= top; ++j) {
-                if (insideTriangle(i + 0.5, j + 0.5, triangle.vertexes)) {
-                    // 获取插值深度
-                    auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + 0.5, j + 0.5, triangle);
-                    numberType z_interpolated = MathUtils::interpolate(alpha, beta, gamma, triangle.vertexes[0].z(), triangle.vertexes[1].z(), triangle.vertexes[2].z(), fixed);
-                    // 深度测试
-                    if (z_interpolated < z_buf[getIndex(i, j)]) {
-                        z_buf[getIndex(i, j)] = z_interpolated;
-                        frame_buf[getIndex(i, j)] = triangle.colors[0];
-                    }
-                }
-            }
-        }
-    }
-
     void
     drawTriangle(const Triangle& triangle, const std::vector<Vector4>& viewSpace, FragmentShader& fragmentShader) {
         // 缓存三角形的三个顶点
