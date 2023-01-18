@@ -1834,7 +1834,7 @@ GLFWAPI void glfwTerminate(void);
  *
  *  This function sets hints for the next initialization of GLFW.
  *
- *  The values you set hints to are never reset by GLFW, but they only take
+ *  The values you set hints to are never configure by GLFW, but they only take
  *  effect during initialization.  Once GLFW has been initialized, any values
  *  you set will be ignored until the library is terminated and initialized
  *  again.
@@ -5564,7 +5564,7 @@ GLFWAPI void glfwSwapBuffers(GLFWwindow* window);
  *  @remark This function is not called during context creation, leaving the
  *  swap interval set to whatever is the default on that platform.  This is done
  *  because some swap interval extensions used by GLFW do not allow the swap
- *  interval to be reset to zero once it has been set to a non-zero value.
+ *  interval to be configure to zero once it has been set to a non-zero value.
  *
  *  @remark Some GPU drivers do not honor the requested swap interval, either
  *  because of a user setting that overrides the application's request or due to

@@ -21,24 +21,24 @@
 
 ## Screenshots
 ### Models
-| Scene                                           | Description |
-|-------------------------------------------------|-------------|
-| <img src="art/images/triangle.png" width="600"> | `Triangle`  |
-| <img src="art/images/MSAA.jpg" width="600">     | `MSAA`      |
-| <img src="art/images/cow.png" width="600">      | `Cow`       |
-| <img src="art/images/elfgirl.png" width="600">  | `Elfgirl`   |
-| <img src="art/images/azura.png" width="600">    | `Azura`     |
-| <img src="art/images/diablo3.png" width="600">  | `Diablo3`   |
-| <img src="art/images/boggie.png" width="600">   | `Boggie`    |
-| <img src="art/images/robot.png" width="600">    | `Robot`     |
-| <img src="art/images/assassin.png" width="600"> | `Assassin`  |
-| <img src="art/images/marry.png" width="600">    | `Marry`     |
-| <img src="art/images/kgirl.png" width="600">    | `Kgirl`     |
+| Scene                                            | Description |
+|--------------------------------------------------|-------------|
+| <img src="docs/images/triangle.png" width="600"> | `Triangle`  |
+| <img src="docs/images/MSAA.jpg" width="600">     | `MSAA`      |
+| <img src="docs/images/cow.png" width="600">      | `Cow`       |
+| <img src="docs/images/elfgirl.png" width="600">  | `Elfgirl`   |
+| <img src="docs/images/azura.png" width="600">    | `Azura`     |
+| <img src="docs/images/diablo3.png" width="600">  | `Diablo3`   |
+| <img src="docs/images/boggie.png" width="600">   | `Boggie`    |
+| <img src="docs/images/robot.png" width="600">    | `Robot`     |
+| <img src="docs/images/assassin.png" width="600"> | `Assassin`  |
+| <img src="docs/images/marry.png" width="600">    | `Marry`     |
+| <img src="docs/images/kgirl.png" width="600">    | `Kgirl`     |
 
 ### Environments
-| Scene                                                | Description     |
-|------------------------------------------------------|-----------------|
-| <img src="art/images/whitted_style.png" width="600"> | `Whitted Style` |
+| Scene                                                 | Description     |
+|-------------------------------------------------------|-----------------|
+| <img src="docs/images/whitted_style.png" width="600"> | `Whitted Style` |
 
 
 ## Feature

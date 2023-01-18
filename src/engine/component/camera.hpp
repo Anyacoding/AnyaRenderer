@@ -23,30 +23,34 @@ namespace anya{
 
 class Camera {
 private:
-    // 通过这三个属性定义一个具体的相机
-    // 注意后两个属性都是在相对坐标系下得到的
-    Vector3 eye_pos;                  // 摄像机位置
-    Vector3 gaze_pos;                 // 观察方向
-    Vector3 view_up;                  // 视点的正上方向
+    Vector3 eye_pos;                     // 摄像机位置
+    Vector3 obj_pos;                     // 物体位置
     GLdouble view_width, view_height;    // 视窗大小
     GLdouble fovY;                       // 视野角度
     GLdouble zNear = -0.1, zFar = -50.0; // 视锥近远平面距离
     GLdouble aspect_ratio;               // 宽高比
 
+    // 摄像机坐标系:
+    Vector3 w;     // 观察方向
+    Vector3 u;     // 摄像机右轴
+    Vector3 v;     // 摄像机正上方向
 public:
     Camera(const Vector3& eye_pos,    // 摄像机位置
            const Vector3& obj_pos,    // 物体的位置
            GLdouble view_width,       // 视窗宽度
            GLdouble view_height,      // 视窗高度
            GLdouble angle             // 视角——角度制，需要转换
-           ): eye_pos(eye_pos), view_width(view_width), view_height(view_height), fovY(MathUtils::angle2rad(angle)) {
+           ): eye_pos(eye_pos), obj_pos(obj_pos), view_width(view_width),
+              view_height(view_height), fovY(MathUtils::angle2rad(angle)) {
         // 宽高比
         aspect_ratio = view_width / view_height;
-        // 观察方向
-        gaze_pos = (obj_pos - eye_pos).normalize();
-        // TODO: 视点的正上方向(还不会求我去)
+        // 摄像机坐标系
+        w = (-obj_pos).normalize();
+        u = Vector3{0, 1, 0}.cross(w).normalize();
+        v = w.cross(u);
     }
 
+public:
     // 获取长宽
     [[nodiscard]] std::pair<GLdouble, GLdouble>
     getWH() const {
@@ -57,13 +61,23 @@ public:
     [[nodiscard]] numberType
     getFovY() const noexcept { return fovY; }
 
-    // 设置相机位置
-    void
-    setCameraPos(const Vector3& pos) { eye_pos = pos; }
-
     // 获取相机位置
     [[nodiscard]] const Vector3&
     getEyePos() const { return eye_pos; }
+
+    // 获取物体原始位置
+    [[nodiscard]] const Vector3&
+    getObjPos() const { return obj_pos; }
+
+    // 更新相机坐标系
+    void
+    lookAt(Vector3 pos, Vector3 target) {
+        eye_pos = pos;
+        obj_pos = target;
+        w = (pos - target).normalize();
+        u = Vector3{0, 1, 0}.cross(w).normalize();
+        v = w.cross(u);
+    }
 
     // 深度信息修正参数
     [[nodiscard]] std::pair<numberType, numberType>
@@ -71,6 +85,11 @@ public:
         return {(zNear - zFar) / 2, (zNear + zFar) / 2};
     }
 
+    // 设置宽高比
+    void
+    setFovY(numberType fov) {
+        fovY = MathUtils::angle2rad(fov);
+    }
 public:
     // 从世界空间转换为观察空间，即视图变换，此过程中观察的对象会跟着摄像机一起运动
     [[nodiscard]] Matrix44 getViewMat() const {
@@ -80,51 +99,23 @@ public:
                      0, 1, 0, -eye_pos[1],
                      0, 0, 1, -eye_pos[2],
                      0, 0, 0, 1;
-        // 再将相机坐标系摆正到世界坐标系
-        // Matrix44 view{};
-        // 这里的x y z是相机坐标系的坐标轴
-        // Vector3 z = -gaze_pos;
-        // Vector3 x = view_up.cross(z);
-        // Vector3 y = view_up;
-        // Matrix33 temp{};
-        // temp.setColVec(0, x);
-        // temp.setColVec(1, y);
-        // temp.setColVec(2, z);
-        // view = temp.transpose().to44();
-
-        // TODO: 权宜之计，假设相机一开始都是摆正的
-        // view = Matrix44::Identity();
-        // return view * translate;
-        return translate;
+        Matrix44 view = Matrix44::Identity();
+        view << u.x(), u.y(), u.z(), 0,
+                v.x(), v.y(), v.z(), 0,
+                w.x(), w.y(), w.z(), 0,
+                0, 0, 0, 1;
+        return view * translate;
     }
 
     // 投影变换
     [[nodiscard]] Matrix44 getProjectionMat() const {
-        // 透视投影一共有两步，第一步首先是将透视投影转化为正交投影的形式
         GLdouble n = zNear, f = zFar;
-        // Matrix44 Mpersp_ortho{};
-        // Mpersp_ortho << n, 0, 0, 0,
-        //                 0, n, 0, 0,
-        //                 0, 0, n+f, -n*f,
-        //                 0, 0, 1, 0;
-        // 再对其做正交投影
         GLdouble t = std::fabs(n) * std::tan(fovY / 2);
         GLdouble b = -t;
         GLdouble r = aspect_ratio * t;
         GLdouble l = -r;
-        // Matrix44 Mortho{}, Mtrans{}, Mscale{};
-        // Mtrans << 1, 0, 0, -(r + l) / 2,
-        //           0, 1, 0, -(t + b) / 2,
-        //           0, 0, 1, -(n + f) / 2,
-        //           0, 0, 0, 1;
-        // Mscale << 2 / (r - l), 0, 0, 0,
-        //           0, 2 / (t - b), 0, 0,
-        //           0, 0, 2 / (n - f), 0,
-        //           0, 0, 0, 1;
-        // Mortho = Mscale * Mtrans;
 
         // 这里有修正符号 -2 * f * n / (f - n)，没有这个符号就是深度就是反的，主要原因是我们采用的是右手系，而opengl是左手系
-        // 这里直接一步到位填好投影矩阵
         Matrix44 Mprojection{};
         Mprojection << 2 * n / (r - l), 0, (l + r) / (l - r), 0,
                        0, 2 * n / (t - b), (b + t) / (b - t), 0,

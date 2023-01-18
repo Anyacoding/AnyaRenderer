@@ -9,7 +9,7 @@
   },
   "camera": {
     "eye_pos": [0, 0, -1],
-    "obj_pos": [0, 0, 0],
+    "obj_pos": [0, 0, -1],
     "view_width": 1280,
     "view_height": 960,
     "fovY": 90

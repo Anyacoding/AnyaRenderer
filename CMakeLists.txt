@@ -25,3 +25,4 @@ target_link_libraries(main opengl32 glfw3)
 
 # 使用Release版本
 SET(CMAKE_BUILD_TYPE "Release")
+
