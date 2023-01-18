@@ -10,6 +10,7 @@
 #include <iostream>
 #include <memory>
 #include <utility>
+#include <thread>
 #include "tool/vec.hpp"
 #include "tool/matrix.hpp"
 #include "tool/utils.hpp"
@@ -31,7 +32,7 @@ private:
     std::shared_ptr<Renderer> renderer;
     // 初始摄像机状态
     const Camera defaultCamera;
-    
+
 private:
 #pragma region 摄像机控制相关
     /*********状态变量***********/
@@ -105,8 +106,15 @@ public:
         // TODO: 将渲染逻辑丢到另一个线程
         renderer->render();
 
+        clock_t stop, start;
+        int fps = 60;
+
         // render loop
         while (!glfwWindowShouldClose(window)) {
+
+            start = clock();
+            stop  = start + CLOCKS_PER_SEC / fps;
+
             // 非阻塞处理IO事件
             glfwPollEvents();
             // 清除颜色缓存
@@ -117,6 +125,10 @@ public:
             update();
             // 双缓冲区交换
             glfwSwapBuffers(window);
+
+            if (clock() < stop) std::this_thread::sleep_for(std::chrono::milliseconds(stop - clock()));
+            stop = clock();
+            glfwSetWindowTitle(window, (title.data() + (" FPS: " + std::to_string(CLOCKS_PER_SEC / (stop - start)))).data());
         }
     }
 private:

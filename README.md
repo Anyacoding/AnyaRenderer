@@ -15,9 +15,10 @@
 - stb_image
 
 ## Controls
-- Axis  : ```X``` ```Y``` ```Z``` 选择旋转轴。
-- Rotate: 按下```A```逆时针旋转10°，按下```D```顺时针旋转10°。
-- Save: 按下```Enter```保存当前模型姿态为图片。
+- Move  : 按下 ```W``` ```S``` ```A``` ```D``` 前后左右移动。
+- Mouse: 鼠标水平移动影响偏航角，鼠标垂直移动影响俯仰角。
+- Scroll: 鼠标滚轮控制缩放。
+- Quit: 按下 ```ESC``` 退出程序。
 
 ## Screenshots
 ### Models
@@ -64,6 +65,11 @@
 - [ ] 加速结构
     - [ ] AABB包围盒
     - [ ] 层次包围盒
+- [x] 相机系统
+  - [x] 水平移动
+  - [x] 俯仰角
+  - [x] 偏航角
+  - [x] 缩放
 
 ## Modules
 ```
@@ -78,6 +84,9 @@ AnyaRenderer
 │   ├── lib         // 需要链接的静态库和动态库文件
 │   └── src         // 引入的源码
 │
+├── docs            // 文档相关
+│   └── images      // 文档引用图片
+│ 
 ├── src             // 项目源码
 ├── .gitattributes  // git项目属性
 ├── .gitignore      // git忽略文件
@@ -92,12 +101,16 @@ src
 ├── engine
 │   ├── component               // 场景组件
 │   │   ├── camera.hpp          // 摄像机
+│   │   ├── color.hpp           // 颜色
 │   │   ├── light.hpp           // 光源
+│   │   ├── ray.hpp             // 光线
 │   │   ├── object              // 图元
+│   │   │   ├── sphere.hpp      // 球
 │   │   │   └── triangle.hpp    // 三角形
 │   │   └── scene.hpp           // 场景类
 │   │
 │   ├── interface               // 接口
+│   │   ├── object.hpp          // 图元接口
 │   │   └── renderer.hpp        // 渲染器接口
 │   │ 
 │   ├── load                    // 资源载入
@@ -106,6 +119,7 @@ src
 │   │   └── texture.hpp         // 图像纹理载入
 │   │
 │   ├── renderer                // 渲染器
+│   │   ├── raytracer.hpp       // 光线追踪器
 │   │   └── rasterizer.hpp      // 光栅化器
 │   │
 │   ├── shader                  // 着色器
@@ -116,6 +130,7 @@ src
 │   └── tool                    // 工具
 │       ├── matrix.hpp          // 矩阵类
 │       ├── vec.hpp             // 向量类
+│       ├── progress.hpp        // 进度条类
 │       └── utils.hpp           // 常用工具函数
 │ 
 ├── ui                          // 图形界面
