@@ -19,7 +19,7 @@
 - Mouse: 鼠标水平移动影响偏航角，鼠标垂直移动影响俯仰角
 - Scroll: 鼠标滚轮控制缩放
 - Reset: 按下 ```SPACE``` 恢复默认位置
-- Quit: 按下 ```ESC``` 退出程序。
+- Quit: 按下 ```ESC``` 退出程序
 
 ## Screenshots
 ### Models
@@ -141,5 +141,7 @@ src
 │   └── test.h                  // 测试头文件
 └── main.cpp                    // 入口文件
 ```
+
+
 
 

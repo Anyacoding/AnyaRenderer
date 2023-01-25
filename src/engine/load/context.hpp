@@ -5,10 +5,9 @@
 #ifndef ANYA_ENGINE_CONTEXT_HPP
 #define ANYA_ENGINE_CONTEXT_HPP
 
-#include "interface/renderer.hpp"
-#include "renderer/raytracer.hpp"
-#include "component/scene.hpp"
 #include "component/object/sphere.hpp"
+#include "material/diffuse.hpp"
+#include "material/glass.hpp"
 #include <memory>
 
 namespace anya {
@@ -148,12 +147,14 @@ private:
         json material = obj["material"];
         std::string MaterialType = material["type"];
         if (MaterialType == "REFLECTION_AND_REFRACTION") {
-            sphere->materialType = REFLECTION_AND_REFRACTION;
-            sphere->ior = material["ior"];
+            sphere->material = std::make_shared<GlassMaterial>();
+            sphere->material->type = REFLECTION_AND_REFRACTION;
+            sphere->material->ior = material["ior"];
         }
         else if (MaterialType == "DIFFUSE_AND_GLOSSY") {
-            sphere->materialType = DIFFUSE_AND_GLOSSY;
-            sphere->diffuseColor = toVector3(material["diffuseColor"]);
+            sphere->material = std::make_shared<DiffuseMaterial>();
+            sphere->material->type = DIFFUSE_AND_GLOSSY;
+            sphere->material->diffuseColor = toVector3(material["diffuseColor"]);
         }
         else {
             throw std::runtime_error("material type error");
@@ -165,6 +166,7 @@ private:
     static std::shared_ptr<Object>
     toTriangle(const json& obj) {
         std::shared_ptr<Triangle> triangle = std::make_shared<Triangle>();
+        triangle->material = std::make_shared<DiffuseMaterial>();
         json vertexes = obj["vertexes"];
         int index = 0;
         for (const auto& vertex : vertexes) {

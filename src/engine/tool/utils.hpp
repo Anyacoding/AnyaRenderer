@@ -27,6 +27,12 @@ struct MathUtils {
         return angle / 180 * pi;
     }
 
+    // 弧度转角度
+    static constexpr numberType
+    rad2angle(numberType rad) {
+        return rad * 180 / pi;
+    }
+
     // 线性插值
     template<class T>
     static constexpr T

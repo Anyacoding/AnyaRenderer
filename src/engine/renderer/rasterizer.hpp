@@ -86,13 +86,13 @@ public:
     getPixel(int x, int y) const override {
         return frame_buf[getIndex(x, y)];
     }
+
 #pragma endregion
 
 private:
 #pragma region 采样
     void
     drawTriangle(const Triangle& triangle, const std::vector<Vector4>& viewSpace, FragmentShader& fragmentShader) {
-
         // 缓存三角形的三个顶点
         auto a = triangle.a();
         auto b = triangle.b();

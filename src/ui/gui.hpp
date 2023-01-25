@@ -106,29 +106,16 @@ public:
         // TODO: 将渲染逻辑丢到另一个线程
         renderer->render();
 
-        clock_t stop, start;
-        int fps = 60;
-
         // render loop
         while (!glfwWindowShouldClose(window)) {
-
-            start = clock();
-            stop  = start + CLOCKS_PER_SEC / fps;
-
             // 非阻塞处理IO事件
             glfwPollEvents();
-            // 清除颜色缓存
-            clearWith();
             // 检查是否恢复默认状态
             if (isReset) reset();
             // 更新画面
             update();
             // 双缓冲区交换
             glfwSwapBuffers(window);
-
-            if (clock() < stop) std::this_thread::sleep_for(std::chrono::milliseconds(stop - clock()));
-            stop = clock();
-            glfwSetWindowTitle(window, (title.data() + (" FPS: " + std::to_string(CLOCKS_PER_SEC / (stop - start)))).data());
         }
     }
 private:
@@ -182,6 +169,7 @@ private:
         }
         renderer->scene.camera->lookAt(cameraPos, cameraPos + cameraFront);
         renderer->scene.camera->setFovY(fov);
+
         renderer->render();
         updateCamera = false;
     }
@@ -211,7 +199,7 @@ private:
         pitch = 0;
 
         // 滚轮状态
-        fov = 45;
+        fov = MathUtils::rad2angle(renderer->scene.camera->getFovY());
 
         // 状态变量
         isSaved = false;
@@ -326,9 +314,9 @@ private:
     static void
     scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
         updateCamera = true;
-        fov = fov >= 1.0 && fov <= 45.0 ? fov - yoffset : fov;
+        fov = fov >= 1.0 && fov <= 90.0 ? fov - yoffset : fov;
         fov = fov <= 1.0 ? 1.0 : fov;
-        fov = fov >= 45.0 ? 45.0 : fov;
+        fov = fov >= 90.0 ? 90.0 : fov;
     }
 #pragma endregion
 

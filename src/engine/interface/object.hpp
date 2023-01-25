@@ -5,26 +5,14 @@
 #ifndef ANYA_RENDERER_OBJECT_HPP
 #define ANYA_RENDERER_OBJECT_HPP
 
-namespace anya {
+#include "interface/material.hpp"
 
-enum MaterialType {
-    DIFFUSE_AND_GLOSSY,
-    REFLECTION_AND_REFRACTION,
-    REFLECTION
-};
+namespace anya {
 
 class Object {
 public:
-    // 材质类型
-    MaterialType materialType = DIFFUSE_AND_GLOSSY;
-    // 折射率
-    numberType ior = 1.3;
-    // 漫反射和高光系数
-    numberType kd = 0.8, ks = 0.2;
-    // 反射颜色
-    Vector3 diffuseColor = {0.2, 0.2, 0.2};
-    // 镜面指数
-    numberType specularExponent = 25;
+    // 材质
+    std::shared_ptr<Material> material;
 
 public:
     // 判断光线与图元是否相交
@@ -39,9 +27,11 @@ public:
     // 计算反射颜色
     [[nodiscard]] virtual Vector3
     evalDiffuseColor(const Vector2&) const {
-        return diffuseColor;
+        return material->diffuseColor;
     }
 };
+
+
 
 }
 
