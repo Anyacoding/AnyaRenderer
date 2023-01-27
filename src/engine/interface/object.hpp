@@ -9,12 +9,14 @@
 
 namespace anya {
 
+struct HitData;
+
 class Object {
 public:
-    // 材质
-    std::shared_ptr<Material> material;
-
+    std::shared_ptr<Material> material;            // 材质
+    std::vector<std::shared_ptr<Object>> childs;   // 子对象集合
 public:
+#pragma region whitted_style api
     // 判断光线与图元是否相交
     [[nodiscard]] virtual bool
     intersect(const Ray& ray, numberType& tNear, Vector2& uv) const = 0;
@@ -29,6 +31,8 @@ public:
     evalDiffuseColor(const Vector2&) const {
         return material->diffuseColor;
     }
+#pragma endregion
+
 };
 
 

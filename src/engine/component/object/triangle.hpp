@@ -21,7 +21,7 @@ public:
     std::array<Vector<2>, 3> stCoordinates; // 表面属性
 
 public:
-#pragma region object方法
+#pragma region whitted_style api
     // MT算法判断三角形与光线是否相交
     [[nodiscard]] bool
     intersect(const Ray& ray, numberType& tNear, Vector2& uv) const override {
@@ -51,6 +51,9 @@ public:
         Vector3 e0 = (v1 - v0).to<3>().normalize();
         Vector3 e1 = (v2 - v1).to<3>().normalize();
         normal = e0.cross(e1).normalize();
+        // TODO: 临时修改
+        return;
+
         const Vector2& st0 = stCoordinates[0];
         const Vector2& st1 = stCoordinates[1];
         const Vector2& st2 = stCoordinates[2];
@@ -63,6 +66,8 @@ public:
 
     [[nodiscard]] Vector3
     evalDiffuseColor(const Vector2& st) const override {
+        // TODO: 临时修改
+        return Vector3{0.5, 0.5, 0.5};
         numberType scale = 5;
         numberType pattern = (std::fmod(st.x() * scale, 1) > 0.5) ^ (std::fmod(st.y() * scale, 1) > 0.5);
         return MathUtils::lerp(pattern, Vector3{0.815, 0.235, 0.031}, Vector3{0.937, 0.937, 0.231});

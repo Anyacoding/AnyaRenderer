@@ -6,6 +6,7 @@
 #define ANYA_ENGINE_CONTEXT_HPP
 
 #include "component/object/sphere.hpp"
+#include "component/object/mesh.hpp"
 #include "material/diffuse.hpp"
 #include "material/glass.hpp"
 #include <memory>
@@ -132,6 +133,9 @@ private:
         else if (type == "triangle") {
             return toTriangle(item);
         }
+        else if (type == "mesh") {
+            return toMesh(item);
+        }
         else {
             throw std::runtime_error("object type error");
         }
@@ -180,6 +184,17 @@ private:
             ++index;
         }
         return triangle;
+    }
+
+    static std::shared_ptr<Object>
+    toMesh(const json& obj) {
+        auto material = std::make_shared<DiffuseMaterial>();
+        material->kd = 0.6;
+        material->ks = 0.0;
+        material->specularExponent = 0.0;
+        // 加载mesh的obj
+        std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(obj["meshPath"], material);
+        return mesh;
     }
 
     static Light

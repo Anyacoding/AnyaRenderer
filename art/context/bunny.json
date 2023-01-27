@@ -1,0 +1,36 @@
+{
+  "image": {
+    "name": "bunny",
+    "suffix": "png"
+  },
+  "renderer": {
+    "type": "RayTracer",
+    "background": [59.99997, 172.00005, 214.999935]
+  },
+  "camera": {
+    "eye_pos": [-0.02, 0.1, 1],
+    "obj_pos": [0, 0, -1],
+    "view_width": 1280,
+    "view_height": 960,
+    "fovY": 15
+  },
+  "objects": [
+    {
+      "type": "mesh",
+      "meshPath": "../art/models/bunny/bunny.obj",
+      "material": {
+        "type": "DIFFUSE_AND_GLOSSY"
+      }
+    }
+  ],
+  "lights": [
+    {
+      "position": [-20, 70, 20],
+      "intensity": [1, 1, 1]
+    },
+    {
+      "position": [20, 70, 20],
+      "intensity": [1, 1, 1]
+    }
+  ]
+}

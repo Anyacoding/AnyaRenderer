@@ -38,9 +38,10 @@
 | <img src="docs/images/kgirl.png" width="600">    | `Kgirl`     |
 
 ### Environments
-| Scene                                                 | Description     |
-|-------------------------------------------------------|-----------------|
-| <img src="docs/images/whitted_style.png" width="600"> | `Whitted Style` |
+| Scene                                                 | Description           |
+|-------------------------------------------------------|-----------------------|
+| <img src="docs/images/whitted_style.png" width="600"> | `Whitted Style`       |
+| <img src="docs/images/bunny.png" width="600">         | `Whitted Style Bunny` |
 
 
 ## Feature

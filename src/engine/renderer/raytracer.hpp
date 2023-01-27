@@ -8,6 +8,7 @@
 #include "interface/renderer.hpp"
 #include "interface/object.hpp"
 #include "tool/utils.hpp"
+#include "tool/progress.hpp"
 
 namespace anya {
 
@@ -38,7 +39,7 @@ public:
     render() override {
         std::tie(view_width, view_height) = scene.camera->getWH();
         frame_buf.assign(static_cast<long long>(view_width * view_height), this->background);
-
+        Progress progress;
         for (int j = 0; j < view_height; ++j) {
             for (int i = 0; i < view_width; ++i) {
                 // 相机发出的光线
@@ -50,6 +51,7 @@ public:
                 frame_buf[getIndex(x, y)] = pixel_color;
                 outPutImage->setPixel(x, y, pixel_color);
             }
+            progress.update(double(j) / view_height);
         }
     }
 
@@ -137,14 +139,17 @@ private:
         std::optional<HitData> payload;
         // 对所有obj进行相交测试，并返回距离最近的相交obj
         for (const auto& obj : scene.objects) {
-            numberType tNear = KMAX;
-            Vector2 uv;
-            if (obj->intersect(ray, tNear, uv) && tNear < tNearK) {
-                payload.emplace();
-                payload->tNear = tNear;
-                payload->uv = uv;
-                payload->hitObject = obj;
-                tNearK = tNear;
+            // TODO: 临时修改
+            for (const auto& child : obj->childs) {
+                numberType tNear = KMAX;
+                Vector2 uv;
+                if (child->intersect(ray, tNear, uv) && tNear < tNearK) {
+                    payload.emplace();
+                    payload->tNear = tNear;
+                    payload->uv = uv;
+                    payload->hitObject = child;
+                    tNearK = tNear;
+                }
             }
         }
         return payload;
@@ -152,26 +157,25 @@ private:
 
     // 反射
     [[nodiscard]] static Vector3
-    reflect(const Vector3& I, const Vector3& N) {
-        return I - 2 * I.dot(N) * N;
+    reflect(const Vector3& wi, const Vector3& normal) {
+        return wi - 2 * wi.dot(normal) * normal;
     }
 
-    // 折射
+    // 利用 Snell’s Law 求出折射方向
     static Vector3
-    refract(const Vector3& I, const Vector3& N, const numberType& ior) {
-        numberType cosi = MathUtils::clamp(-1, 1, I.dot(N));
+    refract(const Vector3& wi, Vector3 normal, const numberType& ior) {
+        numberType cosi = MathUtils::clamp(-1, 1, wi.dot(normal));
         numberType etai = 1, etat = ior;
-        Vector3 normal = N;
         if (cosi < 0) {
             cosi = -cosi;
         }
         else {
             std::swap(etai, etat);
-            normal = -N;
+            normal = -normal;
         }
         numberType eta = etai / etat;
         numberType k = 1 - eta * eta * (1 - cosi * cosi);
-        return k < 0 ? Vector3{0, 0, 0} : eta * I + (eta * cosi - sqrt(k)) * normal;
+        return k < 0 ? Vector3{0, 0, 0} : eta * wi + (eta * cosi - sqrt(k)) * normal;
     }
 
     // 菲涅尔算法

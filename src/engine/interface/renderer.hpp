@@ -17,6 +17,7 @@ public:
     Vector3 background{};                    // 背景颜色
     std::shared_ptr<Texture> outPutImage{};  // 输出图片
     std::string savePathName;                // 保存路径
+    std::size_t spp = 15;                    // 采样频率
 public:
     virtual void render() = 0;
     [[nodiscard]] virtual Vector3 getPixel(int x, int y) const = 0;

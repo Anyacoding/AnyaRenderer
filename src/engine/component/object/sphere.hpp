@@ -19,7 +19,7 @@ public:
     {}
 
 public:
-#pragma region object方法
+#pragma region whitted_style api
     // 解析法求球面相交
     [[nodiscard]] bool
     intersect(const Ray& ray, numberType& tNear, Vector2&) const override {
