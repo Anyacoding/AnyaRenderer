@@ -17,7 +17,9 @@ namespace anya {
 constexpr numberType pi  = std::numbers::pi_v<numberType>;
 constexpr numberType inf = std::numeric_limits<numberType>::infinity();
 constexpr numberType KMAX = std::numeric_limits<numberType>::max();
+constexpr numberType KMIN = std::numeric_limits<numberType>::lowest();
 constexpr numberType epsilon = 0.00001;
+
 
 // 通用数学工具函数
 struct MathUtils {
@@ -73,6 +75,8 @@ struct MathUtils {
         return ans;
     }
 };
+
+
 
 // 变换矩阵的工厂函数
 struct Transform {

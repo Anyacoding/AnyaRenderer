@@ -22,7 +22,7 @@
 - Quit: 按下 ```ESC``` 退出程序
 
 ## Screenshots
-### Models
+### Rasterization
 | Scene                                            | Description |
 |--------------------------------------------------|-------------|
 | <img src="docs/images/triangle.png" width="600"> | `Triangle`  |
@@ -37,11 +37,11 @@
 | <img src="docs/images/marry.png" width="600">    | `Marry`     |
 | <img src="docs/images/kgirl.png" width="600">    | `Kgirl`     |
 
-### Environments
-| Scene                                                 | Description           |
-|-------------------------------------------------------|-----------------------|
-| <img src="docs/images/whitted_style.png" width="600"> | `Whitted Style`       |
-| <img src="docs/images/bunny.png" width="600">         | `Whitted Style Bunny` |
+### Whitted Style
+| Scene                                                 | Description |
+|-------------------------------------------------------|-------------|
+| <img src="docs/images/whitted_style.png" width="600"> | `Sphere`    |
+| <img src="docs/images/bunny.png" width="600">         | `Bunny`     |
 
 
 ## Feature
@@ -62,16 +62,19 @@
 - [x] 渲染
     - [x] 光栅化
     - [x] 光线追踪
+      - [x] Whitted Style
+      - [ ] Path Tracing
     - [x] 着色器
     - [x] MSAA抗锯齿
 - [ ] 加速结构
     - [ ] AABB包围盒
-    - [ ] 层次包围盒
+    - [ ] BVH包围盒
 - [x] 相机系统
   - [x] 水平移动
   - [x] 俯仰角
   - [x] 偏航角
   - [x] 缩放
+  - [x] 复位
 
 ## Modules
 ```

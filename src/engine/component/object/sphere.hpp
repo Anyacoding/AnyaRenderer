@@ -46,8 +46,18 @@ public:
                          Vector3& normal, Vector2&) const override {
         normal = (hitPoint - center).normalize();
     }
-
 #pragma endregion
+
+public:
+    [[nodiscard]] std::optional<HitData>
+    getIntersect(const Ray& ray) override {
+        return {};
+    }
+
+    [[nodiscard]] AABB
+    getBoundingBox() const override {
+        return box;
+    }
 };
 
 

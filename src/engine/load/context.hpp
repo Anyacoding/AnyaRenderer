@@ -67,6 +67,8 @@ private:
             for (const auto& item : lights) {
                 this->_renderer->scene.addLight(toLight(item));
             }
+            // 生成层次包围盒
+            this->_renderer->scene.bvh = std::make_shared<BVH>(this->_renderer->scene.objects);
         }
     }
 

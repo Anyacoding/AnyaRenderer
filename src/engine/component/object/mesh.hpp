@@ -6,14 +6,18 @@
 #define ANYA_RENDERER_MESH_HPP
 
 #include "interface/object.hpp"
+#include "accelerator/BVH.hpp"
 
 namespace anya {
 
 class Mesh: public Object {
+private:
+    std::shared_ptr<BVH> bvh = nullptr;
 public:
     explicit Mesh(const std::string& meshPath, const std::shared_ptr<Material>& m) {
         this->material = m;
         loadFromDisk(meshPath);
+        bvh = std::make_shared<BVH>(childs);
     }
 
     void
@@ -24,8 +28,8 @@ public:
             exit(-1);
         }
 
-        std::vector<Vector3> vertexes{};  // 从obj读入的所有顶点集合
-        Vector3 vertex{};                 // 顶点
+        std::vector<Vector3> vertexes{};      // 从obj读入的所有顶点集合
+        Vector3 vertex{};                     // 顶点
 
         // 每次读入一行，并判断该行的类型
         std::string line, type;
@@ -35,6 +39,7 @@ public:
             if (type == "v") {
                 iss >> vertex.x() >> vertex.y() >> vertex.z();
                 vertexes.push_back(vertex);
+                this->box = AABB::merge(this->box, vertex);
             }
             else if (type == "f") {
                 auto triangle = std::make_shared<Triangle>();
@@ -48,7 +53,7 @@ public:
             }
         }
         ifs.close();
-        std::cout << "vertex: " << vertexes.size() << ", face: " << childs.size() << std::endl;
+        std::cout << "vertex: " << vertexes.size() << ", face: " << childs.size() << std::endl << std::endl;
     }
 
 public:
@@ -73,6 +78,18 @@ public:
     }
 #pragma endregion
 
+public:
+    [[nodiscard]] std::optional<HitData>
+    getIntersect(const Ray& ray) override {
+        std::optional<HitData> hitData{};
+        if (bvh) hitData = bvh->intersect(ray);
+        return hitData;
+    }
+
+    [[nodiscard]] AABB
+    getBoundingBox() const override {
+        return box;
+    }
 };
 
 

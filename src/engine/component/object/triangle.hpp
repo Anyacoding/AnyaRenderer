@@ -72,8 +72,41 @@ public:
         numberType pattern = (std::fmod(st.x() * scale, 1) > 0.5) ^ (std::fmod(st.y() * scale, 1) > 0.5);
         return MathUtils::lerp(pattern, Vector3{0.815, 0.235, 0.031}, Vector3{0.937, 0.937, 0.231});
     }
-
 #pragma endregion
+
+public:
+    [[nodiscard]] std::optional<HitData>
+    getIntersect(const Ray& ray) override {
+        std::optional<HitData> hitData{};
+        const auto& v0 = a();
+        const auto& v1 = b();
+        const auto& v2 = c();
+        numberType u = 0.0;
+        numberType v = 0.0;
+        Vector3 E1 = (v1 - v0).to<3>();
+        Vector3 E2 = (v2 - v0).to<3>();
+        Vector3 S = ray.pos - v0.to<3>();
+        Vector3 S1 = ray.dir.cross(E2);
+        Vector3 S2 = S.cross(E1);
+        numberType det = S1.dot(E1);
+        numberType tNear = S2.dot(E2) / det;
+        u = S1.dot(S) / det;
+        v = S2.dot(ray.dir) / det;
+        if (u >= 0 && u <= 1 && v >= 0 && v <= 1 && 1 - u - v >= 0 && 1 - u - v <= 1 && tNear > 0) {
+            hitData.emplace();
+            hitData->distance = tNear;
+            hitData->hitObject = std::make_shared<Triangle>(*this);
+            hitData->hitPoint = ray.at(tNear);
+            hitData->normal = E1.cross(E2).normalize();
+        }
+        return hitData;
+    }
+
+    [[nodiscard]] AABB
+    getBoundingBox() const override {
+        auto ret = AABB::merge(AABB(this->a().to<3>(), this->b().to<3>()), this->c().to<3>());
+        return ret;
+    }
 
 public:
 #pragma region 三角形特化方法

@@ -14,11 +14,6 @@ namespace anya {
 
 // 本模块实现最基本的光线追踪成像渲染器
 
-struct HitData {
-    double tNear = 0.0;
-    Vector2 uv = {};
-    std::shared_ptr<Object> hitObject = nullptr;
-};
 
 class RayTracer: public Renderer {
 private:
@@ -40,6 +35,8 @@ public:
         std::tie(view_width, view_height) = scene.camera->getWH();
         frame_buf.assign(static_cast<long long>(view_width * view_height), this->background);
         Progress progress;
+
+        auto start = std::chrono::steady_clock::now();
         for (int j = 0; j < view_height; ++j) {
             for (int i = 0; i < view_width; ++i) {
                 // 相机发出的光线
@@ -53,6 +50,14 @@ public:
             }
             progress.update(double(j) / view_height);
         }
+        progress.update(1.0);
+        auto end = std::chrono::steady_clock::now();
+
+        auto time_diff = end - start;
+        auto hours = std::chrono::duration_cast<std::chrono::hours>(time_diff);
+        auto minutes = std::chrono::duration_cast<std::chrono::minutes>(time_diff - hours);
+        auto seconds = std::chrono::duration_cast<std::chrono::seconds>(time_diff - hours - minutes);
+        std::cout << "\n\n\rRendering Complete! \nTime Taken: " <<  hours.count() << " hours, " << minutes.count() << " minutes, " << seconds.count() << " seconds\n";
     }
 
     // 获取像素信息
@@ -72,7 +77,7 @@ private:
         }
 
         Vector3 hitColor = this->background;
-        auto hitData = trace(ray);
+        auto hitData = intersect(ray);
 
         if (hitData.has_value()) {
 
@@ -93,13 +98,15 @@ private:
                         numberType lightDistance2 = lightDir.dot(lightDir);
                         lightDir = lightDir.normalize();
                         numberType LdotN = std::fmax(0.0, lightDir.dot(normal));
-                        auto shadow_res = trace({shadowPointOrig, lightDir});
+
+                        auto shadow_res = intersect({shadowPointOrig, lightDir});
                         bool inShadow = shadow_res && (shadow_res->tNear * shadow_res->tNear < lightDistance2);
 
                         ambient_light += inShadow ? Vector3{0, 0, 0} : light.intensity * LdotN;
                         Vector3 reflectionDirection = reflect(-lightDir, normal);
                         specularColor += std::pow(std::fmax(0.0, -(reflectionDirection.dot(ray.dir))), hitData->hitObject->material->specularExponent) * light.intensity;
                     }
+
                     hitColor = ambient_light.mut(hitData->hitObject->evalDiffuseColor(st)) * hitData->hitObject->material->kd + specularColor * hitData->hitObject->material->ks;
                     break;
                 }
@@ -129,7 +136,6 @@ private:
                 }
             }
         }
-
         return hitColor;
     }
 
@@ -155,6 +161,14 @@ private:
         return payload;
     }
 
+    [[nodiscard]] std::optional<HitData>
+    intersect(const Ray &ray) const {
+        return this->scene.bvh->intersect(ray);
+    }
+#pragma endregion
+
+public:
+#pragma region 数学物理模型
     // 反射
     [[nodiscard]] static Vector3
     reflect(const Vector3& wi, const Vector3& normal) {
@@ -199,7 +213,6 @@ private:
             return (Rs * Rs + Rp * Rp) / 2;
         }
     }
-
 #pragma endregion
 
 private:

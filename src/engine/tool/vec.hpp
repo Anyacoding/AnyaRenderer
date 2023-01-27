@@ -257,7 +257,7 @@ public:
 
 #pragma endregion
 
-public:
+private:
 #pragma region 辅助函数
     constexpr static bool
     out_range(int i) {

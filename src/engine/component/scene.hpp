@@ -9,6 +9,7 @@
 #include "load/model.hpp"
 #include "interface/object.hpp"
 #include "component/light.hpp"
+#include "accelerator/BVH.hpp"
 
 namespace anya {
 
@@ -18,7 +19,9 @@ public:
     std::vector<Model> models{};                    // 要渲染的模型集合(光栅化使用)
     std::vector<std::shared_ptr<Object>> objects{}; // 要渲染的物体集合(光线追踪使用)
     std::vector<Light> lights{};                    // 光源集合
+
     std::shared_ptr<Camera> camera;                 // 摄像机
+    std::shared_ptr<BVH> bvh = nullptr;             // 层次包围盒
 public:
     void
     addModel(const Model& model) {
