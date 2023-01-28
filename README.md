@@ -20,6 +20,7 @@
 - Scroll: 鼠标滚轮控制缩放
 - Reset: 按下 ```SPACE``` 恢复默认位置
 - Quit: 按下 ```ESC``` 退出程序
+- Tips: 目前仅光栅化支持相机环游，光追由于运行时间长，故暂不支持
 
 ## Screenshots
 ### Rasterization
@@ -66,9 +67,9 @@
       - [ ] Path Tracing
     - [x] 着色器
     - [x] MSAA抗锯齿
-- [ ] 加速结构
-    - [ ] AABB包围盒
-    - [ ] BVH包围盒
+- [x] 加速结构
+    - [x] AABB包围盒
+    - [x] BVH包围盒
 - [x] 相机系统
   - [x] 水平移动
   - [x] 俯仰角
