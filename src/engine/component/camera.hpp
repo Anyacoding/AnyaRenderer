@@ -34,6 +34,10 @@ private:
     Vector3 w;     // 观察方向
     Vector3 u;     // 摄像机右轴
     Vector3 v;     // 摄像机正上方向
+
+public:
+    bool isLock = false;  // 锁定摄像机，不允许移动
+
 public:
     Camera(const Vector3& eye_pos,    // 摄像机位置
            const Vector3& obj_pos,    // 物体的位置

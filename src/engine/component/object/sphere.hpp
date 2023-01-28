@@ -19,44 +19,33 @@ public:
     {}
 
 public:
-#pragma region whitted_style api
     // 解析法求球面相交
-    [[nodiscard]] bool
-    intersect(const Ray& ray, numberType& tNear, Vector2&) const override {
+    [[nodiscard]] std::optional<HitData>
+    getIntersect(const Ray& ray) override {
+        std::optional<HitData> hitData{};
         numberType a = ray.dir.dot(ray.dir);
         numberType b = 2 * ray.dir.dot(ray.pos - center);
         numberType c = (ray.pos - center).dot(ray.pos - center) - std::pow(radius, 2);
+        numberType tNear = 0.0;
         auto solve = MathUtils::solveQuadratic(a, b, c);
         if (solve.has_value()) {
             auto[t0, t1] = solve.value();
-            if (t0 < 0)
-                t0 = t1;
-            if (t0 < 0)
-                return false;
+            if (t0 < 0) t0 = t1;
+            if (t0 < 0) return hitData;
             tNear = t0;
+            hitData.emplace();
+            hitData->hitPoint = ray.at(tNear);
+            hitData->normal = (hitData->hitPoint - center).normalize();
+            hitData->hitObject = std::make_shared<Sphere>(*this);
+            hitData->tNear = tNear;
         }
-        else {
-            return false;
-        }
-        return true;
-    }
-
-    void
-    getSurfaceProperties(const Vector3& hitPoint, const Vector2&,
-                         Vector3& normal, Vector2&) const override {
-        normal = (hitPoint - center).normalize();
-    }
-#pragma endregion
-
-public:
-    [[nodiscard]] std::optional<HitData>
-    getIntersect(const Ray& ray) override {
-        return {};
+        return hitData;
     }
 
     [[nodiscard]] AABB
     getBoundingBox() const override {
-        return box;
+        return AABB(Vector3{center.x() - radius, center.y() - radius, center.z() - radius},
+                    Vector3{center.x() + radius, center.y() + radius, center.z() + radius});
     }
 };
 

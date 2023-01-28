@@ -133,9 +133,8 @@ private:
     void
     update() {
         ModeGuard guard(GL_POINTS);
-        // TODO: ÁÙÊ±ÐÞ¸Ä
-        if (updateCamera) {
-            // do_movement();
+        if (updateCamera && !renderer->scene.camera->isLock) {
+            do_movement();
         }
         for (int i = 0; i < static_cast<int>(width); ++i) {
             auto x = static_cast<numberType>(i) / width * 2 - 1;

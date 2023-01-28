@@ -58,19 +58,6 @@ public:
 
 public:
 #pragma region whitted_style api
-    [[nodiscard]] bool
-    intersect(const Ray& ray, numberType& tNear, Vector2& uv) const override {
-        bool intersect = false;
-        std::cerr << "Should not get here on Mesh::intersect()" << std::endl;
-        return intersect;
-    }
-
-    void
-    getSurfaceProperties(const Vector3& hitPoint, const Vector2& uv,
-                         Vector3& normal, Vector2& st) const override {
-        std::cerr << "Should not get here on Mesh::getSurfaceProperties()" << std::endl;
-    }
-
     [[nodiscard]] Vector3
     evalDiffuseColor(const Vector2& st) const override {
         std::cerr << "Should not get here on Mesh::evalDiffuseColor" << std::endl;

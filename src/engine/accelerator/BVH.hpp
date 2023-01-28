@@ -140,8 +140,8 @@ private:
         auto lchild = getIntersect(node->left, ray);
         auto rchild = getIntersect(node->right, ray);
 
-        auto ldistance = lchild.has_value() ? lchild->distance : KMAX;
-        auto rdistance = rchild.has_value() ? rchild->distance : KMAX;
+        auto ldistance = lchild.has_value() ? lchild->tNear : KMAX;
+        auto rdistance = rchild.has_value() ? rchild->tNear : KMAX;
         return ldistance < rdistance ? lchild : rchild;
     }
 };

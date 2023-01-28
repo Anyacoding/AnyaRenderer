@@ -11,7 +11,7 @@ namespace anya {
 
 class Progress {
 private:
-    int barWidth = 50;
+    int barWidth = 30;
 public:
     void
     update(numberType progress) const {

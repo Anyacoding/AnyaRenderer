@@ -69,6 +69,9 @@ private:
             }
             // 生成层次包围盒
             this->_renderer->scene.bvh = std::make_shared<BVH>(this->_renderer->scene.objects);
+
+            // 锁定摄像机
+            this->_renderer->scene.camera->isLock = true;
         }
     }
 

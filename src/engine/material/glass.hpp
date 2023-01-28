@@ -17,10 +17,6 @@ public:
 public:
     Vector3
     process(const Ray& ray, const HitData& hitData, RayTracer& renderer) override {
-        Vector3 hitPoint = ray.at(hitData.tNear);
-        Vector3 normal;
-        Vector2 st;
-        hitData.hitObject->getSurfaceProperties(hitPoint, hitData.uv, normal, st);
         return {};
     }
 };

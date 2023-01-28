@@ -80,11 +80,9 @@ private:
         auto hitData = intersect(ray);
 
         if (hitData.has_value()) {
-
-            Vector3 hitPoint = ray.at(hitData->tNear);
-            Vector3 normal;
-            Vector2 st;
-            hitData->hitObject->getSurfaceProperties(hitPoint, hitData->uv, normal, st);
+            Vector3 hitPoint = hitData->hitPoint;
+            Vector3 normal = hitData->normal;
+            Vector2 st = hitData->st;
 
             switch (hitData->hitObject->material->type) {
                 case DIFFUSE_AND_GLOSSY: {
@@ -127,9 +125,6 @@ private:
                     hitColor = reflectionColor * kr + refractionColor * (1 - kr);
                     break;
                 }
-                case REFLECTION: {
-
-                }
                 default: {
                     std::cerr << "Unknown Material Type!" << std::endl;
                     break;
@@ -137,28 +132,6 @@ private:
             }
         }
         return hitColor;
-    }
-
-    std::optional<HitData>
-    trace(const Ray& ray) {
-        numberType tNearK = KMAX;
-        std::optional<HitData> payload;
-        // 对所有obj进行相交测试，并返回距离最近的相交obj
-        for (const auto& obj : scene.objects) {
-            // TODO: 临时修改
-            for (const auto& child : obj->childs) {
-                numberType tNear = KMAX;
-                Vector2 uv;
-                if (child->intersect(ray, tNear, uv) && tNear < tNearK) {
-                    payload.emplace();
-                    payload->tNear = tNear;
-                    payload->uv = uv;
-                    payload->hitObject = child;
-                    tNearK = tNear;
-                }
-            }
-        }
-        return payload;
     }
 
     [[nodiscard]] std::optional<HitData>
