@@ -63,6 +63,7 @@ public:
         std::cerr << "Should not get here on Mesh::evalDiffuseColor" << std::endl;
         return {};
     }
+
 #pragma endregion
 
 public:

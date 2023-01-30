@@ -14,7 +14,6 @@ namespace anya {
 
 // 本模块实现最基本的光线追踪成像渲染器
 
-
 class RayTracer: public Renderer {
 private:
     // 帧缓存

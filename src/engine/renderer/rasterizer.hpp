@@ -114,7 +114,7 @@ private:
                         auto uv_lerp = MathUtils::interpolate(alpha, beta, gamma, triangle.uvs[0], triangle.uvs[1], triangle.uvs[2], fixed);
                         auto shadingcoords_lerp = MathUtils::interpolate(alpha, beta, gamma, viewSpace[0], viewSpace[1], viewSpace[2], fixed);
 
-                        // 法向量要记得单位化!! 查了一晚上的bug呜呜
+                        // 法向量要记得单位化!!
                         fragmentShader.init(shadingcoords_lerp, color_lerp, normal_lerp.to<3>().normalize().to4(0), uv_lerp);
                         auto pixel_color = fragmentShader.process(fragmentShader);
                         frame_buf[getIndex(i, j)] = pixel_color;
@@ -155,7 +155,7 @@ private:
                             auto uv_lerp = MathUtils::interpolate(alpha, beta, gamma, triangle.uvs[0], triangle.uvs[1], triangle.uvs[2], fixed);
                             auto shadingcoords_lerp = MathUtils::interpolate(alpha, beta, gamma, viewSpace[0], viewSpace[1], viewSpace[2], fixed);
 
-                            // 法向量要记得单位化!! 查了一晚上的bug呜呜
+                            // 法向量要记得单位化!!
                             fragmentShader.init(shadingcoords_lerp, color_lerp, normal_lerp.to<3>().normalize().to4(0), uv_lerp);
                             auto pixel_color = fragmentShader.process(fragmentShader);
                             frame_msaa[pid + k] = pixel_color / 4;
