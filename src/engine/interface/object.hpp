@@ -7,12 +7,13 @@
 
 #include "interface/material.hpp"
 #include "accelerator/AABB.hpp"
+#include <memory>
 
 namespace anya {
 
 struct HitData;
 
-class Object {
+class Object: public std::enable_shared_from_this<Object> {
 public:
     std::shared_ptr<Material> material;            // 材质
     std::vector<std::shared_ptr<Object>> childs;   // 子对象集合

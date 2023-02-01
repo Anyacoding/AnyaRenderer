@@ -3,7 +3,6 @@
 #include "component/camera.hpp"
 #include "load/context.hpp"
 #include "renderer/raytracer.hpp"
-#include "tool/vec.hpp"
 
 using namespace anya;
 
@@ -18,6 +17,7 @@ void runTask(const std::string& path) {
     context.loadFromJson(JsonUtils::load(path));
     show(context._renderer);
 }
+
 
 int main() {
     std::cout << "Hello, MnZn!" << std::endl;

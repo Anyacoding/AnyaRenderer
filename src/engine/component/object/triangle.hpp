@@ -52,7 +52,7 @@ public:
         if (u >= 0 && u <= 1 && v >= 0 && v <= 1 && 1 - u - v >= 0 && 1 - u - v <= 1 && tNear > 0) {
             hitData.emplace();
             hitData->tNear = tNear;
-            hitData->hitObject = std::make_shared<Triangle>(*this);
+            hitData->hitObject = shared_from_this();
             hitData->hitPoint = ray.at(tNear);
             hitData->normal = E1.cross(E2).normalize();
             hitData->uv = Vector2{u, v};

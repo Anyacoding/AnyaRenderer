@@ -36,7 +36,7 @@ public:
             hitData.emplace();
             hitData->hitPoint = ray.at(tNear);
             hitData->normal = (hitData->hitPoint - center).normalize();
-            hitData->hitObject = std::make_shared<Sphere>(*this);
+            hitData->hitObject = shared_from_this();
             hitData->tNear = tNear;
         }
         return hitData;
