@@ -55,6 +55,12 @@ public:
     }
 
 public:
+    // 获取zNear
+    [[nodiscard]] GLdouble
+    getZNear() const {
+        return zNear;
+    }
+
     // 获取长宽
     [[nodiscard]] std::pair<GLdouble, GLdouble>
     getWH() const {

@@ -6,6 +6,8 @@
 #define ANYA_ENGINE_UTILS_HPP
 
 #include <fstream>
+#include <numeric>
+#include <numbers>
 #include "nlohmann/json.hpp"
 #include "component/light.hpp"
 
@@ -140,6 +142,8 @@ struct JsonUtils {
         return ret;
     }
 };
+
+
 
 }
 

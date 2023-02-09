@@ -18,12 +18,13 @@ void runTask(const std::string& path) {
     show(context._renderer);
 }
 
-
 int main() {
     std::cout << "Hello, MnZn!" << std::endl;
-    runTask("../art/context/whitted_style.json");
+    runTask("../art/context/elfgirl.json");
     return 0;
 }
+
+
 
 // 目前可选光栅化模型:                   目前可选模型光追模型:
 // 1.assassin.json                      1.whitted_style.json

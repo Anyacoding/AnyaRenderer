@@ -106,8 +106,15 @@ public:
         // TODO: 将渲染逻辑丢到另一个线程
         renderer->render();
 
+        // 帧率
+        clock_t start, end;
+        const int fps = 60;
+
         // render loop
         while (!glfwWindowShouldClose(window)) {
+            // 开始计时
+            start = clock();
+            end  = start + CLOCKS_PER_SEC / fps;
             // 非阻塞处理IO事件
             glfwPollEvents();
             // 检查是否恢复默认状态
@@ -116,8 +123,15 @@ public:
             update();
             // 双缓冲区交换
             glfwSwapBuffers(window);
+            // 计算fps
+            if (clock() < end) std::this_thread::sleep_for(std::chrono::milliseconds(end - clock()));
+            end = clock();
+            double ave_fps = end - start;
+            double fact_fps = CLOCKS_PER_SEC / ave_fps;
+            glfwSetWindowTitle(window, (title.data() + (" FPS: " + std::to_string(fact_fps))).data());
         }
     }
+
 private:
 #pragma region 画面更新逻辑
     // 自动控制绘图模式作用域

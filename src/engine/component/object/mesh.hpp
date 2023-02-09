@@ -13,6 +13,7 @@ namespace anya {
 class Mesh: public Object {
 private:
     std::shared_ptr<BVH> bvh = nullptr;
+
 public:
     explicit Mesh(const std::string& meshPath, const std::shared_ptr<Material>& m) {
         this->material = m;

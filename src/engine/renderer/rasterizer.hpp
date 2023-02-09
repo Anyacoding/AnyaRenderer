@@ -7,7 +7,7 @@
 
 #include "interface/renderer.hpp"
 #include "tool/utils.hpp"
-
+#include "accelerator/clip.hpp"
 
 // 本模块实现最基本的光栅化成像渲染器
 
@@ -66,6 +66,10 @@ public:
                     vertex.w() = w;
                     vertex.z() = vertex.z() * f1 + f2;
                 }
+
+                // 剔除优化
+                if (ClipUtils::back_face_culling(triangle)) continue;
+
                 for (auto& normal : triangle.normals) {
                     // 对法线进行变换
                     normal = invMat * normal;
@@ -100,8 +104,8 @@ private:
         // 计算包围盒
         auto[left, right, floor, top] = getBoundingBox(a, b, c);
         // z-buffer算法
-        for (int i = left; i <= right; ++i) {
-            for (int j = floor; j <= top; ++j) {
+        for (int j = floor; j <= top; ++j) {
+            for (int i = left; i <= right; ++i) {
                 if (insideTriangle(i + 0.5, j + 0.5, triangle.vertexes)) {
                     // 获取插值深度
                     auto[alpha, beta, gamma] = computeBarycentric2DWithFixed(i + 0.5, j + 0.5, triangle);
@@ -138,8 +142,8 @@ private:
         const std::array<numberType, 4> dx = { 0.25, 0.25, 0.75, 0.75 };
         const std::array<numberType, 4> dy = { 0.25, 0.75, 0.25, 0.75 };
         // z-buffer算法
-        for (int i = left; i <= right; ++i) {
-            for (int j = floor; j <= top; ++j) {
+        for (int j = floor; j <= top; ++j) {
+            for (int i = left; i <= right; ++i) {
                 pid = getIndex(i, j) * 4;
                 // 4倍采样进行模糊
                 for (int k = 0; k < 4; ++k) {
@@ -217,6 +221,8 @@ private:
         int top = static_cast<int>(std::max(a.y(), std::max(b.y(), c.y())));
         return {left >= 0 ? left : 0, right < view_width ? right : view_width - 1, floor >= 0 ? floor : 0, top < view_height ? top : view_height - 1};
     }
+
+
 
     // 越界判断
     [[nodiscard]] constexpr bool

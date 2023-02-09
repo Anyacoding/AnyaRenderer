@@ -6,7 +6,6 @@
 #define ANYA_ENGINE_TRIANGLE_HPP
 
 #include "tool/matrix.hpp"
-#include "load/texture.hpp"
 #include "interface/object.hpp"
 #include <array>
 
