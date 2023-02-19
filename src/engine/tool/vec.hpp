@@ -41,7 +41,7 @@ public:
             throw std::out_of_range("Vector::operator[]");
         return data[index];
     }
-    constexpr numberType
+    constexpr const numberType&
     operator[](const int index) const {
         if (out_range(index))
             throw std::out_of_range("Vector::operator[]");
@@ -54,7 +54,7 @@ public:
             throw std::out_of_range("Vector::operator[]");
         return data[index];
     }
-    constexpr numberType
+    constexpr const numberType&
     operator()(const int index) const {
         if (out_range(index))
             throw std::out_of_range("Vector::operator[]");

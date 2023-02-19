@@ -18,7 +18,7 @@ struct ClipUtils {
         auto b = triangle.b().to<3>();
         auto c = triangle.c().to<3>();
         Vector3 ab = b - a, ac = c - a;
-        return ab.cross(ac).z() < 0;
+        return ab.cross(ac).z() <= epsilon;
     }
 };
 

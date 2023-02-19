@@ -3,6 +3,8 @@
 #include "component/camera.hpp"
 #include "load/context.hpp"
 #include "renderer/raytracer.hpp"
+#include "test/test.h"
+#include <chrono>
 
 using namespace anya;
 
@@ -18,9 +20,10 @@ void runTask(const std::string& path) {
     show(context._renderer);
 }
 
+
+
 int main() {
-    std::cout << "Hello, MnZn!" << std::endl;
-    runTask("../art/context/elfgirl.json");
+    runTask("../art/context/whitted_style.json");
     return 0;
 }
 

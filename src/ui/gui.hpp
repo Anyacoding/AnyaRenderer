@@ -183,7 +183,6 @@ private:
         }
         renderer->scene.camera->lookAt(cameraPos, cameraPos + cameraFront);
         renderer->scene.camera->setFovY(fov);
-
         renderer->render();
         updateCamera = false;
     }
@@ -296,6 +295,7 @@ private:
     static void
     mouse_callback(GLFWwindow* window, double xpos, double ypos) {
         updateCamera = true;
+
         if (firstMouse) {
             lastX = xpos;
             lastY = ypos;
@@ -336,7 +336,7 @@ private:
 
 };
 
-// 静态数据成员初始化
+// 静态数据成员声明
 bool GUI::isSaved = false;
 bool GUI::isReset = false;
 bool GUI::updateCamera = false;

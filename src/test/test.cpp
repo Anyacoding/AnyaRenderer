@@ -52,17 +52,15 @@ void vecTest() {
 
 void matrixTest() {
     {
-        anya::Matrix<3, 4> mat{};
+        anya::Matrix<3, 3> mat{};
         std::cout << "²âÊÔ¶ººÅ³õÊ¼»¯ºÍ·ÃÎÊ:" << std::endl;
-        mat << 1, 2, 3, 5,
-            4, 5, 6, 9,
-            11, 12, 13, 18;
-        std::cout << mat;
-        std::cout << mat(2, 3) << std::endl;
-        std::cout << mat.rowVec(2) << std::endl;
-        std::cout << mat.colVec(2) << std::endl
-                  << std::endl;
+        mat << 0, 1, -1,
+               1, -1, 0,
+               1, 1, 1;
+        std::cout << mat.inverse() << std::endl;
+        std::cout << mat * mat.inverse() << std::endl;
     }
+
 
     {
         std::cout << "²âÊÔ¾ØÕó³Ë·¨:" << std::endl;

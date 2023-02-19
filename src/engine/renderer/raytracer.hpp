@@ -9,6 +9,7 @@
 #include "interface/object.hpp"
 #include "tool/utils.hpp"
 #include "tool/progress.hpp"
+#include <functional>
 
 namespace anya {
 
@@ -41,7 +42,11 @@ public:
                 // 相机发出的光线
                 auto ray = scene.camera->biuRay(i, j);
                 // 利用光线弹射着色函数返回颜色信息
-                auto pixel_color = cast_ray(ray, 0);
+                Vector3 pixel_color{};
+                for (int k = 0; k < spp; ++k) {
+                    pixel_color += whitted_style(ray, 0) / spp;
+                }
+                // 将像素写入帧缓存
                 int x = i;
                 int y = static_cast<int>(view_height) - 1 - j;
                 frame_buf[getIndex(x, y)] = pixel_color;
@@ -64,12 +69,30 @@ public:
     getPixel(int x, int y) const override {
         return frame_buf[getIndex(x, y)];
     }
+
+private:
+    Vector3
+    cast_ray (const Ray& ray, int depth) {
+        switch (mode) {
+            case Mode::WHITTED_STYLE: {
+                return whitted_style(ray, depth);
+            }
+            case Mode::PATH_TRACING: {
+                return path_tracing(ray);
+            }
+            default: {
+                std::cerr << "Unknown RayTracer Mode Type!" << std::endl;
+                break;
+            }
+        }
+    }
+
 #pragma endregion
 
 private:
-#pragma region 光追的主要函数
+#pragma region 光追方法: whitted_style
     Vector3
-    cast_ray(const Ray& ray, int depth) {
+    whitted_style (const Ray& ray, int depth) {
         // 到达递归最大深度，直接返回
         if (depth > maxDepth) {
             return Vector3{0, 0, 0};
@@ -117,8 +140,8 @@ private:
                                                 ? hitPoint - normal * epsilon
                                                 : hitPoint + normal * epsilon;
 
-                    Vector3 reflectionColor = cast_ray({ reflectionRayOrig, reflectionDirection }, depth + 1);
-                    Vector3 refractionColor = cast_ray({ refractionRayOrig, refractionDirection }, depth + 1);
+                    Vector3 reflectionColor = whitted_style({ reflectionRayOrig, reflectionDirection }, depth + 1);
+                    Vector3 refractionColor = whitted_style({ refractionRayOrig, refractionDirection }, depth + 1);
 
                     numberType kr = fresnel(ray.dir, normal, hitData->hitObject->material->ior);
                     hitColor = reflectionColor * kr + refractionColor * (1 - kr);
@@ -133,14 +156,27 @@ private:
         return hitColor;
     }
 
+#pragma endregion
+
+private:
+#pragma region 光追方法: path_tracing
+    Vector3
+    path_tracing (const Ray& ray) {
+        auto hitData = intersect(ray);
+        if (!hitData.has_value()) return Vector3{};
+
+    }
+
+#pragma endregion
+
+private:
+#pragma region 数学物理模型
+    // 相交
     [[nodiscard]] std::optional<HitData>
     intersect(const Ray &ray) const {
         return this->scene.bvh->intersect(ray);
     }
-#pragma endregion
 
-public:
-#pragma region 数学物理模型
     // 反射
     [[nodiscard]] static Vector3
     reflect(const Vector3& wi, const Vector3& normal) {
