@@ -29,10 +29,33 @@ public:
     Vector3 diffuseColor = {0.2, 0.2, 0.2};
     // 镜面指数
     numberType specularExponent = 25;
+
+    // 光源标志位
+    bool isLight = false;
+    // 光源辐射量
+    Vector3 emission = {};
+    // path_tracing专用Kd
+    Vector3 Kd{};
+
 public:
-    // 材质方法
     virtual Vector3
-    process(const Ray& ray, const HitData& hitdata, RayTracer& renderer) = 0;
+    BXDF(const Vector3& wi, const Vector3& wo, const Vector3& normal) = 0;
+
+protected:
+    static Vector3
+    toWorld(const Vector3& ray, const Vector3& normal) {
+        Vector3 B, C;
+        if (std::fabs(normal.x()) > std::fabs(normal.y())) {
+            auto len = std::sqrt(normal.x() * normal.x() + normal.z() * normal.z());
+            C = Vector3{ normal.z() / len, 0, -normal.x() / len };
+        }
+        else {
+            auto len = std::sqrt(normal.y() * normal.y() + normal.z() * normal.z());
+            C = Vector3{ 0, normal.z() / len, -normal.y() / len };
+        }
+        B = C.cross(normal);
+        return ray.x() * B + ray.y() * C + ray.z() * normal;
+    }
 };
 
 }

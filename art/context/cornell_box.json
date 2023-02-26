@@ -1,0 +1,75 @@
+{
+  "image": {
+    "name": "cornell_box",
+    "suffix": "png"
+  },
+  "renderer": {
+    "type": "RayTracer",
+    "background": [59.99997, 172.00005, 214.999935],
+    "mode": "path_tracing",
+    "spp": 5
+  },
+  "camera": {
+    "eye_pos": [278, 273, -800],
+    "obj_pos": [0, 0, -1],
+    "view_width": 784,
+    "view_height": 784,
+    "fovY": 40
+  },
+  "objects": [
+    {
+      "type": "mesh",
+      "meshPath": "../art/models/cornell_box/floor.obj",
+      "material": {
+        "type": "DIFFUSE_AND_GLOSSY",
+        "kd": [0.725, 0.71, 0.68],
+        "isLight": false
+      }
+    },
+    {
+      "type": "mesh",
+      "meshPath": "../art/models/cornell_box/shortbox.obj",
+      "material": {
+        "type": "DIFFUSE_AND_GLOSSY",
+        "kd": [0.725, 0.71, 0.68],
+        "isLight": false
+      }
+    },
+    {
+      "type": "mesh",
+      "meshPath": "../art/models/cornell_box/tallbox.obj",
+      "material": {
+        "type": "DIFFUSE_AND_GLOSSY",
+        "kd": [0.725, 0.71, 0.68],
+        "isLight": false
+      }
+    },
+    {
+      "type": "mesh",
+      "meshPath": "../art/models/cornell_box/left.obj",
+      "material": {
+        "type": "DIFFUSE_AND_GLOSSY",
+        "kd": [0.63, 0.065, 0.05],
+        "isLight": false
+      }
+    },
+    {
+      "type": "mesh",
+      "meshPath": "../art/models/cornell_box/right.obj",
+      "material": {
+        "type": "DIFFUSE_AND_GLOSSY",
+        "kd": [0.14, 0.45, 0.091],
+        "isLight": false
+      }
+    },
+    {
+      "type": "mesh",
+      "meshPath": "../art/models/cornell_box/light.obj",
+      "material": {
+        "type": "DIFFUSE_AND_GLOSSY",
+        "kd": [0.65, 0.65, 0.65],
+        "isLight": true
+      }
+    }
+  ]
+}

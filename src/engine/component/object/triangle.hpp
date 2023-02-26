@@ -48,7 +48,7 @@ public:
         numberType tNear = S2.dot(E2) / det;
         u = S1.dot(S) / det;
         v = S2.dot(ray.dir) / det;
-        if (u >= 0 && u <= 1 && v >= 0 && v <= 1 && 1 - u - v >= 0 && 1 - u - v <= 1 && tNear > 0) {
+        if (u >= 0 && u <= 1 && v >= 0 && v <= 1 && 1 - u - v >= 0 && 1 - u - v <= 1 && tNear > epsilon) {
             hitData.emplace();
             hitData->tNear = tNear;
             hitData->hitObject = shared_from_this();
@@ -73,6 +73,33 @@ public:
     getBoundingBox() const override {
         auto ret = AABB::merge(AABB(this->a().to<3>(), this->b().to<3>()), this->c().to<3>());
         return ret;
+    }
+
+    numberType
+    getArea() const override {
+        const auto& v0 = a();
+        const auto& v1 = b();
+        const auto& v2 = c();
+        Vector3 E1 = (v1 - v0).to<3>();
+        Vector3 E2 = (v2 - v0).to<3>();
+        numberType area = E1.cross(E2).norm2() * 0.5;
+        return area;
+    }
+
+    std::pair<HitData, numberType>
+    sample() const override {
+        const auto& v0 = a().to<3>();
+        const auto& v1 = b().to<3>();
+        const auto& v2 = c().to<3>();
+        Vector3 E1 = v1 - v0;
+        Vector3 E2 = v2 - v0;
+        auto x = std::sqrt(MathUtils::getRandNum());
+        auto y = MathUtils::getRandNum();
+        HitData hitData{};
+        hitData.hitPoint = v0 * (1.0 - x) + v1 * (x * (1.0 - y)) + v2 * (x * y);
+        hitData.normal = E1.cross(E2).normalize();
+        numberType pdf = 1.0 / getArea();
+        return { hitData, pdf };
     }
 
 public:

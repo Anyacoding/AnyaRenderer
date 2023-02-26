@@ -21,6 +21,7 @@ private:
         std::shared_ptr<BVHNode> left = nullptr;
         std::shared_ptr<BVHNode> right = nullptr;
         std::shared_ptr<Object> object = nullptr;
+        numberType area = 0.0;
     };
 
 public:
@@ -55,12 +56,14 @@ public:
             node->object = objects[0];
             node->left = nullptr;
             node->right = nullptr;
+            node->area = objects[0]->getArea();
             return node;
         }
         else if (objects.size() == 2) {
             node->left = buildTree(std::vector{objects[0]});
             node->right = buildTree(std::vector{objects[1]});
             node->box = AABB::merge(node->left->box, node->right->box);
+            node->area = node->left->area + node->right->area;
             return node;
         }
         else {
@@ -113,6 +116,7 @@ public:
             node->left = buildTree(leftBox);
             node->right = buildTree(rightBox);
             node->box = AABB::merge(node->left->box, node->right->box);
+            node->area = node->left->area + node->right->area;
         }
         return node;
     }
@@ -123,6 +127,14 @@ public:
         std::optional<HitData> hitData;
         hitData = getIntersect(root, ray);
         return hitData;
+    }
+
+    [[nodiscard]] std::pair<HitData, numberType>
+    sample() const {
+        auto p = std::sqrt(MathUtils::getRandNum()) * root->area;
+        auto [pos, pdf] = getSample(root, p);
+        pdf /= root->area;
+        return { pos, pdf };
     }
 
 private:
@@ -143,6 +155,21 @@ private:
         auto ldistance = lchild.has_value() ? lchild->tNear : KMAX;
         auto rdistance = rchild.has_value() ? rchild->tNear : KMAX;
         return ldistance < rdistance ? lchild : rchild;
+    }
+
+    [[nodiscard]] std::pair<HitData, numberType>
+    getSample(const std::shared_ptr<BVHNode>& node, numberType p) const {
+        if (node->left == nullptr || node->right == nullptr) {
+            auto [pos, pdf] = node->object->sample();
+            pdf *= node->area;
+            return { pos, pdf };
+        }
+        if (p < node->left->area) {
+            return getSample(node->left, p);
+        }
+        else {
+            return getSample(node->right, p - node->left->area);
+        }
     }
 };
 

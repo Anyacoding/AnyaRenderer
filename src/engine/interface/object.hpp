@@ -26,6 +26,7 @@ public:
     evalDiffuseColor(const Vector2&) const {
         return material->diffuseColor;
     }
+
 #pragma endregion
 
 public:
@@ -34,14 +35,27 @@ public:
 
     // 返回光线与object的相交结果
     [[nodiscard]] virtual std::optional<HitData> getIntersect(const Ray& ray) = 0;
+
+    // 返回物体面积
+    virtual numberType getArea() const = 0;
+
+    // 采样
+    virtual std::pair<HitData, numberType> sample() const = 0;
+
+    // 物体是否是光源的一部分
+    bool isLight() const { return material != nullptr && material->isLight; }
+
+    // 返回光源的辐射量
+    Vector3 getEmission() const { return material->emission; }
 };
 
 struct HitData {
-    numberType tNear = 0.0;
-    Vector3 hitPoint{};
-    Vector3 normal{};
-    Vector2 uv = {};
-    Vector2 st = {};
+    numberType tNear = KMAX;    // 光源和物体的距离
+    Vector3 hitPoint{};         // 相交点
+    Vector3 normal{};           // 相交点处的法线
+    Vector2 uv = {};            // 三角形重心坐标的beta和gamma
+    Vector2 st = {};            // 三角形专用插值坐标
+    Vector3 radiance = {};      // 物体的辐射率
     std::shared_ptr<Object> hitObject = nullptr;
 };
 

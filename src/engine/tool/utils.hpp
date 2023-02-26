@@ -8,6 +8,7 @@
 #include <fstream>
 #include <numeric>
 #include <numbers>
+#include <random>
 #include "nlohmann/json.hpp"
 #include "component/light.hpp"
 
@@ -37,7 +38,7 @@ struct MathUtils {
         return rad * 180 / pi;
     }
 
-    // 线性插值
+    // 牛顿线性插值
     template<class T>
     static constexpr T
     lerp(numberType k, const T& v0, const T& v1) {
@@ -75,6 +76,15 @@ struct MathUtils {
             ans.emplace(std::make_pair(t0, t1));
         }
         return ans;
+    }
+
+    // 获取随机数
+    static numberType getRandNum() {
+        std::random_device dev;
+        std::mt19937 rng(dev());
+        // distribution in range [1, 6]
+        std::uniform_real_distribution<numberType> dist(0.0, 1.0);
+        return dist(rng);
     }
 };
 

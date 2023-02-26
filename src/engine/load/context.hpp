@@ -34,6 +34,8 @@ private:
         json renderer = config["renderer"];
         this->_renderer = makeRenderer(renderer["type"]);
         this->_renderer->background = toVector3(renderer["background"]) / 255;
+        this->_renderer->spp = renderer["spp"];
+        this->_renderer->mode = renderer["mode"] == "path_tracing" ? RenderMode::PATH_TRACING : RenderMode::WHITTED_STYLE;
 
         // 加载camera字段
         json camera = config["camera"];
@@ -63,7 +65,7 @@ private:
                 this->_renderer->scene.addObject(toObject(item));
             }
             // 加载lights字段
-            json lights = config["lights"];
+            json lights = config.value("lights", json::array());
             for (const auto& item : lights) {
                 this->_renderer->scene.addLight(toLight(item));
             }
@@ -146,36 +148,48 @@ private:
         }
     }
 
-    // TODO: 优化材质导入
+    static std::shared_ptr<Material>
+    toMaterial(const json& material) {
+        std::string MaterialType = material["type"];
+        std::shared_ptr<Material> ret;
+        if (MaterialType == "REFLECTION_AND_REFRACTION") {
+            ret = std::make_shared<GlassMaterial>();
+            ret->type = REFLECTION_AND_REFRACTION;
+            ret->ior = material.value("ior", ret->ior);
+        }
+        else if (MaterialType == "DIFFUSE_AND_GLOSSY") {
+            ret = std::make_shared<DiffuseMaterial>();
+            ret->type = DIFFUSE_AND_GLOSSY;
+            ret->diffuseColor = material.value("diffuseColor", json::array()) == json::array()
+                                ? ret->diffuseColor
+                                : toVector3(material["diffuseColor"]);
+            ret->isLight = material.value("isLight", false);
+            ret->emission = ret->isLight
+                            ? 8.0 * Vector3{0.747 + 0.058, 0.747 + 0.258, 0.747} + 15.6 * Vector3{0.740 + 0.287, 0.740 + 0.160 ,0.740} + 18.4 * Vector3{0.737 + 0.642, 0.737 + 0.159 ,0.737}
+                            : Vector3{};
+            ret->Kd = material.value("kd", json::array()) == json::array()
+                      ? ret->Kd
+                      : toVector3(material["kd"]);
+        }
+        else {
+            throw std::runtime_error("material type error");
+        }
+        return ret;
+    }
+
     static std::shared_ptr<Object>
     toSphere(const json& obj) {
         auto center = toVector3(obj["center"]);
         numberType radius = obj["radius"];
         std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>(center, radius);
-
-        json material = obj["material"];
-        std::string MaterialType = material["type"];
-        if (MaterialType == "REFLECTION_AND_REFRACTION") {
-            sphere->material = std::make_shared<GlassMaterial>();
-            sphere->material->type = REFLECTION_AND_REFRACTION;
-            sphere->material->ior = material["ior"];
-        }
-        else if (MaterialType == "DIFFUSE_AND_GLOSSY") {
-            sphere->material = std::make_shared<DiffuseMaterial>();
-            sphere->material->type = DIFFUSE_AND_GLOSSY;
-            sphere->material->diffuseColor = toVector3(material["diffuseColor"]);
-        }
-        else {
-            throw std::runtime_error("material type error");
-        }
-
+        sphere->material = toMaterial(obj["material"]);
         return sphere;
     }
 
     static std::shared_ptr<Object>
     toTriangle(const json& obj) {
         std::shared_ptr<Triangle> triangle = std::make_shared<Triangle>();
-        triangle->material = std::make_shared<DiffuseMaterial>();
+        triangle->material = toMaterial(obj["material"]);
         json vertexes = obj["vertexes"];
         int index = 0;
         for (const auto& vertex : vertexes) {
@@ -193,7 +207,7 @@ private:
 
     static std::shared_ptr<Object>
     toMesh(const json& obj) {
-        auto material = std::make_shared<DiffuseMaterial>();
+        auto material = toMaterial(obj["material"]);
         material->kd = 0.6;
         material->ks = 0.0;
         material->specularExponent = 0.0;

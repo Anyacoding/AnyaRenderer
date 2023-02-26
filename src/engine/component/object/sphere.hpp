@@ -13,9 +13,10 @@ class Sphere: public Object {
 private:
     Vector3 center{};
     numberType radius = 0.0;
+    numberType area = 0.0;
 
 public:
-    Sphere(Vector3 point, numberType r): center(point), radius(r)
+    Sphere(Vector3 point, numberType r): center(point), radius(r), area(4 * pi * r * r)
     {}
 
 public:
@@ -46,6 +47,16 @@ public:
     getBoundingBox() const override {
         return AABB(Vector3{center.x() - radius, center.y() - radius, center.z() - radius},
                     Vector3{center.x() + radius, center.y() + radius, center.z() + radius});
+    }
+
+    numberType
+    getArea() const override {
+        return area;
+    }
+
+    std::pair<HitData, numberType>
+    sample() const override {
+        throw std::runtime_error("The Sphere::sample() has not implemented!");
     }
 };
 

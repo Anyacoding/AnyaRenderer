@@ -11,18 +11,18 @@
 
 namespace anya {
 
+enum class RenderMode {
+    RASTERIZER, WHITTED_STYLE, PATH_TRACING
+};
+
 class Renderer {
-protected:
-    enum class Mode {
-        RASTERIZER, WHITTED_STYLE, PATH_TRACING
-    };
 public:
-    Scene  scene{};                          // 场景
-    Vector3 background{};                    // 背景颜色
-    std::shared_ptr<Texture> outPutImage{};  // 输出图片
-    std::string savePathName;                // 保存路径
-    std::size_t spp = 1;                     // 采样频率
-    Mode mode = Mode::WHITTED_STYLE;         // 渲染模式
+    Scene  scene{};                               // 场景
+    Vector3 background{};                         // 背景颜色
+    std::shared_ptr<Texture> outPutImage{};       // 输出图片
+    std::string savePathName;                     // 保存路径
+    int spp = 1;                                  // 采样频率
+    RenderMode mode = RenderMode::WHITTED_STYLE;  // 渲染模式
 public:
     virtual void render() = 0;
     [[nodiscard]] virtual Vector3 getPixel(int x, int y) const = 0;

@@ -44,7 +44,7 @@ public:
                 // 利用光线弹射着色函数返回颜色信息
                 Vector3 pixel_color{};
                 for (int k = 0; k < spp; ++k) {
-                    pixel_color += whitted_style(ray, 0) / spp;
+                    pixel_color += cast_ray(ray, 0) / spp;
                 }
                 // 将像素写入帧缓存
                 int x = i;
@@ -61,7 +61,8 @@ public:
         auto hours = std::chrono::duration_cast<std::chrono::hours>(time_diff);
         auto minutes = std::chrono::duration_cast<std::chrono::minutes>(time_diff - hours);
         auto seconds = std::chrono::duration_cast<std::chrono::seconds>(time_diff - hours - minutes);
-        std::cout << "\n\n\rRendering Complete! \nTime Taken: " <<  hours.count() << " hours, " << minutes.count() << " minutes, " << seconds.count() << " seconds\n";
+        std::cout << "\n\n\rSPP: " << this->spp << std::endl;
+        std::cout << "Rendering Complete! \nTime Taken: " <<  hours.count() << " hours, " << minutes.count() << " minutes, " << seconds.count() << " seconds\n";
     }
 
     // 获取像素信息
@@ -74,14 +75,14 @@ private:
     Vector3
     cast_ray (const Ray& ray, int depth) {
         switch (mode) {
-            case Mode::WHITTED_STYLE: {
+            case RenderMode::WHITTED_STYLE: {
                 return whitted_style(ray, depth);
             }
-            case Mode::PATH_TRACING: {
+            case RenderMode::PATH_TRACING: {
                 return path_tracing(ray);
             }
             default: {
-                std::cerr << "Unknown RayTracer Mode Type!" << std::endl;
+                std::cerr << "Unknown RayTracer RenderMode Type!" << std::endl;
                 break;
             }
         }
@@ -164,9 +165,65 @@ private:
     path_tracing (const Ray& ray) {
         auto hitData = intersect(ray);
         if (!hitData.has_value()) return Vector3{};
-
+        return shade(hitData.value(), -ray.dir);
     }
 
+    Vector3
+    shade(HitData& hitData, Vector3 wo) {
+        // 打到光源直接返回
+        if (hitData.hitObject->isLight()) {
+            return hitData.hitObject->getEmission();
+        }
+
+        // 直接光照贡献
+        Vector3 Lo_dir;
+        {
+            auto [hitLight, pdf] = sampleLight();
+            Vector3 obj2Light = hitLight.hitPoint - hitData.hitPoint;
+            Vector3 obj2LightDir = obj2Light.normalize();
+            // 检查光线是否被物体阻挡
+            auto temp = intersect({hitData.hitPoint, obj2LightDir});
+
+            if (std::fabs(temp->tNear - obj2Light.norm2()) < epsilon) {
+                auto bxdf = hitData.hitObject->material->BXDF(obj2LightDir, wo, hitData.normal);
+                auto r2 = obj2Light.dot(obj2Light);
+                auto cosA = std::max(0.0, hitData.normal.dot(obj2LightDir));
+                auto cosB = std::max(0.0, hitLight.normal.dot(-obj2LightDir));
+                Lo_dir = hitLight.radiance.mut(bxdf) * cosA * cosB / r2 / pdf;
+            }
+        }
+
+
+        // 间接光照贡献
+        Vector3 Lo_indir;
+        {
+
+        }
+
+        return Lo_dir + Lo_indir;
+    }
+
+    // 对光源进行采样
+    std::pair<HitData, numberType>
+    sampleLight() {
+        numberType areaSum = 0.0;
+        for (const auto& object : scene.objects) {
+            if (object->isLight()) {
+                areaSum += object->getArea();
+            }
+        }
+        auto limitArea = areaSum * MathUtils::getRandNum();
+        areaSum = 0.0;
+        for (const auto& object : scene.objects) {
+            if (object->isLight()) {
+                areaSum += object->getArea();
+                if (limitArea <= areaSum) {
+                    return object->sample();
+                }
+            }
+        }
+        return std::make_pair(HitData{}, 0.0);
+    }
 #pragma endregion
 
 private:

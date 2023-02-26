@@ -14,10 +14,11 @@ public:
     GlassMaterial() {
         this->type = REFLECTION_AND_REFRACTION;
     }
+
 public:
     Vector3
-    process(const Ray& ray, const HitData& hitData, RayTracer& renderer) override {
-        return {};
+    BXDF(const Vector3& wi, const Vector3& wo, const Vector3& normal) override {
+
     }
 };
 

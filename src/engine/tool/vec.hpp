@@ -280,7 +280,7 @@ using Vector4 = Vector<4>;
 template<typename... Args>
 constexpr auto
 make_Vec(Args&&... args) requires((std::convertible_to<Args, numberType> && ...)) {
-    return Vector<sizeof...(args)>{static_cast<numberType>(std::forward<Args>(args))...};
+    return Vector<sizeof...(args)>{ static_cast<numberType>(std::forward<Args>(args))... };
 }
 
 }

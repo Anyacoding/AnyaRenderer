@@ -23,7 +23,7 @@ void runTask(const std::string& path) {
 
 
 int main() {
-    runTask("../art/context/whitted_style.json");
+    runTask("../art/context/cornell_box.json");
     return 0;
 }
 
@@ -32,7 +32,7 @@ int main() {
 // 目前可选光栅化模型:                   目前可选模型光追模型:
 // 1.assassin.json                      1.whitted_style.json
 // 2.azura.json                         2.bunny.json
-// 3.boggie.json
+// 3.boggie.json                        3.cornell_box.json
 // 4.diablo3_pose.json
 // 5.elfgirl.json
 // 6.kgirl.json

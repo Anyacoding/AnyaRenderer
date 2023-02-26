@@ -12,7 +12,10 @@ namespace anya {
 
 class Mesh: public Object {
 private:
+    // BVH树
     std::shared_ptr<BVH> bvh = nullptr;
+    // 网格的面积
+    numberType area = 0.0;
 
 public:
     explicit Mesh(const std::string& meshPath, const std::shared_ptr<Material>& m) {
@@ -31,6 +34,7 @@ public:
 
         std::vector<Vector3> vertexes{};      // 从obj读入的所有顶点集合
         Vector3 vertex{};                     // 顶点
+        this->area = 0.0;                     // 重新计算面积
 
         // 每次读入一行，并判断该行的类型
         std::string line, type;
@@ -51,6 +55,7 @@ public:
                 }
                 triangle->material = this->material;
                 childs.push_back(triangle);
+                area += triangle->getArea();
             }
         }
         ifs.close();
@@ -78,6 +83,18 @@ public:
     [[nodiscard]] AABB
     getBoundingBox() const override {
         return box;
+    }
+
+    numberType
+    getArea() const override {
+        return area;
+    }
+
+    std::pair<HitData, numberType>
+    sample() const override {
+        auto [pos, pdf] = bvh->sample();
+        pos.radiance = this->material->emission;
+        return { pos, pdf };
     }
 };
 

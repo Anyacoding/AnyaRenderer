@@ -5,7 +5,9 @@
   },
   "renderer": {
     "type": "RayTracer",
-    "background": [59.99997, 172.00005, 214.999935]
+    "background": [59.99997, 172.00005, 214.999935],
+    "mode": "whitted_style",
+    "spp": 1
   },
   "camera": {
     "eye_pos": [0, 0, -1],
