@@ -14,22 +14,37 @@ public:
     DiffuseMaterial() {
         this->type = DIFFUSE_AND_GLOSSY;
     }
+
 public:
-    Vector3
-    BXDF(const Vector3& wi, const Vector3& wo, const Vector3& normal) override {
-        // auto x1 = MathUtils::getRandNum();
-        // auto x2 = MathUtils::getRandNum();
-        // auto z = std::fabs(1 - 2 * x1);
-        // auto r = std::sqrt(1 - z * z);
-        // auto phi = 2 * pi * x2;
-        // Vector3 localRay{ r * std::cos(phi), r * std::sin(phi), z };
-        // return toWorld(localRay, normal);
+    [[nodiscard]] Vector3
+    BXDF(const Vector3& wi, const Vector3& wo, const Vector3& normal) const override {
         auto cosalpha = normal.dot(wo);
-        if (cosalpha > 0.0) {
+        if (cosalpha > epsilon) {
             return Kd / pi;
         }
         else {
             return {};
+        }
+    }
+
+    [[nodiscard]] Vector3
+    sample(const Vector3& wi, const Vector3& normal) const override {
+        auto x1 = MathUtils::getRandNum();
+        auto x2 = MathUtils::getRandNum();
+        auto z = std::fabs(1.0 - 2.0 * x1);
+        auto r = std::sqrt(1.0 - z * z);
+        auto phi = 2.0 * pi * x2;
+        Vector3 localRay{ r * std::cos(phi), r * std::sin(phi), z };
+        return toWorld(localRay, normal);
+    }
+
+    [[nodiscard]] numberType
+    pdf(const Vector3& wi, const Vector3& wo, const Vector3& normal) const override {
+        if (wo.dot(normal) > epsilon) {
+            return 0.5 / pi;
+        }
+        else {
+            return 0.0;
         }
     }
 };

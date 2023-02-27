@@ -38,8 +38,14 @@ public:
     Vector3 Kd{};
 
 public:
-    virtual Vector3
-    BXDF(const Vector3& wi, const Vector3& wo, const Vector3& normal) = 0;
+    [[nodiscard]] virtual Vector3
+    BXDF(const Vector3& wi, const Vector3& wo, const Vector3& normal) const = 0;
+
+    [[nodiscard]] virtual Vector3
+    sample(const Vector3& wi, const Vector3& normal) const = 0;
+
+    [[nodiscard]] virtual numberType
+    pdf(const Vector3& wi, const Vector3& wo, const Vector3& normal) const = 0;
 
 protected:
     static Vector3

@@ -7,7 +7,7 @@
     "type": "RayTracer",
     "background": [59.99997, 172.00005, 214.999935],
     "mode": "path_tracing",
-    "spp": 5
+    "spp": 50
   },
   "camera": {
     "eye_pos": [278, 273, -800],

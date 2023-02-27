@@ -23,6 +23,8 @@ private:
     GLdouble view_width = 0.0, view_height = 0.0;
     // 光线追踪最大递归深度
     int maxDepth = 5;
+    // 俄罗斯轮盘赌
+    numberType RussianRoulette = 0.8;
 private:
     // 导入友元
     friend class DiffuseMaterial;
@@ -168,6 +170,7 @@ private:
         return shade(hitData.value(), -ray.dir);
     }
 
+    int cnt = 0;
     Vector3
     shade(HitData& hitData, Vector3 wo) {
         // 打到光源直接返回
@@ -189,7 +192,7 @@ private:
                 auto r2 = obj2Light.dot(obj2Light);
                 auto cosA = std::max(0.0, hitData.normal.dot(obj2LightDir));
                 auto cosB = std::max(0.0, hitLight.normal.dot(-obj2LightDir));
-                Lo_dir = hitLight.radiance.mut(bxdf) * cosA * cosB / r2 / pdf;
+                Lo_dir = hitLight.radiance.mut(bxdf) * cosA * cosB / (r2 * pdf);
             }
         }
 
@@ -197,15 +200,27 @@ private:
         // 间接光照贡献
         Vector3 Lo_indir;
         {
-
+            auto num = MathUtils::getRandNum();
+            if (num < RussianRoulette) {
+                Vector3 light2NextObj = hitData.hitObject->material->sample(wo, hitData.normal).normalize();
+                numberType pdf = hitData.hitObject->material->pdf(wo, light2NextObj, hitData.normal);
+                if (pdf > epsilon) {
+                    auto nextHitData = intersect({ hitData.hitPoint, light2NextObj });
+                    if (nextHitData.has_value() && !nextHitData->hitObject->isLight()) {
+                        auto bxdf = hitData.hitObject->material->BXDF(light2NextObj, wo, hitData.normal);
+                        auto cos = std::max(0.0, light2NextObj.dot(hitData.normal));
+                        Lo_indir = shade(nextHitData.value(), -light2NextObj).mut(bxdf) * cos / (pdf * RussianRoulette);
+                    }
+                }
+            }
         }
 
         return Lo_dir + Lo_indir;
     }
 
     // 对光源进行采样
-    std::pair<HitData, numberType>
-    sampleLight() {
+    [[nodiscard]] std::pair<HitData, numberType>
+    sampleLight() const {
         numberType areaSum = 0.0;
         for (const auto& object : scene.objects) {
             if (object->isLight()) {
@@ -303,3 +318,5 @@ private:
 }
 
 #endif //ANYA_RENDERER_RAYTRACER_HPP
+
+

@@ -34,7 +34,7 @@ private:
         json renderer = config["renderer"];
         this->_renderer = makeRenderer(renderer["type"]);
         this->_renderer->background = toVector3(renderer["background"]) / 255;
-        this->_renderer->spp = renderer["spp"];
+        this->_renderer->spp = renderer.value("spp", 1);
         this->_renderer->mode = renderer["mode"] == "path_tracing" ? RenderMode::PATH_TRACING : RenderMode::WHITTED_STYLE;
 
         // 加载camera字段

@@ -16,9 +16,19 @@ public:
     }
 
 public:
-    Vector3
-    BXDF(const Vector3& wi, const Vector3& wo, const Vector3& normal) override {
+    [[nodiscard]] Vector3
+    BXDF(const Vector3& wi, const Vector3& wo, const Vector3& normal) const override {
+        throw std::runtime_error("GlassMaterial::BXDF() has not implemented!");
+    }
 
+    [[nodiscard]] Vector3
+    sample(const Vector3& wi, const Vector3& normal) const override {
+        throw std::runtime_error("GlassMaterial::sample() has not implemented!");
+    }
+
+    [[nodiscard]] numberType
+    pdf(const Vector3& wi, const Vector3& wo, const Vector3& normal) const override {
+        throw std::runtime_error("GlassMaterial::pdf() has not implemented!");
     }
 };
 
