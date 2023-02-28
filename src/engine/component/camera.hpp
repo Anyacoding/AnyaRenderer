@@ -152,7 +152,7 @@ public:
         numberType scale = std::tan(fovY / 2);
         numberType x = (2 * ((i + 0.5) / view_width) - 1) * scale * aspect_ratio;
         numberType y = (1 - 2 * ((j + 0.5) / view_height)) * scale;
-        ray.dir = Vector3{-x, y, 1}.normalize();
+        ray.dir = Vector3{ x, y, 1 }.normalize();
         ray.pos = eye_pos;
         return ray;
     }

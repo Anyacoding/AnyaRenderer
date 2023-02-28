@@ -43,6 +43,8 @@ public:
             for (int i = 0; i < view_width; ++i) {
                 // 相机发出的光线
                 auto ray = scene.camera->biuRay(i, j);
+                auto fixed = this->mode == RenderMode::WHITTED_STYLE ? Vector3{ 1, 1, -1 } : Vector3{ -1, 1, 1 };
+                ray.dir = ray.dir.mut(fixed);
                 // 利用光线弹射着色函数返回颜色信息
                 Vector3 pixel_color{};
                 for (int k = 0; k < spp; ++k) {
@@ -170,7 +172,6 @@ private:
         return shade(hitData.value(), -ray.dir);
     }
 
-    int cnt = 0;
     Vector3
     shade(HitData& hitData, Vector3 wo) {
         // 打到光源直接返回

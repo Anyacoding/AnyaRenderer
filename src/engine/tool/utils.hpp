@@ -80,10 +80,10 @@ struct MathUtils {
 
     // 获取随机数
     static numberType getRandNum() {
-        std::random_device dev;
-        std::mt19937 rng(dev());
+        static std::random_device dev;
+        static std::mt19937 rng(dev());
         // distribution in range [1, 6]
-        std::uniform_real_distribution<numberType> dist(0.0, 1.0);
+        static std::uniform_real_distribution<numberType> dist(0.0, 1.0);
         return dist(rng);
     }
 };

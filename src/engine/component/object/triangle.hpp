@@ -44,6 +44,7 @@ public:
         Vector3 S = ray.pos - v0.to<3>();
         Vector3 S1 = ray.dir.cross(E2);
         Vector3 S2 = S.cross(E1);
+        Vector3 normal = E1.cross(E2).normalize();
         numberType det = S1.dot(E1);
         numberType tNear = S2.dot(E2) / det;
         u = S1.dot(S) / det;
@@ -53,7 +54,7 @@ public:
             hitData->tNear = tNear;
             hitData->hitObject = shared_from_this();
             hitData->hitPoint = ray.at(tNear);
-            hitData->normal = E1.cross(E2).normalize();
+            hitData->normal = normal;
             hitData->uv = Vector2{u, v};
 
             // 此处的uv不是纹理坐标，而是三角形重心坐标的beta和gamma
