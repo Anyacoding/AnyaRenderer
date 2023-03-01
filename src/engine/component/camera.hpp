@@ -150,8 +150,8 @@ public:
     biuRay(int i, int j) const {
         Ray ray{};
         numberType scale = std::tan(fovY / 2);
-        numberType x = (2 * ((i + 0.5) / view_width) - 1) * scale * aspect_ratio;
-        numberType y = (1 - 2 * ((j + 0.5) / view_height)) * scale;
+        numberType x = (2 * (i + MathUtils::getRandNum()) / view_width - 1) * scale * aspect_ratio;
+        numberType y = (1 - 2 * (j + MathUtils::getRandNum()) / view_height) * scale;
         ray.dir = Vector3{ x, y, 1 }.normalize();
         ray.pos = eye_pos;
         return ray;

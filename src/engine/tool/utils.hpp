@@ -79,11 +79,10 @@ struct MathUtils {
     }
 
     // 获取随机数
-    static numberType getRandNum() {
+    static numberType getRandNum(numberType l = 0.0, numberType r = 1.0) {
         static std::random_device dev;
         static std::mt19937 rng(dev());
-        // distribution in range [1, 6]
-        static std::uniform_real_distribution<numberType> dist(0.0, 1.0);
+        static std::uniform_real_distribution<numberType> dist(l, r);
         return dist(rng);
     }
 };
