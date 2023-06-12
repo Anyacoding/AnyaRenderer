@@ -24,30 +24,30 @@
 
 ## Screenshots
 ### Rasterization
-| Scene                                            | Description |
-|--------------------------------------------------|-------------|
-| <img src="docs/images/triangle.png" width="600"> | `Triangle`  |
-| <img src="docs/images/MSAA.jpg" width="600">     | `MSAA`      |
-| <img src="docs/images/cow.png" width="600">      | `Cow`       |
-| <img src="docs/images/elfgirl.png" width="600">  | `Elfgirl`   |
-| <img src="docs/images/azura.png" width="600">    | `Azura`     |
-| <img src="docs/images/diablo3.png" width="600">  | `Diablo3`   |
-| <img src="docs/images/boggie.png" width="600">   | `Boggie`    |
-| <img src="docs/images/robot.png" width="600">    | `Robot`     |
-| <img src="docs/images/assassin.png" width="600"> | `Assassin`  |
-| <img src="docs/images/marry.png" width="600">    | `Marry`     |
-| <img src="docs/images/kgirl.png" width="600">    | `Kgirl`     |
+| Scene                                                                                         | Description |
+|-----------------------------------------------------------------------------------------------|-------------|
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/triangle.png" width="600"> | `Triangle`  |
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/MSAA.jpg" width="600">     | `MSAA`      |
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/cow.png" width="600">      | `Cow`       |
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/elfgirl.png" width="600">  | `Elfgirl`   |
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/azura.png" width="600">    | `Azura`     |
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/diablo3.png" width="600">  | `Diablo3`   |
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/boggie.png" width="600">   | `Boggie`    |
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/robot.png" width="600">    | `Robot`     |
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/assassin.png" width="600"> | `Assassin`  |
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/marry.png" width="600">    | `Marry`     |
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/kgirl.png" width="600">    | `Kgirl`     |
 
 ### Whitted Style
-| Scene                                                 | Description |
-|-------------------------------------------------------|-------------|
-| <img src="docs/images/whitted_style.png" width="600"> | `Sphere`    |
-| <img src="docs/images/bunny.png" width="600">         | `Bunny`     |
+| Scene                                                                                              | Description |
+|----------------------------------------------------------------------------------------------------|-------------|
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/whitted_style.png" width="600"> | `Sphere`    |
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/bunny.png" width="600">         | `Bunny`     |
 
 ### Path Tracing
-| Scene                                                       | Description           |
-|-------------------------------------------------------------|-----------------------|
-| <img src="docs/images/cornell_box_5000SPP.png" width="600"> | `Cornell_Box_5000SPP` |
+| Scene                                                                                                    | Description           |
+|----------------------------------------------------------------------------------------------------------|-----------------------|
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/cornell_box_5000SPP.png" width="600"> | `Cornell_Box_5000SPP` |
 
 
 

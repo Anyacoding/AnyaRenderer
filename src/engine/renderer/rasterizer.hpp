@@ -22,10 +22,12 @@ private:
     std::vector<Vector3> frame_buf;  // 帧缓存
     std::vector<numberType> z_buf;   // 深度缓存
     std::vector<Vector3> frame_msaa; // MSAA 4倍采样
-    std::vector<numberType> z_msaa;
+    std::vector<numberType> z_msaa;  // MSAA 4倍采样
 
     GLdouble view_width = 0.0, view_height = 0.0;  // 视窗
     numberType fixed = 1.0;                        // 重心坐标修正系数
+
+
 
 public:
 #pragma region renderer方法
@@ -60,10 +62,11 @@ public:
                 for (auto& vertex : triangle.vertexes) {
                     viewSpace.push_back(viewMat * modelMat * vertex);
                     vertex = viewPortMat * MVP * vertex;
-                    // 修正深度信息，方便后续插值
+                    // 透视除法
                     auto w = vertex.w();
                     vertex /= w;
                     vertex.w() = w;
+                    // 修正深度信息，方便后续插值
                     vertex.z() = vertex.z() * f1 + f2;
                 }
 

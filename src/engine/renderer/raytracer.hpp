@@ -14,7 +14,6 @@
 namespace anya {
 
 // 本模块实现最基本的光线追踪成像渲染器
-
 class RayTracer: public Renderer {
 private:
     // 帧缓存
@@ -25,6 +24,7 @@ private:
     int maxDepth = 5;
     // 俄罗斯轮盘赌
     numberType RussianRoulette = 0.8;
+
 private:
     // 导入友元
     friend class DiffuseMaterial;

@@ -4,7 +4,6 @@
 #include "load/context.hpp"
 #include "renderer/raytracer.hpp"
 #include "test/test.h"
-#include <chrono>
 
 using namespace anya;
 
@@ -23,7 +22,7 @@ void runTask(const std::string& path) {
 
 
 int main() {
-    runTask("../art/context/cornell_box.json");
+    runTask("../art/context/elfgirl.json");
     return 0;
 }
 
