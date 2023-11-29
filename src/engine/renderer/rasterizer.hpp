@@ -30,7 +30,7 @@ private:
 
 
 public:
-#pragma region renderer方法
+#pragma region renderer
     void
     render() override {
         std::tie(view_width, view_height) = scene.camera->getWH();
@@ -97,7 +97,7 @@ public:
 #pragma endregion
 
 private:
-#pragma region 采样
+#pragma region sample
     void
     drawTriangle(const Triangle& triangle, const std::vector<Vector4>& viewSpace, FragmentShader& fragmentShader) {
         // 缓存三角形的三个顶点
@@ -177,7 +177,7 @@ private:
 #pragma endregion
 
 private:
-#pragma region 辅助函数
+#pragma region help function
     // 叉积判断点是否在三角形内
     bool
     insideTriangle(numberType x, numberType y, const std::array<Vector4, 3>& vertexes) {

@@ -49,7 +49,7 @@ public:
         numberType tNear = S2.dot(E2) / det;
         u = S1.dot(S) / det;
         v = S2.dot(ray.dir) / det;
-        if (u >= 0 && u <= 1 && v >= 0 && v <= 1 && 1 - u - v >= 0 && 1 - u - v <= 1 && tNear > epsilon) {
+        if (u >= 0 && u <= 1 && v >= 0 && v <= 1 && 1 - u - v >= 0 && 1 - u - v <= 1 && tNear >= epsilon) {
             hitData.emplace();
             hitData->tNear = tNear;
             hitData->hitObject = shared_from_this();

@@ -18,6 +18,7 @@ public:
 public:
     [[nodiscard]] Vector3
     BXDF(const Vector3& wi, const Vector3& wo, const Vector3& normal) const override {
+        // return Kd / pi;
         auto cosalpha = normal.dot(wo);
         if (cosalpha > epsilon) {
             return Kd / pi;
@@ -40,6 +41,7 @@ public:
 
     [[nodiscard]] numberType
     pdf(const Vector3& wi, const Vector3& wo, const Vector3& normal) const override {
+        // return wo.dot(normal) / pi;
         if (wo.dot(normal) > epsilon) {
             return 0.5 / pi;
         }

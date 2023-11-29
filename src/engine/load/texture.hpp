@@ -131,6 +131,7 @@ public:
         if (out_range(u0, v0) || out_range(u0, v1) || out_range(u1, v0) || out_range(u1, v1)) {
             throw std::out_of_range("Texture::getColor");
         }
+
         auto c00 = colors[int(u0 + v0 * width)];
         auto c01 = colors[int(u0 + v1 * width)];
         auto c10 = colors[int(u1 + v0 * width)];

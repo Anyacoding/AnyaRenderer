@@ -9,26 +9,37 @@
 
 namespace anya {
 
-class GlassMaterial: public Material {
+class MirrorMaterial: public Material {
 public:
-    GlassMaterial() {
-        this->type = REFLECTION_AND_REFRACTION;
+    MirrorMaterial() {
+        this->type = MIRROR;
     }
 
 public:
     [[nodiscard]] Vector3
     BXDF(const Vector3& wi, const Vector3& wo, const Vector3& normal) const override {
-        throw std::runtime_error("GlassMaterial::BXDF() has not implemented!");
+        auto cosalpha = normal.dot(wo);
+        if (cosalpha > epsilon) {
+            return Kd / cosalpha;
+        }
+        else {
+            return {};
+        }
     }
 
     [[nodiscard]] Vector3
     sample(const Vector3& wi, const Vector3& normal) const override {
-        throw std::runtime_error("GlassMaterial::sample() has not implemented!");
+        return wi - (2 * (wi.dot(normal))) * normal;
     }
 
     [[nodiscard]] numberType
     pdf(const Vector3& wi, const Vector3& wo, const Vector3& normal) const override {
-        throw std::runtime_error("GlassMaterial::pdf() has not implemented!");
+        if (wo.dot(normal) > epsilon) {
+            return 1 / pi;
+        }
+        else {
+            return 0.0;
+        }
     }
 };
 

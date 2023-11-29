@@ -8,7 +8,7 @@
 #include "component/object/sphere.hpp"
 #include "component/object/mesh.hpp"
 #include "material/diffuse.hpp"
-#include "material/glass.hpp"
+#include "material/mirror.hpp"
 #include <memory>
 
 namespace anya {
@@ -153,8 +153,9 @@ private:
         std::string MaterialType = material["type"];
         std::shared_ptr<Material> ret;
         if (MaterialType == "REFLECTION_AND_REFRACTION") {
-            ret = std::make_shared<GlassMaterial>();
+            ret = std::make_shared<MirrorMaterial>();
             ret->type = REFLECTION_AND_REFRACTION;
+
             ret->ior = material.value("ior", ret->ior);
         }
         else if (MaterialType == "DIFFUSE_AND_GLOSSY") {
@@ -170,6 +171,22 @@ private:
             ret->Kd = material.value("kd", json::array()) == json::array()
                       ? ret->Kd
                       : toVector3(material["kd"]);
+
+
+        }
+        else if (MaterialType == "Mirror") {
+            ret = std::make_shared<MirrorMaterial>();
+            ret->type = MIRROR;
+            ret->diffuseColor = material.value("diffuseColor", json::array()) == json::array()
+                                    ? ret->diffuseColor
+                                    : toVector3(material["diffuseColor"]);
+            ret->isLight = material.value("isLight", false);
+            ret->emission = ret->isLight
+                                    ? 8.0 * Vector3{0.747 + 0.058, 0.747 + 0.258, 0.747} + 15.6 * Vector3{0.740 + 0.287, 0.740 + 0.160 ,0.740} + 18.4 * Vector3{0.737 + 0.642, 0.737 + 0.159 ,0.737}
+                                    : Vector3{};
+            ret->Kd = material.value("kd", json::array()) == json::array()
+                                    ? ret->Kd
+                                    : toVector3(material["kd"]);
         }
         else {
             throw std::runtime_error("material type error");

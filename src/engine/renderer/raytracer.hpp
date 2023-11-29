@@ -28,7 +28,7 @@ private:
 private:
     // 导入友元
     friend class DiffuseMaterial;
-    friend class GlassMaterial;
+    friend class MirrorMaterial;
 
 public:
 #pragma region renderer方法
@@ -181,14 +181,14 @@ private:
 
         // 直接光照贡献
         Vector3 Lo_dir;
-        {
+        if (hitData.hitObject->material->type != MIRROR) {
             auto [hitLight, pdf] = sampleLight();
             Vector3 obj2Light = hitLight.hitPoint - hitData.hitPoint;
             Vector3 obj2LightDir = obj2Light.normalize();
+
             // 检查光线是否被物体阻挡
             auto temp = intersect({hitData.hitPoint, obj2LightDir});
-
-            if (std::fabs(temp->tNear - obj2Light.norm2()) < epsilon) {
+            if (std::fabs(temp->tNear - obj2Light.norm2()) <= epsilon) {
                 auto bxdf = hitData.hitObject->material->BXDF(obj2LightDir, wo, hitData.normal);
                 auto r2 = obj2Light.dot(obj2Light);
                 auto cosA = std::max(0.0, hitData.normal.dot(obj2LightDir));
@@ -203,12 +203,12 @@ private:
         {
             auto num = MathUtils::getRandNum();
             if (num < RussianRoulette) {
-                Vector3 light2NextObj = hitData.hitObject->material->sample(wo, hitData.normal).normalize();
-                numberType pdf = hitData.hitObject->material->pdf(wo, light2NextObj, hitData.normal);
+                Vector3 light2NextObj = hitData.hitObject->material->sample(-wo, hitData.normal).normalize();
+                numberType pdf = hitData.hitObject->material->pdf(-wo, light2NextObj, hitData.normal);
                 if (pdf > epsilon) {
                     auto nextHitData = intersect({ hitData.hitPoint, light2NextObj });
                     if (nextHitData.has_value() && !nextHitData->hitObject->isLight()) {
-                        auto bxdf = hitData.hitObject->material->BXDF(light2NextObj, wo, hitData.normal);
+                        auto bxdf = hitData.hitObject->material->BXDF(-light2NextObj, wo, hitData.normal);
                         auto cos = std::max(0.0, light2NextObj.dot(hitData.normal));
                         Lo_indir = shade(nextHitData.value(), -light2NextObj).mut(bxdf) * cos / (pdf * RussianRoulette);
                     }

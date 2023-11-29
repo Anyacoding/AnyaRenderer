@@ -34,7 +34,7 @@ private:
     const Camera defaultCamera;
 
 private:
-#pragma region 摄像机控制相关
+#pragma region camera control
     /*********状态变量***********/
     static bool isSaved;
     static bool isReset;
@@ -133,7 +133,7 @@ public:
     }
 
 private:
-#pragma region 画面更新逻辑
+#pragma region update render mode
     // 自动控制绘图模式作用域
     struct ModeGuard {
         // 控制类型:   GL_TRIANGLES, GL_LINES, GL_POINTS, GL_POLYGON
@@ -169,16 +169,16 @@ private:
     // 相机移动函数
     void
     do_movement() {
-        if(keys[GLFW_KEY_W]) {
+        if (keys[GLFW_KEY_W]) {
             cameraPos += cameraSpeed * cameraFront;
         }
-        if(keys[GLFW_KEY_S]) {
+        if (keys[GLFW_KEY_S]) {
             cameraPos -= cameraSpeed * cameraFront;
         }
-        if(keys[GLFW_KEY_A]) {
+        if (keys[GLFW_KEY_A]) {
             cameraPos -= cameraFront.cross(cameraUp).normalize() * cameraSpeed;
         }
-        if(keys[GLFW_KEY_D]) {
+        if (keys[GLFW_KEY_D]) {
             cameraPos += cameraFront.cross(cameraUp).normalize() * cameraSpeed;
         }
         renderer->scene.camera->lookAt(cameraPos, cameraPos + cameraFront);
@@ -224,7 +224,7 @@ private:
 #pragma endregion
 
 private:
-#pragma region 封装OpenGl的常用函数
+#pragma region box common OpenGl functions
     static bool
     init() {
         if (glfwInit() == false) {
@@ -282,7 +282,6 @@ private:
         else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
             isReset = true;
         }
-
         if (action == GLFW_PRESS) {
             updateCamera = true;
             keys[key] = true;

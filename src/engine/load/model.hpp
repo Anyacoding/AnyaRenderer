@@ -23,6 +23,7 @@ public:
     Matrix44 baselMat = Matrix44::Identity();   // 模型载入时的变换
     Matrix44 modelMat = Matrix44::Identity();   // 模型变换矩阵
     FragmentShader fragmentShader{};            // 片元着色器
+
 public:
     explicit Model(const std::string& modelPath) { loadFromDisk(modelPath); }
 

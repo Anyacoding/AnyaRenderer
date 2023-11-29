@@ -14,7 +14,7 @@ class RayTracer;
 enum MaterialType {
     DIFFUSE_AND_GLOSSY,
     REFLECTION_AND_REFRACTION,
-    REFLECTION
+    MIRROR
 };
 
 class Material {

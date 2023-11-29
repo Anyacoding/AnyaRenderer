@@ -1,13 +1,13 @@
 {
   "image": {
-    "name": "cornell_box",
+    "name": "cornell_sphere",
     "suffix": "png"
   },
   "renderer": {
     "type": "RayTracer",
     "background": [59.99997, 172.00005, 214.999935],
     "mode": "path_tracing",
-    "spp": 50
+    "spp": 500
   },
   "camera": {
     "eye_pos": [278, 273, -800],
@@ -22,24 +22,6 @@
       "meshPath": "../art/models/cornell_box/floor.obj",
       "material": {
         "type": "DIFFUSE_AND_GLOSSY",
-        "kd": [0.725, 0.71, 0.68],
-        "isLight": false
-      }
-    },
-    {
-      "type": "mesh",
-      "meshPath": "../art/models/cornell_box/shortbox.obj",
-      "material": {
-        "type": "DIFFUSE_AND_GLOSSY",
-        "kd": [0.725, 0.71, 0.68],
-        "isLight": false
-      }
-    },
-    {
-      "type": "mesh",
-      "meshPath": "../art/models/cornell_box/tallbox.obj",
-      "material": {
-        "type": "Mirror",
         "kd": [0.725, 0.71, 0.68],
         "isLight": false
       }
@@ -70,6 +52,36 @@
         "kd": [0.65, 0.65, 0.65],
         "isLight": true
       }
+    },
+    {
+      "type": "sphere",
+      "material": {
+        "type": "Mirror",
+        "kd": [0.65, 0.65, 0.65],
+        "isLight": false
+      },
+      "center": [272.0, 325.0, 355.0],
+      "radius": 85.0
+    },
+    {
+      "type": "sphere",
+      "material": {
+        "type": "Mirror",
+        "kd": [0.65, 0.65, 0.65],
+        "isLight": false
+      },
+      "center": [145.0, 125.0, 300.0],
+      "radius": 85.0
+    },
+    {
+      "type": "sphere",
+      "material": {
+        "type": "Mirror",
+        "kd": [0.65, 0.65, 0.65],
+        "isLight": false
+      },
+      "center": [400.0, 125.0, 300.0],
+      "radius": 85.0
     }
   ]
 }
