@@ -188,7 +188,7 @@ private:
 
             // 检查光线是否被物体阻挡
             auto temp = intersect({hitData.hitPoint, obj2LightDir});
-            if (std::fabs(temp->tNear - obj2Light.norm2()) <= epsilon) {
+            if (temp->tNear - obj2Light.norm2() > -epsilon) {
                 auto bxdf = hitData.hitObject->material->BXDF(obj2LightDir, wo, hitData.normal);
                 auto r2 = obj2Light.dot(obj2Light);
                 auto cosA = std::max(0.0, hitData.normal.dot(obj2LightDir));
@@ -207,7 +207,7 @@ private:
                 numberType pdf = hitData.hitObject->material->pdf(-wo, light2NextObj, hitData.normal);
                 if (pdf > epsilon) {
                     auto nextHitData = intersect({ hitData.hitPoint, light2NextObj });
-                    if (nextHitData.has_value() && !nextHitData->hitObject->isLight()) {
+                    if (nextHitData.has_value()) {
                         auto bxdf = hitData.hitObject->material->BXDF(-light2NextObj, wo, hitData.normal);
                         auto cos = std::max(0.0, light2NextObj.dot(hitData.normal));
                         Lo_indir = shade(nextHitData.value(), -light2NextObj).mut(bxdf) * cos / (pdf * RussianRoulette);

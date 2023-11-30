@@ -7,7 +7,7 @@
     "type": "RayTracer",
     "background": [59.99997, 172.00005, 214.999935],
     "mode": "path_tracing",
-    "spp": 50
+    "spp": 400
   },
   "camera": {
     "eye_pos": [278, 273, -800],
@@ -39,7 +39,7 @@
       "type": "mesh",
       "meshPath": "../art/models/cornell_box/tallbox.obj",
       "material": {
-        "type": "Mirror",
+        "type": "DIFFUSE_AND_GLOSSY",
         "kd": [0.725, 0.71, 0.68],
         "isLight": false
       }

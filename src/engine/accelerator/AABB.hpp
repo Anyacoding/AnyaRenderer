@@ -39,12 +39,13 @@ public:
             numberType max = (pMax[i] - origin[i]) / dir[i];
             // 这里的光线方向都是位于原点的方向向量
             // 如果坐标是负的，说明光线方向是反的，所以最大和最小的两个角刚好是反过来的
-            if (dir[i] < 0)
+            if (dir[i] < 0) {
                 std::swap(min, max);
+            }
             tEnter = std::max(min, tEnter);
             tExit = std::min(max, tExit);
         }
-        return tEnter <= tExit && tExit >= 0;
+        return tEnter <= tExit && tExit >= 0.0;
     }
 #pragma endregion
 

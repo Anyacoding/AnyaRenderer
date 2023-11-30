@@ -45,10 +45,11 @@
 | <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/bunny.png" width="600">         | `Bunny`     |
 
 ### Path Tracing
-| Scene                                                                                                       | Description                     |
-|-------------------------------------------------------------------------------------------------------------|---------------------------------|
-| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/cornell_box_5000SPP.png" width="600">    | `Cornell_Box_5000SPP`           |
-| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/cornell_sphere_5000SPP.png" width="600"> | `Cornell_Sphere_Mirror_5000SPP` |
+| Scene                                                                                                         | Description                      |
+|---------------------------------------------------------------------------------------------------------------|----------------------------------|
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/cornell_box_5000SPP.png" width="600">      | `Cornell_Box_5000SPP`            |
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/cornell_sphere_5000SPP.png" width="600">   | `Cornell_Sphere_Mirror_5000SPP`  |
+| <img src="https://anya-1308928365.cos.ap-nanjing.myqcloud.com/blog/cornell_sphere3_10000SPP.png" width="600"> | `Cornell_Sphere3_Mirror_5000SPP` |
 
 
 

@@ -154,6 +154,7 @@ private:
 
         auto ldistance = lchild.has_value() ? lchild->tNear : KMAX;
         auto rdistance = rchild.has_value() ? rchild->tNear : KMAX;
+
         return ldistance < rdistance ? lchild : rchild;
     }
 
